@@ -63,7 +63,33 @@ const dataRouter = {
     {
       path: 'newset',
       component: () => import('@/views/source/newset'),
-      meta: { title: '新建信息源', icon: 'component' }
+      meta: { title: '新建信息源', icon: 'component' },
+      children: [
+        {
+          path: 'storage',
+          component: () => import('@/views/source/newset/storage'),
+          meta: { title: '存储信息源', icon: 'component' },
+          hidden: true
+        },
+        {
+          path: 'internet',
+          component: () => import('@/views/source/newset/internet'),
+          meta: { title: '网络信息源', icon: 'component' },
+          hidden: true
+        },
+        {
+          path: 'terminal',
+          component: () => import('@/views/source/newset/terminal'),
+          meta: { title: '终端信息源', icon: 'component' },
+          hidden: true
+        },
+        {
+          path: 'public',
+          component: () => import('@/views/source/newset/public'),
+          meta: { title: '公共信息源', icon: 'component' },
+          hidden: true
+        }
+      ]
     }
   ]
 }
