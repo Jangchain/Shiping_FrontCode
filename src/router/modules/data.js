@@ -39,6 +39,31 @@ const dataRouter = {
       path: 'setup',
       component: () => import('@/views/data/index'),
       meta: { title: '设置', icon: 'component' }
+    },
+    {
+      path: 'common',
+      component: () => import('@/views/source/common'),
+      meta: { title: '公共信息源', icon: 'component' }
+    },
+    {
+      path: 'storage',
+      component: () => import('@/views/source/storage'),
+      meta: { title: '存储信息源', icon: 'component' }
+    },
+    {
+      path: 'internet',
+      component: () => import('@/views/source/internet'),
+      meta: { title: '网络信息源', icon: 'component' }
+    },
+    {
+      path: 'terminal',
+      component: () => import('@/views/source/terminal'),
+      meta: { title: '终端信息源', icon: 'component' }
+    },
+    {
+      path: 'newset',
+      component: () => import('@/views/source/newset'),
+      meta: { title: '新建信息源', icon: 'component' }
     }
   ]
 }
