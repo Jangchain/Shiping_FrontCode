@@ -3,6 +3,7 @@
     <div class="top-drawer">
       <h3>公共信息源</h3>
       <navList :nav-list="navData" />
+
       <div class="data-list">
         <div class="h">
           <el-form :inline="true" :model="query">
@@ -68,7 +69,7 @@ export default {
     }
   },
   created() {
-    for (let index = 0; index < 10; index++) {
+    for (let index = 0; index < 5; index++) {
       this.navData.push({
         icon: require('../images/1.png'),
         name: '共享文档' + index

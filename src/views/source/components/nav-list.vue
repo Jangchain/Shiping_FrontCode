@@ -16,6 +16,7 @@
                   </div>
                   <div class="name" v-text="data.name" />
                 </div>
+                <!-- 终端信息源展示新建选项 -->
                 <div v-if="isShow&&curIndex === index" class=" new-set">
                   <div class="name-title">
                     <i class="el-icon-edit" />
@@ -25,11 +26,17 @@
                 </div>
               </div>
             </el-col>
+            <!-- NAV数小于5个，设置按钮跟随NAV展示 -->
+            <el-col v-if="navList.length<5" class="less-five-box" :xs="12" :sm="12" :lg="{span: '4-8'}">
+              <el-button class="setting" icon="el-icon-setting" />
+            </el-col>
           </el-row>
         </el-main>
-        <el-aside width="125px" class="right-side">
+        <el-aside v-if="navList.length>=5" width="125px" class="right-side">
+          <!-- 设置按钮 -->
           <el-button class="setting" icon="el-icon-setting" />
-          <div>
+          <!-- NAV数大于5个，展示翻页按钮 -->
+          <div v-if="navList.length>5">
             <el-button class="page-up" icon=" el-icon-arrow-up" />
             <el-button class="page-down" icon=" el-icon-arrow-down" />
           </div>
@@ -47,15 +54,20 @@ export default {
       default: () => {
         return []
       }
+    },
+    isShowNewSet: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
-      isShow: false,
-      curIndex: 0
+      isShow: false, // 是否展示新建按钮样式，true：展示
+      curIndex: 0// 当前点击的nav
     }
   },
   computed: {
+    /* nav超过两行，调整后一行margin为0 */
     styleObject() {
       return index => {
         let marginBottom = '20px'
@@ -71,14 +83,18 @@ export default {
       }
     }
   },
-  created() {},
+  created() {
+    console.log('navList', this.navList.length)
+  },
   methods: {
     newSet(index) {
       if (this.isShow && this.curIndex === index) {
         this.$router.push(`/data/newset`)
+        return
       }
       this.curIndex = index
       this.isShow = true
+      this.$emit('navClick', this.navList[index])// 抛出当前点击按钮信息
     }
   }
 }
@@ -111,7 +127,7 @@ export default {
     .new-set {
       background-color: #df90ff;
       text-align: center;
-      >div{
+      > div {
         height: 40px;
         line-height: 40px;
         margin-bottom: 10px;
@@ -147,6 +163,15 @@ export default {
     margin: 0;
     width: 80px;
     height: 70px;
+  }
+}
+.less-five-box {
+  .setting {
+    margin-top: 30px;
+    width: 80px;
+    height: 80px;
+    font-size: 36px;
+    color: #cccccc;
   }
 }
 </style>
