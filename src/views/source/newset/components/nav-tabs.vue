@@ -1,6 +1,6 @@
 <!-- 信息源nav切换 -->
 <template>
-  <el-radio-group v-model="activeTab" size="normal">
+  <el-radio-group v-model="activeTab" size="normal" @change="handleChange">
     <el-radio-button v-for="tab in tabs" :key="tab.value" :label="tab.value">
       {{ tab.label }}
     </el-radio-button>
@@ -11,7 +11,8 @@
 const tabs = [
   {
     value: 'storage',
-    label: '存储信息源'
+    label: '存储信息源',
+    redirect: 'storage/share'
   },
   {
     value: 'internet',
@@ -34,19 +35,23 @@ export default {
       activeTab: ''
     }
   },
-  watch: {
-    activeTab(value) {
-      this.$router.push(`/data/newset/${value}`)
+  computed: {
+    redirectUri() {
+      const tab = tabs.find(n => n.value === this.activeTab)
+      return tab ? tab.redirect || tab.value : ''
     }
   },
   created() {
-    console.log(this.$route.path)
-
-    this.$nextTick(() => {
-      const path = this.$route.path
-      const uri = path.split('/')[3]
-      this.activeTab = uri || 'storage'
-    })
+    if (this.$route.name === 'newset') {
+      this.$router.push(`/data/newset/storage/share`)
+    }
+    const type = this.$route.meta.type
+    this.activeTab = type
+  },
+  methods: {
+    handleChange() {
+      this.$router.push(`/data/newset/${this.redirectUri}`)
+    }
   }
 }
 </script>

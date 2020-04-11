@@ -6,7 +6,7 @@
     </div>
 
     <div class="create-content">
-      sss
+
       <create-main />
 
     </div>
@@ -38,7 +38,7 @@ export default {
     background-color: rgb(4, 30, 95);
   }
   .create-content {
-    text-align: center;
+    padding: 20px;
   }
 }
 </style>
