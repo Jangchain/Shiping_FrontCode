@@ -125,7 +125,7 @@ export default {
       }
     }
     .new-set {
-      background-color: #df90ff;
+      background-color: #54D1FF;
       text-align: center;
       > div {
         height: 40px;
