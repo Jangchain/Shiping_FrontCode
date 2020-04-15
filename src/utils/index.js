@@ -1,8 +1,4 @@
 /**
- * Created by PanJiaChen on 16/11/18.
- */
-
-/**
  * Parse the time to string
  * @param {(Object|string|number)} time
  * @param {string} cFormat
@@ -343,5 +339,23 @@ export function removeClass(ele, cls) {
   if (hasClass(ele, cls)) {
     const reg = new RegExp('(\\s|^)' + cls + '(\\s|$)')
     ele.className = ele.className.replace(reg, ' ')
+  }
+}
+
+export function encrypt(msg) {
+  const publicKey = '04B917C2246315CEE1BB413E44FD0093373C1E04263E473954BE36CAA470EE3651FCFF0DCCEA3173646BC3C779627FF7ADA0E66495A15D317F253E37F0070269E4'
+  if (msg || msg === 0 || msg === '0') {
+    let msgData = CryptoJS.enc.Utf8.parse(msg)
+    const xHex = publicKey.substr(2, 64)
+    const yHex = publicKey.substr(66)
+    // 模式为c1c2c3
+    const cipherMode = '0'
+    const cipher = new SM2Cipher(cipherMode)
+    const userKey = cipher.CreatePoint(xHex, yHex)
+    msgData = cipher.GetWords(msgData.toString())
+    const encryptData = cipher.Encrypt(userKey, msgData)
+    return '04' + encryptData
+  } else {
+    return ''
   }
 }

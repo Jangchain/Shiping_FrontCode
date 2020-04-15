@@ -1,7 +1,9 @@
 <template>
   <div>
     <div class="app-top">
-      <div class="logo"><p>LOGO</p></div>
+      <div class="logo">
+        <img src="/assets/img/logo.png">
+      </div>
       <div class="navs">
         <ul>
           <li v-for="(v, i) in navs.data" :key="v.key" :class="{ active: i === navs.current }" @click="changeNav(i)">{{ v.val }}</li>
@@ -87,9 +89,18 @@ export default {
     z-index: 19;
 
     .logo {
-      width: 100px;
+      width: 160px;
+      height: 60px;
       float: left;
-      color: #fff;
+      background: #E51C22;
+      border-bottom-right-radius: 20px;
+      text-align: center;
+      line-height: 60px;
+
+      img {
+        width: 102px;
+        vertical-align: middle;
+      }
     }
 
     .navs {
