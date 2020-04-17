@@ -10,6 +10,7 @@
     </el-tabs>
 
     <div class="form-content">
+      <h3>新建{{ formTitle }}信息源</h3>
       <component :is="activeName" />
     </div>
 
@@ -82,11 +83,13 @@ export default {
       activeName: 'share'
     }
   },
+
   created() {
     const type = this.$route.params.type
     const tab = this.tabs.find(n => n.name === type)
     if (tab) {
       this.$route.meta.title = tab.label
+      this.formTitle = tab.label
     }
     this.activeName = type
   },

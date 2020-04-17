@@ -5,10 +5,8 @@
       <nav-tabs />
     </div>
 
-    <div class="create-content">
-
+    <div class="create-content-container">
       <create-main />
-
     </div>
   </div>
 </template>
@@ -37,8 +35,18 @@ export default {
     padding: 20px 0;
     background-color: rgb(4, 30, 95);
   }
-  .create-content {
+  .create-content-container {
     padding: 20px;
+    >>> .el-input,
+    >>> .el-select,
+    >>> .el-textarea {
+      width: 450px;
+    }
+    >>> .el-select {
+      .el-input {
+        width: 100%;
+      }
+    }
   }
 }
 </style>
