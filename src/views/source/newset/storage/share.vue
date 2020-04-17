@@ -4,87 +4,86 @@
       ref="ruleForm"
       :model="ruleForm"
       :rules="rules"
-      label-width="100px"
+      label-width="120px"
       class="demo-ruleForm"
     >
-      <form-title title="基本信息" />
+      <form-group-title title="基本信息" />
 
       <el-form-item label="信息源名称" prop="name" required>
-        <el-input v-model="ruleForm.name" />
+        <el-input v-model="ruleForm.name" placeholder="输入名称" />
       </el-form-item>
       <el-form-item label="备注" prop="remark">
-        <el-input v-model="ruleForm.remark" />
+        <el-input v-model="ruleForm.remark" placeholder="输入备注" />
       </el-form-item>
 
-      <form-title title="范围" />
+      <form-group-title title="认证信息" />
 
-      <el-form-item label="组织架构" prop="region">
-        <el-select v-model="ruleForm.region" placeholder="请选择活动区域">
-          <el-option label="区域一" value="shanghai" />
-          <el-option label="区域二" value="beijing" />
-        </el-select>
+      <el-form-item label="IP地址" prop="ip" required>
+        <el-input v-model="ruleForm.ip" placeholder="输入IP地址" />
+      </el-form-item>
+      <el-form-item label="用户名" prop="username" required>
+        <el-input v-model="ruleForm.username" placeholder="输入用户名" />
+      </el-form-item>
+      <el-form-item label="密码" prop="password" required>
+        <el-input
+          v-model="ruleForm.password"
+          placeholder="输入密码"
+          type="password"
+        />
+      </el-form-item>
+      <el-form-item label="域名" prop="ip">
+        <el-input v-model="ruleForm.ip" placeholder="输入域名" />
+        <span class="pl-5 pr-5" />
+        <el-button type="primary">测试链接</el-button>
       </el-form-item>
 
-      <form-title title="网络设置" />
-
-      <el-form-item label="组织架构" required>
+      <el-form-item class="tree-form-item">
         <el-col :span="11">
-          <el-form-item prop="date1">
-            <el-date-picker
-              v-model="ruleForm.date1"
-              type="date"
-              placeholder="选择日期"
-              style="width: 100%;"
+          <el-card class="box-card">
+            <div slot="header" class="clearfix">
+              <span>自定义分享</span>
+            </div>
+            <el-tree
+              :data="treeData"
+              show-checkbox
+              node-key="id"
+              default-expand-all
+              :props="defaultProps"
             />
-          </el-form-item>
+          </el-card>
         </el-col>
-        <el-col class="line" :span="2">-</el-col>
+        <el-col :span="1"><span class="pl-5" /></el-col>
         <el-col :span="11">
-          <el-form-item prop="date2">
-            <el-time-picker
-              v-model="ruleForm.date2"
-              placeholder="选择时间"
-              style="width: 100%;"
+          <el-card class="box-card">
+            <div slot="header" class="clearfix">
+              <span>基础分享</span>
+            </div>
+            <el-tree
+              :data="treeData"
+              show-checkbox
+              node-key="id"
+              default-expand-all
+              :props="defaultProps"
             />
-          </el-form-item>
+          </el-card>
         </el-col>
       </el-form-item>
-      <el-form-item label="即时配送" prop="delivery">
-        <el-switch v-model="ruleForm.delivery" />
-      </el-form-item>
-      <el-form-item label="活动性质" prop="type">
-        <el-checkbox-group v-model="ruleForm.type">
-          <el-checkbox label="美食/餐厅线上活动" name="type" />
-          <el-checkbox label="地推活动" name="type" />
-          <el-checkbox label="线下主题活动" name="type" />
-          <el-checkbox label="单纯品牌曝光" name="type" />
-        </el-checkbox-group>
-      </el-form-item>
-      <el-form-item label="特殊资源" prop="resource">
-        <el-radio-group v-model="ruleForm.resource">
-          <el-radio label="线上品牌商赞助" />
-          <el-radio label="线下场地免费" />
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="活动形式" prop="desc">
-        <el-input v-model="ruleForm.desc" type="textarea" />
-      </el-form-item>
+
       <el-form-item>
         <el-button
           type="primary"
           @click="submitForm('ruleForm')"
-        >立即创建</el-button>
-        <el-button @click="resetForm('ruleForm')">重置</el-button>
+        >保存</el-button>
       </el-form-item>
     </el-form>
   </div>
 </template>
 <script>
-import formTitle from '../components/form-title'
+import formGroupTitle from '../components/form-group-title'
 export default {
   name: 'Share',
   components: {
-    formTitle
+    formGroupTitle
   },
   data() {
     return {
@@ -134,13 +133,65 @@ export default {
           { required: true, message: '请选择活动资源', trigger: 'change' }
         ],
         desc: [{ required: true, message: '请填写活动形式', trigger: 'blur' }]
+      },
+      treeData: [
+        {
+          id: 1,
+          label: '一级 1',
+          children: [
+            {
+              id: 4,
+              label: '二级 1-1',
+              children: [
+                {
+                  id: 9,
+                  label: '三级 1-1-1'
+                },
+                {
+                  id: 10,
+                  label: '三级 1-1-2'
+                }
+              ]
+            }
+          ]
+        },
+        {
+          id: 2,
+          label: '一级 2',
+          children: [
+            {
+              id: 5,
+              label: '二级 2-1'
+            },
+            {
+              id: 6,
+              label: '二级 2-2'
+            }
+          ]
+        },
+        {
+          id: 3,
+          label: '一级 3',
+          children: [
+            {
+              id: 7,
+              label: '二级 3-1'
+            },
+            {
+              id: 8,
+              label: '二级 3-2'
+            }
+          ]
+        }
+      ],
+      defaultProps: {
+        children: 'children',
+        label: 'label'
       }
     }
   },
 
-  created() {
-
-  },
+  created() {},
 
   methods: {
     submitForm(formName) {
@@ -159,3 +210,13 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.tree-form-item {
+    padding: 25px 0;
+  >>> .el-card__header {
+    padding: 0 20px;
+    background-color: #ededed;
+  }
+}
+</style>
