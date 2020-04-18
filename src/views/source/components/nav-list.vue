@@ -10,19 +10,11 @@
                 :style="styleObject(index)"
                 @click="newSet(index)"
               >
-                <div v-if="!isShow||curIndex !== index" class="content-in">
+                <div class="content-in" :class="{bgColor:curIndex === index}">
                   <div class="icon">
                     <img :src="data.icon">
                   </div>
-                  <div class="name" v-text="data.name" />
-                </div>
-                <!-- 终端信息源展示新建选项 -->
-                <div v-if="isShow&&curIndex === index" class=" new-set">
-                  <div class="name-title">
-                    <i class="el-icon-edit" />
-                    {{ data.name }}
-                  </div>
-                  <div class="name">新建{{ data.name }}</div>
+                  <div class="name" v-text="data.label" />
                 </div>
               </div>
             </el-col>
@@ -45,7 +37,9 @@
     </div>
   </div>
 </template>
-
+/*
+navList:[{icon:'',name:''}]
+ */
 <script>
 export default {
   props: {
@@ -58,12 +52,15 @@ export default {
     isShowNewSet: {
       type: Boolean,
       default: false
+    },
+    curIndex: {
+      type: Number,
+      default: 0
     }
   },
   data() {
     return {
-      isShow: false, // 是否展示新建按钮样式，true：展示
-      curIndex: 0// 当前点击的nav
+      // curIndex: 0 // 当前点击的nav下标
     }
   },
   computed: {
@@ -84,17 +81,11 @@ export default {
     }
   },
   created() {
-    console.log('navList', this.navList.length)
   },
   methods: {
     newSet(index) {
-      if (this.isShow && this.curIndex === index) {
-        this.$router.push(`/data/newset`)
-        return
-      }
       this.curIndex = index
-      this.isShow = true
-      this.$emit('navClick', this.navList[index])// 抛出当前点击按钮信息
+      this.$emit('navClick', this.navList[index])
     }
   }
 }
@@ -120,23 +111,11 @@ export default {
       background-color: #fff;
       display: flex;
       align-items: center;
+      &.bgColor {
+        background-color: #54d1ff;
+      }
       .icon {
         margin: 0 30px;
-      }
-    }
-    .new-set {
-      background-color: #54D1FF;
-      text-align: center;
-      > div {
-        height: 40px;
-        line-height: 40px;
-        margin-bottom: 10px;
-      }
-      .name-title {
-        font-size: 14px;
-      }
-      .name {
-        font-size: 20px;
       }
     }
   }

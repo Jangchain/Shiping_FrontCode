@@ -8,6 +8,7 @@ const state = {
   name: '',
   avatar: '',
   introduction: '',
+  roleName: '¹ÜÀíÔ±',
   roles: []
 }
 
@@ -26,6 +27,9 @@ const mutations = {
   },
   SET_ROLES: (state, roles) => {
     state.roles = roles
+  },
+  SET_ROLENAME: (state, roleName) => {
+    state.roleName = roleName
   }
 }
 
@@ -45,6 +49,7 @@ const actions = {
         setToken(data.authorization)
         commit('SET_NAME', data.authAcct.userName)
         commit('SET_ROLES', data.authAcct.roleIdList)
+        commit('SET_ROLENAME', data.authAcct.roleName)
         sessionStorage.setItem('user', JSON.stringify(data.authAcct))
         location.reload()
         resolve()

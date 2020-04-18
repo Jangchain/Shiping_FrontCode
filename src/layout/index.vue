@@ -6,7 +6,19 @@
       </div>
       <div class="navs">
         <ul>
-          <li v-for="(v, i) in navs.data" :key="v.key" :class="{ active: i === navs.current }" @click="changeNav(i)">{{ v.val }}</li>
+          <template v-for="(v, i) in navs.data">
+            <li v-if="v.location !== 'right'" :key="v.key" :class="{ active: i === navs.current }" @click="changeNav(i)">{{ v.val }}</li>
+          </template>
+        </ul>
+      </div>
+      <div class="navs navs-right">
+        <ul>
+          <template v-for="(v, i) in navs.data">
+            <template v-if="v.location === 'right'">
+              <li v-if="v.key === 'admin'" :key="v.key" :class="{ active: i === navs.current }" @click="changeNav(i)"><svg-icon icon-class="user" /> {{ roleName }}</li>
+              <li v-else :key="v.key" :class="{ active: i === navs.current }" @click="changeNav(i)">{{ v.val }}</li>
+            </template>
+          </template>
         </ul>
       </div>
     </div>
@@ -54,7 +66,7 @@ export default {
       navs: state => state.nav
     }),
     ...mapGetters([
-      'navRoutes'
+      'navRoutes', 'roleName'
     ]),
     classObj() {
       return {
@@ -111,10 +123,11 @@ export default {
         margin: 0;
 
         li {
+          font-size: 12px;
           float: left;
           list-style: none;
           margin: 0;
-          padding: 0 20px;
+          padding: 0 15px;
           cursor: pointer;
           color: rgba(185, 201, 221, 1);
           line-height: 60px;
@@ -125,6 +138,10 @@ export default {
           }
         }
       }
+    }
+
+    .navs-right {
+      float: right;
     }
   }
 

@@ -103,6 +103,32 @@ export const asyncRoutes = [
   dataRouter,
   ruleRouter,
 
+  {
+    path: '/admin',
+    component: Layout,
+    meta: { title: '����Ա' },
+    children: [
+      {
+        path: '',
+        component: () => import('@/views/admin/index'),
+        meta: { title: '״̬', icon: 'eye-open' }
+      }
+    ]
+  },
+
+  {
+    path: '/help',
+    component: Layout,
+    meta: { title: '����' },
+    children: [
+      {
+        path: '',
+        component: () => import('@/views/help/index'),
+        meta: { title: '״̬', icon: 'eye-open' }
+      }
+    ]
+  },
+
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]

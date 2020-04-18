@@ -1,20 +1,36 @@
 <template>
   <div class="login-container">
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
-
+    <el-form
+      ref="loginForm"
+      :model="loginForm"
+      :rules="loginRules"
+      class="login-form"
+      autocomplete="on"
+      label-position="left"
+    >
       <div class="title-container">
         <img src="/assets/img/logo_login.png">
       </div>
 
-      <el-form-item prop="username">
+      <el-form-item id="usern1" prop="username">
+        <span id="name1">用户名：</span>
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
-        <el-input ref="username" v-model="loginForm.username" placeholder="Username" name="username" type="text" tabindex="1" autocomplete="on" />
+        <el-input
+          ref="username"
+          v-model="loginForm.username"
+          placeholder="Username"
+          name="username"
+          type="text"
+          tabindex="1"
+          autocomplete="on"
+        />
       </el-form-item>
 
       <el-tooltip v-model="capsTooltip" content="Caps lock is On" placement="right" manual>
         <el-form-item prop="password">
+          <span id="psw">密码：</span>
           <span class="svg-container">
             <svg-icon icon-class="password" />
           </span>
@@ -37,16 +53,33 @@
         </el-form-item>
       </el-tooltip>
 
-      <el-form-item prop="validCode">
+      <el-form-item id="ipt" prop="validCode">
+        <span id="code">验证码：</span>
         <span class="svg-container">
           <svg-icon icon-class="people" />
         </span>
-        <el-input ref="validCode" v-model="loginForm.validCode" placeholder="验证码" name="validCode" type="text" tabindex="3" autocomplete="off">
-          <template slot="append"><img :src="codeSrc" class="vcode" @click="getCode"></template>
+        <el-input
+          ref="validCode"
+          v-model="loginForm.validCode"
+          placeholder="验证码"
+          name="validCode"
+          type="text"
+          tabindex="3"
+          autocomplete="off"
+        >
+          <template slot="append">
+            <img :src="codeSrc" class="vcode" @click="getCode">
+          </template>
         </el-input>
       </el-form-item>
 
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
+      <el-button
+        id="btn"
+        :loading="loading"
+        type="primary"
+        style="width:100%;margin-bottom:30px;"
+        @click.native.prevent="handleLogin"
+      >登录</el-button>
     </el-form>
   </div>
 </template>
@@ -79,8 +112,12 @@ export default {
         validCodeKey: ''
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+        username: [
+          { required: true, trigger: 'blur', validator: validateUsername }
+        ],
+        password: [
+          { required: true, trigger: 'blur', validator: validatePassword }
+        ]
       },
       passwordType: 'password',
       capsTooltip: false,
@@ -115,7 +152,10 @@ export default {
   methods: {
     checkCapslock({ shiftKey, key } = {}) {
       if (key && key.length === 1) {
-        if (shiftKey && (key >= 'a' && key <= 'z') || !shiftKey && (key >= 'A' && key <= 'Z')) {
+        if (
+          (shiftKey && key >= 'a' && key <= 'z') ||
+          (!shiftKey && key >= 'A' && key <= 'Z')
+        ) {
           this.capsTooltip = true
         } else {
           this.capsTooltip = false
@@ -139,9 +179,13 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          this.$store.dispatch('user/login', this.loginForm)
+          this.$store
+            .dispatch('user/login', this.loginForm)
             .then(() => {
-              this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+              this.$router.push({
+                path: this.redirect || '/',
+                query: this.otherQuery
+              })
               this.loading = false
             })
             .catch(() => {
@@ -163,13 +207,15 @@ export default {
       }, {})
     },
     getCode() {
-      getCode().then(r => {
-        console.log(r)
-        this.codeSrc = `data:image/gif;base64,${r.data.validCode}`
-        this.loginForm.validCodeKey = r.data.validCodeKey
-      }).catch(e => {
-        console.log(e)
-      })
+      getCode()
+        .then(r => {
+          console.log(r)
+          this.codeSrc = `data:image/gif;base64,${r.data.validCode}`
+          this.loginForm.validCodeKey = r.data.validCodeKey
+        })
+        .catch(e => {
+          console.log(e)
+        })
     }
   }
 }
@@ -179,8 +225,8 @@ export default {
 /* 修复input 背景不协调 和光标变色 */
 /* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
 
-$bg:#283443;
-$light_gray:#fff;
+$bg: #283443;
+$light_gray: #fff;
 $cursor: #fff;
 
 @supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
@@ -212,7 +258,11 @@ $cursor: #fff;
       }
     }
   }
-
+  #ipt{
+    .el-input-group__append{
+      padding: 0;
+    }
+  }
   .el-form-item {
     border: 1px solid rgba(255, 255, 255, 0.1);
     background: rgba(0, 0, 0, 0.1);
@@ -223,25 +273,66 @@ $cursor: #fff;
 </style>
 
 <style lang="scss" scoped>
-$bg:#2d3a4b;
-$dark_gray:#889aa4;
-$light_gray:#eee;
+$bg: #2d3a4b;
+$dark_gray: #889aa4;
+$light_gray: #eee;
+$colors: #888888;
+$tol_bg: #494a52;
 
 .login-container {
   min-height: 100%;
   width: 100%;
-  background-color: $bg;
+  background-color: $colors;
   overflow: hidden;
-
-  .login-form {
-    position: relative;
-    width: 520px;
-    max-width: 100%;
-    padding: 160px 35px 0;
-    margin: 0 auto;
-    overflow: hidden;
+  #name1{
+    position: absolute;
+    left: -120px;
+    width: 120px;
+    height: 47px;
+    line-height: 47px;
+    color: #2A2A2A;
+    text-indent: 40px;
+    font-size: 16px;
   }
-
+  #psw{
+    position: absolute;
+    left: -120px;
+    width: 120px;
+    height: 47px;
+    line-height: 47px;
+    color: #2A2A2A;
+    text-indent: 55px;
+    font-size: 16px;
+  }
+  #code{
+    position: absolute;
+    left: -120px;
+    width: 120px;
+    height: 47px;
+    line-height: 47px;
+    color: #2A2A2A;
+    text-indent: 40px;
+    font-size: 16px;
+  }
+  .login-form {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    width: 800px;
+    height: 461px;
+    max-width: 100%;
+    // padding: 160px 35px 0;
+    overflow: hidden;
+    background: #fff;
+    .el-form-item {
+      margin-left: 266px;
+      margin-right: 155px;
+      margin-top: 22px;
+    }
+  }
   .tips {
     font-size: 14px;
     color: #fff;
@@ -253,7 +344,23 @@ $light_gray:#eee;
       }
     }
   }
+  #ipt{
+    width: 200px !important;
+    height:48px;
+    margin-right:180px;
+    .el-input{
+      position: absolute;
+    }
 
+    img{
+      position: absolute;
+      top: -48px;
+      left: 220px;
+      width: 130px;
+      height: 48px;
+      border-radius: 5px;
+    }
+  }
   .svg-container {
     padding: 6px 5px 6px 15px;
     color: $dark_gray;
@@ -264,7 +371,13 @@ $light_gray:#eee;
 
   .title-container {
     position: relative;
-
+    background: $tol_bg;
+    margin-bottom: 62px;
+    img {
+      width: 102px;
+      height: 36px;
+      margin: 12px 674px 12px 24px;
+    }
     .title {
       font-size: 26px;
       color: $light_gray;
@@ -289,7 +402,14 @@ $light_gray:#eee;
     width: 80px;
     height: 30px;
   }
-
+  #btn {
+    background: #ee8e00;
+    border: none;
+    width: 379px !important;
+    height: 50px !important;
+    margin: 10px 155px 73px 266px !important;
+    padding: 0 !important;
+  }
   @media only screen and (max-width: 470px) {
     .thirdparty-button {
       display: none;
