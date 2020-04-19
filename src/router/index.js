@@ -106,12 +106,12 @@ export const asyncRoutes = [
   {
     path: '/admin',
     component: Layout,
-    meta: { title: '����Ա' },
+    meta: { title: '管理员' },
     children: [
       {
         path: '',
         component: () => import('@/views/admin/index'),
-        meta: { title: '״̬', icon: 'eye-open' }
+        meta: { title: '状态', icon: 'eye-open' }
       }
     ]
   },
@@ -119,12 +119,12 @@ export const asyncRoutes = [
   {
     path: '/help',
     component: Layout,
-    meta: { title: '����' },
+    meta: { title: '帮助' },
     children: [
       {
         path: '',
         component: () => import('@/views/help/index'),
-        meta: { title: '״̬', icon: 'eye-open' }
+        meta: { title: '状态', icon: 'eye-open' }
       }
     ]
   },

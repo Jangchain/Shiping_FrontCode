@@ -8,7 +8,7 @@ const state = {
   name: '',
   avatar: '',
   introduction: '',
-  roleName: '¹ÜÀíÔ±',
+  roleName: 'ç®¡ç†å‘˜',
   roles: []
 }
 

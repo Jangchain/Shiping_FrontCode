@@ -96,7 +96,7 @@ service.interceptors.response.use(
     const res = error.response.data
     console.log(res)
     Message({
-      message: res.message || 'ÏµÍ³·±Ã¦£¬ÇëÉÔºóÖØÊÔ',
+      message: res.message || 'ç³»ç»Ÿç¹å¿™ï¼Œè¯·ç¨åé‡è¯•',
       type: 'error',
       duration: 5 * 1000
     })
