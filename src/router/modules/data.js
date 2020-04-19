@@ -6,6 +6,7 @@ const dataRouter = {
   meta: {
     title: "信息源"
   },
+  redirect:'/data/storage',
   children: [
     {
       path: "common",
