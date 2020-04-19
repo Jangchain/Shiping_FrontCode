@@ -96,6 +96,7 @@ export default {
 
   methods: {
     handleClick(tab) {
+      this.$route.meta.title = tab.label
       this.$router.push(`/data/newset/storage/${tab.name}`)
     }
   }
