@@ -4,33 +4,47 @@
       <el-container>
         <el-main>
           <el-row :gutter="20">
-            <el-col v-for="(data,index) in navList" :key="index" :xs="12" :sm="12" :lg="{span: '4-8'}">
-              <div
-                class="grid-content"
-                :style="styleObject(index)"
-                @click="newSet(index)"
-              >
-                <div class="content-in" :class="{bgColor:curIndex === index}">
+            <el-col v-for="(data,index) in navList"
+                    :key="index"
+                    :xs="12"
+                    :sm="12"
+                    :lg="{span: '4-8'}">
+              <div class="grid-content"
+                   :style="styleObject(index)"
+                   @click="newSet(index)">
+                <div class="content-in"
+                     :class="{bgColor:curIndex === index}">
                   <div class="icon">
                     <img :src="data.icon">
                   </div>
-                  <div class="name" v-text="data.label" />
+                  <div class="name"
+                       v-text="data.label" />
                 </div>
               </div>
             </el-col>
             <!-- NAV数小于5个，设置按钮跟随NAV展示 -->
-            <el-col v-if="navList.length<5" class="less-five-box" :xs="12" :sm="12" :lg="{span: '4-8'}">
-              <el-button class="setting" icon="el-icon-setting" />
+            <el-col v-if="navList.length<5"
+                    class="less-five-box"
+                    :xs="12"
+                    :sm="12"
+                    :lg="{span: '4-8'}">
+              <el-button class="setting"
+                         icon="el-icon-setting" />
             </el-col>
           </el-row>
         </el-main>
-        <el-aside v-if="navList.length>=5" width="125px" class="right-side">
+        <el-aside v-if="navList.length>=5"
+                  width="125px"
+                  class="right-side">
           <!-- 设置按钮 -->
-          <el-button class="setting" icon="el-icon-setting" />
+          <el-button class="setting"
+                     icon="el-icon-setting" />
           <!-- NAV数大于5个，展示翻页按钮 -->
           <div v-if="navList.length>5">
-            <el-button class="page-up" icon=" el-icon-arrow-up" />
-            <el-button class="page-down" icon=" el-icon-arrow-down" />
+            <el-button class="page-up"
+                       icon=" el-icon-arrow-up" />
+            <el-button class="page-down"
+                       icon=" el-icon-arrow-down" />
           </div>
         </el-aside>
       </el-container>
@@ -80,27 +94,27 @@ export default {
       }
     }
   },
-  created() {
-  },
+  created() {},
   methods: {
     newSet(index) {
-      this.curIndex = index
       this.$emit('navClick', this.navList[index])
     }
   }
 }
 </script>
 <style lang="scss" scoped>
-@import "~@/styles/mixin.scss";
+@import '~@/styles/mixin.scss';
 .el-row {
   .el-col-lg-4-8 {
     width: 20%;
   }
 }
 .nav-list {
+  background-color: rgb(4, 30, 95);
+  color: #fff;
   .grid-content {
     font-size: 16px;
-    font-family: "微软雅黑";
+    font-family: '微软雅黑';
     color: #333333;
     border: 1px solid rgba(255, 0, 0, 0);
     > div {
