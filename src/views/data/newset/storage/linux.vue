@@ -21,7 +21,7 @@ export default {
         username: '',
         password: '',
         domain: '',
-        keyType: '',
+        keyType: 'password',
         publicKeyName: ''
       },
       rules: {
