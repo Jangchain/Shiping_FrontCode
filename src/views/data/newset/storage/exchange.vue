@@ -1,3 +1,4 @@
+<!-- 新建Exchange信息源 -->
 <template>
   <div>
     <common-form :data="ruleForm" :rules="rules" />
@@ -7,7 +8,7 @@
 import commonForm from './components/common-form'
 
 export default {
-  name: 'Linux',
+  name: 'Exchange',
   components: {
     commonForm
   },

@@ -1,3 +1,4 @@
+<!-- 新建Linux主机信息源 -->
 <template>
   <div>
     <common-form :data="ruleForm" :rules="rules" />
@@ -24,9 +25,7 @@ export default {
         keyType: 'password',
         publicKeyName: ''
       },
-      rules: {
-
-      }
+      rules: {}
     }
   },
 

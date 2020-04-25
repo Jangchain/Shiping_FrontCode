@@ -13,10 +13,14 @@
         <el-input v-model="ruleForm.name" placeholder="输入名称" />
       </el-form-item>
 
-      <el-form-item v-if="showFormItem('fileType')" label="类型" prop="fileType">
+      <el-form-item
+        v-if="showFormItem('fileType')"
+        label="类型"
+        prop="fileType"
+      >
         <el-select v-model="ruleForm.fileType" placeholder="请选择类型">
           <el-option
-            v-for="item in fileType"
+            v-for="item in fileTypeData"
             :key="item.value"
             :label="item.label"
             :value="item.value"
@@ -24,10 +28,14 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item v-if="showFormItem('databaseType')" label="数据库类型" prop="databaseType">
+      <el-form-item
+        v-if="showFormItem('databaseType')"
+        label="数据库类型"
+        prop="databaseType"
+      >
         <el-select v-model="ruleForm.databaseType" placeholder="请选择类型">
           <el-option
-            v-for="item in databaseType"
+            v-for="item in databaseTypeData"
             :key="item.value"
             :label="item.label"
             :value="item.value"
@@ -35,10 +43,14 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item v-if="showFormItem('storageType')" label="存储类型" prop="storageType">
+      <el-form-item
+        v-if="showFormItem('storageType')"
+        label="存储类型"
+        prop="storageType"
+      >
         <el-select v-model="ruleForm.storageType" placeholder="请选择存储类型">
           <el-option
-            v-for="item in storageType"
+            v-for="item in storageTypeData"
             :key="item.value"
             :label="item.label"
             :value="item.value"
@@ -46,7 +58,11 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item v-if="showFormItem('description')" label="备注" prop="description">
+      <el-form-item
+        v-if="showFormItem('description')"
+        label="备注"
+        prop="description"
+      >
         <el-input
           v-model="ruleForm.description"
           resize="none"
@@ -57,7 +73,11 @@
 
       <form-group-title title="认证信息" />
 
-      <el-form-item v-if="showFormItem('anonymousLogin')" label="匿名登录" prop="anonymousLogin">
+      <el-form-item
+        v-if="showFormItem('anonymousLogin')"
+        label="匿名登录"
+        prop="anonymousLogin"
+      >
         <el-select
           v-model="ruleForm.anonymousLogin"
           placeholder="请选择是否匿名登录"
@@ -72,11 +92,37 @@
         <el-input v-model="ruleForm.ip" placeholder="输入IP地址" />
       </el-form-item>
 
-      <el-form-item v-if="showFormItem('serverAddress')" label="服务器地址" prop="serverAddress">
+      <el-form-item
+        v-if="showFormItem('lotusServerType')"
+        label="类型"
+        prop="lotusServerType"
+      >
+        <el-select v-model="ruleForm.lotusServerType" placeholder="请选择类型">
+          <el-option label="邮件系统" value="Mail" />
+          <el-option label="文档系统" value="Document" />
+        </el-select>
+      </el-form-item>
+
+      <el-form-item v-if="showFormItem('site')" label="站点" prop="site">
+        <el-select v-model="ruleForm.site" placeholder="请选择站点">
+          <el-option label="qq" value="qq" />
+          <el-option label="其他" value="other" />
+        </el-select>
+      </el-form-item>
+
+      <el-form-item
+        v-if="showFormItem('serverAddress')"
+        label="服务器地址"
+        prop="serverAddress"
+      >
         <el-input v-model="ruleForm.serverAddress" placeholder="服务器地址" />
       </el-form-item>
 
-      <el-form-item v-if="showFormItem('exchangeEdition')" label="版本" prop="exchangeEdition">
+      <el-form-item
+        v-if="showFormItem('exchangeEdition')"
+        label="版本"
+        prop="exchangeEdition"
+      >
         <el-select
           v-model="ruleForm.exchangeEdition"
           placeholder="请选择是否匿名登录"
@@ -91,11 +137,20 @@
         <el-input v-model="ruleForm.port" placeholder="输入端口" />
       </el-form-item>
 
-      <el-form-item v-if="showFormItem('username')" v-show="!isAnonymousLogin" label="用户名" prop="username">
+      <el-form-item
+        v-if="showFormItem('username')"
+        v-show="!isAnonymousLogin"
+        label="用户名"
+        prop="username"
+      >
         <el-input v-model="ruleForm.username" placeholder="输入用户名" />
       </el-form-item>
 
-      <el-form-item v-if="showFormItem('keyType')" label="密码类型" prop="keyType">
+      <el-form-item
+        v-if="showFormItem('keyType')"
+        label="密码类型"
+        prop="keyType"
+      >
         <el-select
           v-model="ruleForm.keyType"
           placeholder="请选择密码类型"
@@ -119,7 +174,12 @@
         />
       </el-form-item>
 
-      <el-form-item v-if="showFormItem('publicKeyName')" v-show="!isPassword" label="秘钥" prop="publicKeyName">
+      <el-form-item
+        v-if="showFormItem('publicKeyName')"
+        v-show="!isPassword"
+        label="秘钥"
+        prop="publicKeyName"
+      >
         <el-select
           v-model="ruleForm.publicKeyName"
           placeholder="请选择秘钥"
@@ -134,9 +194,13 @@
 
       <el-form-item v-if="showFormItem('domain')" label="域名" prop="domain">
         <el-input v-model="ruleForm.domain" placeholder="请输入域名" />
-        <span class="pl-5 pr-5" />
-        <el-button type="primary" @click="taskConnect">测试链接</el-button>
       </el-form-item>
+
+      <el-button
+        class="test-connect-btn"
+        type="primary"
+        @click="testConnect"
+      >测试链接</el-button>
 
       <el-form-item class="tree-form-item">
         <slot name="tree" />
@@ -153,50 +217,13 @@
 </template>
 <script>
 import formGroupTitle from '../../components/form-group-title'
+import {
+  defalutRules,
+  storageTypeData,
+  fileTypeData,
+  databaseTypeData
+} from './default-data'
 
-// 存储类型
-const storageType = [
-  {
-    label: '阿里OSS',
-    value: 'ali_oss'
-  },
-  {
-    label: '华为OBS',
-    value: 'huawei_obs'
-  },
-  {
-    label: '腾讯COS',
-    value: 'tencent_cos'
-  },
-  {
-    label: 'Ceph S3',
-    value: 's3'
-  }
-]
-
-// 类型
-const fileType = [
-  {
-    label: 'Windows文件共享',
-    value: ''
-  },
-  {
-    label: '虚拟机vmdk解析',
-    value: 'VMDK'
-  }
-]
-
-// 类型
-const databaseType = [
-  {
-    label: 'MySql',
-    value: 'MySql'
-  },
-  {
-    label: 'MariaDB',
-    value: 'MariaDB'
-  }
-]
 export default {
   components: {
     formGroupTitle
@@ -217,9 +244,9 @@ export default {
   },
   data() {
     return {
-      storageType,
-      fileType,
-      databaseType,
+      storageTypeData,
+      fileTypeData,
+      databaseTypeData,
       defaultForm: {
         name: '', // 信息源名称
         description: '', // 备注
@@ -234,24 +261,11 @@ export default {
         anonymousLogin: '0', // 匿名登录
         keyType: 'password', // 密码类型
         serverAddress: '', // 服务器地址
-        exchangeEdition: '' // 版本号
+        exchangeEdition: '', // 版本号
+        site: '', // 站点
+        lotusServerType: ''
       },
-
-      defalutRules: {
-        name: [
-          { required: true, message: '请输入信息源名称', trigger: 'blur' },
-          { min: 2, max: 16, message: '长度在 2 到 16 个字符', trigger: 'blur' }
-        ],
-        username: [
-          { required: true, message: '请输入用户名', trigger: 'blur' },
-          { min: 2, max: 16, message: '长度在 2 到 16 个字符', trigger: 'blur' }
-        ],
-        password: [
-          { required: true, message: '请输入密码', trigger: 'blur' },
-          { min: 2, max: 16, message: '长度在 2 到 16 个字符', trigger: 'blur' }
-        ],
-        port: [{ required: true, message: '请输入端口号', trigger: 'blur' }]
-      },
+      defalutRules,
       newRules: {},
       ruleForm: {},
       isAnonymousLogin: false,
@@ -277,7 +291,10 @@ export default {
 
   methods: {
     // 测试连接
-    taskConnect() {},
+    testConnect() {
+      console.log('测试连接')
+      this.$emit('test-connect', this.ruleForm)
+    },
 
     // 表单提交
     submitForm(formName) {
@@ -320,4 +337,10 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.test-connect-btn {
+  left: 582px;
+  top: -58px;
+  position: relative;
+}
+</style>

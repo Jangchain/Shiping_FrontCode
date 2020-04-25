@@ -13,7 +13,6 @@
       <h3>新建{{ formTitle }}信息源</h3>
       <component :is="activeName" />
     </div>
-
   </div>
 </template>
 <script>
@@ -26,6 +25,7 @@ import lotus from './lotus'
 import webDav from './webDav'
 import cloudDatabase from './cloudDatabase'
 import cloudStorage from './cloudStorage'
+import sharePoint from './sharePoint'
 
 const tabs = [
   {
@@ -47,6 +47,10 @@ const tabs = [
   {
     label: 'Exchange',
     name: 'exchange'
+  },
+  {
+    label: 'sharePoint',
+    name: 'sharePoint'
   },
   {
     label: 'Lotus',
@@ -75,7 +79,8 @@ export default {
     lotus,
     webDav,
     cloudDatabase,
-    cloudStorage
+    cloudStorage,
+    sharePoint
   },
   data() {
     return {
