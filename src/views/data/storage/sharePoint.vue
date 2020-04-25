@@ -11,7 +11,7 @@
                :pageSize="pageSize"
                :currentPage="currentPage">
       <div class="form-data">
-        <div class="title-name">Lotus信息源列表</div>
+        <div class="title-name">SharePoint信息源列表</div>
         <div class="title-form">
           <el-form :inline="true"
                    :model="searchCondition">
@@ -75,7 +75,7 @@
 import Datatable from '../components/data-table'
 import request from "@/api/data/storgeSource";
 export default {
-  name: 'Lotus',
+  name: 'SharePoint',
   components: { Datatable },
   data() {
     return {
@@ -102,12 +102,8 @@ export default {
         label: '信息源名称'
       },
       {
-        name: 'lotusServerType',
-        label: 'Lotus名称'
-      },
-      {
-        name: 'port',
-        label: '端口'
+        name: 'domain',
+        label: '域名'
       },
       {
         name: 'username',
@@ -136,7 +132,7 @@ export default {
       let params = {
         current: this.currentPage,
         size: this.pageSize,
-        resType: 'LOTUS'
+        resType: 'SHARE_POINT'
       }
       params = Object.assign({}, params, filter)
       request.getStorageSourceByPage(params).then(res => {
@@ -150,11 +146,11 @@ export default {
       this.getStorageSourceData(this.searchCondition)
     },
     newSet() {
-      this.$router.push(`/data/newset/storage/lotus`)
+      this.$router.push(`/data/newset/storage/sharepoint`)
     },
     modifyRowData(val) {
       this.$router.push({
-        path: `/data/newset/storage/lotus`,
+        path: `/data/newset/storage/sharepoint`,
         query: { id: val.id }
       })
     },

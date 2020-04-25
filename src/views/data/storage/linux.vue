@@ -4,25 +4,33 @@
                @handleCurrentChange="handleCurrentChange"
                @modifyRowData="modifyRowData"
                @deleteRowData="deleteRowData"
+               @selectionChange="selectionChange"
                :tableData="tableData"
                :tableHeaderData="tableHeaderData"
-               :total="total">
+               :total="total"
+               :pageSize="pageSize"
+               :currentPage="currentPage">
       <div class="form-data">
-        <div class="title-name">共享信息源列表</div>
+        <div class="title-name">Linux主机信息源列表</div>
         <div class="title-form">
           <el-form :inline="true"
-                   :model="query">
-            <el-form-item label="信息源类型">
-              <el-select v-model="query.status"
-                         placeholder="设备状态">
-                <el-option v-for="(v, k) in ['离线', '在线']"
-                           :key="k"
-                           :label="v"
-                           :value="k" />
-              </el-select>
+                   :model="searchCondition">
+            <el-form-item label="信息源名称">
+              <el-input v-model="searchCondition.name"
+                        placeholder="请输入内容">
+                <i slot="suffix"
+                   class="el-input__icon el-icon-search" />
+              </el-input>
             </el-form-item>
-            <el-form-item label="">
-              <el-input v-model="searchValue"
+            <el-form-item label="IP">
+              <el-input v-model="searchCondition.ip"
+                        placeholder="请输入内容">
+                <i slot="suffix"
+                   class="el-input__icon el-icon-search" />
+              </el-input>
+            </el-form-item>
+            <el-form-item label="备注">
+              <el-input v-model="searchCondition.description"
                         placeholder="请输入内容">
                 <i slot="suffix"
                    class="el-input__icon el-icon-search" />
@@ -30,91 +38,145 @@
             </el-form-item>
             <el-form-item>
               <el-button type="primary"
-                         @click="gettableData(1)">查询</el-button>
+                         @click="search">查询</el-button>
             </el-form-item>
             <el-form-item>
               <el-button type="danger"
-                         @click="gettableData(1)">批量删除</el-button>
+                         :disabled="!selection.length"
+                         @click="batchDel">批量删除</el-button>
             </el-form-item>
             <el-form-item>
               <el-button type="success"
-                         @click="gettableData(1)">新建</el-button>
+                         @click="newSet">新建</el-button>
             </el-form-item>
           </el-form>
         </div>
       </div>
     </Datatable>
+
+    <el-dialog title="信息提示"
+               :visible.sync="dialogVisible"
+               width="30%">
+      <p class="dialog-tips">
+        <i class="el-icon-warning dialog-icon"></i>
+        <span class="dialog-content">是否确认删除信息源 ？</span>
+      </p>
+      <div>删除后将无法回复</div>
+      <span slot="footer"
+            class="dialog-footer">
+        <el-button @click="dialogVisible = false">取消</el-button>
+        <el-button type="primary"
+                   @click="confirmDel">确定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
 import Datatable from '../components/data-table'
+import request from "@/api/data/storgeSource";
 export default {
-  name: 'exchange',
+  name: 'Linux',
   components: { Datatable },
   data() {
     return {
       tableData: [],
       tableHeaderData: [],
-      total: 10,
-      query: {},
-      searchValue: ''
+      pageSize: 10,
+      currentPage: 1,
+      total: 0,
+      searchCondition: {
+        name: '',
+        ip: '',
+        description: ''
+      },
+      selection: [],
+      dialogVisible: false,
+      delData: []
     }
   },
-
   created() {
-    this.gettableData()
+    this.getStorageSourceData()
     this.tableHeaderData = [
       {
         name: 'name',
         label: '信息源名称'
       },
       {
-        name: 'databaseType',
-        label: '信息源类型'
+        name: 'username',
+        label: '登录名'
+      },
+      {
+        name: 'keyType',
+        label: '认证方式'
       },
       {
         name: 'ip',
         label: 'IP地址'
       },
       {
-        name: 'description',
-        label: '备注'
+        name: 'createDate',
+        label: '创建时间'
       },
       {
         name: 'creator',
         label: '创建者'
+      },
+      {
+        name: 'description',
+        label: '备注'
       }
     ]
   },
-
   methods: {
-    gettableData(page) {
-      this.tableData = []
-      for (let index = 0; index < 10; index++) {
-        this.tableData.push({
-          name: '信息源名称' + index,
-          databaseType: '信息源类型' + index,
-          ip: 'IP地址' + index,
-          createDate: '创建时间' + index,
-          description: '备注' + index,
-          creator: '创建者' + index,
-          domain: '域名' + index,
-          port: '端口' + index,
-          lastModifyDate: '最后修改时间' + index
-        })
+    getStorageSourceData(filter) {
+      let params = {
+        current: this.currentPage,
+        size: this.pageSize,
+        resType: 'SFTP'
       }
+      params = Object.assign({}, params, filter)
+      request.getStorageSourceByPage(params).then(res => {
+        this.total = +res.data.total
+        this.tableData = res.data.records
+      })
+    },
+    search() {
+      this.currentPage = 1
+      this.pageSize = 10
+      this.getStorageSourceData(this.searchCondition)
+    },
+    newSet() {
+      this.$router.push(`/data/newset/storage/linux`)
     },
     modifyRowData(val) {
-      console.log(val)
+      this.$router.push({
+        path: `/data/newset/storage/linux`,
+        query: { id: val.id }
+      })
     },
     deleteRowData(val) {
-      console.log(val)
+      this.dialogVisible = true
+      this.delData = val
+    },
+    batchDel() {
+      this.dialogVisible = true
+      this.delData = this.selection
+    },
+    selectionChange(val) {
+      this.selection = val
+    },
+    confirmDel() {
+      this.dialogVisible = false
+      console.log('this.delData', this.delData)
+      //调用批量删除接口
     },
     handleCurrentChange(val) {
-      console.log(val)
+      this.currentPage = val
+      this.getStorageSourceData()
     },
     handleSizeChange(val) {
-      console.log(val)
+      this.pageSize = val
+      this.getStorageSourceData()
     }
   }
 }
@@ -129,6 +191,20 @@ export default {
   }
   .title-form {
     float: right;
+  }
+}
+
+.dialog-tips {
+  font-size: 18px;
+  padding-left: 10px;
+  display: flex;
+  align-items: center;
+  .dialog-icon {
+    font-size: 40px;
+    color: rgb(254, 148, 0);
+  }
+  .dialog-content {
+    padding-left: 50px;
   }
 }
 </style>

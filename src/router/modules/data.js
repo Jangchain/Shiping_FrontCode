@@ -6,7 +6,7 @@ const dataRouter = {
   meta: {
     title: "信息源"
   },
-  redirect:'/data/storage',
+  redirect: '/data/storage',
   children: [
     {
       path: "common",
@@ -75,7 +75,8 @@ const dataRouter = {
       component: () => import("@/views/data/newset"),
       meta: {
         title: "新建信息源",
-        icon: "component"
+        icon: "plus",
+        isButton: true
       },
       name: "newset",
       children: [

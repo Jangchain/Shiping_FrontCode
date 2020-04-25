@@ -1,4 +1,4 @@
-<!-- 新建云数据库信息源 -->
+<!-- 新建sharePoint信息源 -->
 <template>
   <div>
     <common-form :data="ruleForm" :rules="rules" />
@@ -8,7 +8,7 @@
 import commonForm from './components/common-form'
 
 export default {
-  name: 'CloudDatabase',
+  name: 'SharePoint',
   components: {
     commonForm
   },
@@ -21,18 +21,17 @@ export default {
         username: '',
         password: '',
         domain: '',
-        databaseType: 'mysql',
-        port: '5432'
+        site: ''
       },
-      rules: {}
+      rules: {
+
+      }
     }
   },
 
   created() {},
 
-  methods: {
-
-  }
+  methods: {}
 }
 </script>
 

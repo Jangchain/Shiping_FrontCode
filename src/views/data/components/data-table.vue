@@ -4,9 +4,10 @@
       <slot></slot>
       <div class="b">
         <el-table @row-click="rowClick"
+                  @selection-change="handleSelectionChange"
                   :data="tableData"
                   element-loading-text="Loading"
-                  border
+                  stripe
                   fit
                   highlight-current-row>
           <el-table-column type="selection"
@@ -24,8 +25,8 @@
               <el-button @click.native.stop="modifyRowData(scope.row)"
                          size="mini"
                          type="text"
-                         icon="el-icon-edit">修改</el-button>
-              <el-button @click.native.stop="deleteRowData(scope.row)"
+                         icon="el-icon-edit">编辑</el-button>
+              <el-button @click.native.stop="deleteRowData(scope.row,scope.$index, tableData)"
                          size="mini"
                          type="text"
                          icon="el-icon-delete">删除</el-button>
@@ -47,7 +48,7 @@
 
     <el-drawer :visible.sync="isShowDrawer"
                :show-close="false"
-               direction="rtl">
+               :append-to-body="true">
       <div class="drawer-content">
         <div class="title-name">{{ drawerData.name }}</div>
         <div>信息源名称：{{ drawerData.name }}</div>
@@ -89,17 +90,23 @@ export default {
         return []
       }
     },
-    total: Number
+    total: Number,
+    pageSize: {
+      type: Number,
+      default: 10
+    },
+    currentPage: {
+      type: Number,
+      default: 1
+    },
   },
   data() {
     return {
-      pageSize: 10,
-      currentPage: 1,
       isShowDrawer: false,
-      drawerData: {}
+      drawerData: {},
     }
   },
-  created() {},
+  created() { },
   methods: {
     handleSizeChange(val) {
       //每页条数变化
@@ -118,7 +125,10 @@ export default {
     },
     deleteRowData(val) {
       this.$emit('deleteRowData', val)
-    }
+    },
+    handleSelectionChange(val) {
+      this.$emit('selectionChange', val)
+    },
   }
 }
 </script>

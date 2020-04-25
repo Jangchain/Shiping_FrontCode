@@ -42,17 +42,14 @@ import ruleRouter from './modules/rule'
  * a base page that does not have permission requirements
  * all roles can be accessed
  */
-export const constantRoutes = [
-  {
+export const constantRoutes = [{
     path: '/redirect',
     component: Layout,
     hidden: true,
-    children: [
-      {
-        path: '/redirect/:path*',
-        component: () => import('@/views/redirect/index')
-      }
-    ]
+    children: [{
+      path: '/redirect/:path*',
+      component: () => import('@/views/redirect/index')
+    }]
   },
   {
     path: '/login',
@@ -78,14 +75,16 @@ export const constantRoutes = [
     path: '/',
     component: Layout,
     redirect: '/dashboard',
-    children: [
-      {
-        path: 'dashboard',
-        component: () => import('@/views/dashboard/index'),
-        name: 'Dashboard',
-        meta: { title: 'Dashboard', icon: 'dashboard', affix: true }
+    children: [{
+      path: 'dashboard',
+      component: () => import('@/views/dashboard/index'),
+      name: 'Dashboard',
+      meta: {
+        title: 'Dashboard',
+        icon: 'dashboard',
+        affix: true
       }
-    ]
+    }]
   }
 ]
 
@@ -102,7 +101,6 @@ export const asyncRoutes = [
   analyzeRouter,
   dataRouter,
   ruleRouter,
-
   {
     path: '/admin',
     component: Layout,
@@ -130,12 +128,18 @@ export const asyncRoutes = [
   },
 
   // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
+  {
+    path: '*',
+    redirect: '/404',
+    hidden: true
+  }
 ]
 
 const createRouter = () => new Router({
   // mode: 'history', // require service support
-  scrollBehavior: () => ({ y: 0 }),
+  scrollBehavior: () => ({
+    y: 0
+  }),
   routes: constantRoutes
 })
 

@@ -28,20 +28,20 @@
       <div :class="{hasTagsView:needTagsView, noSideBar: navRoutes.length < 1}" class="main-container">
         <div :class="{'fixed-header':fixedHeader}">
           <navbar />
-          <tags-view v-if="needTagsView" />
+          <!-- <tags-view v-if="needTagsView" /> -->
         </div>
         <app-main />
-        <right-panel v-if="showSettings">
+        <!-- <right-panel v-if="showSettings">
           <settings />
-        </right-panel>
+        </right-panel> -->
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import RightPanel from '@/components/RightPanel'
-import { AppMain, Navbar, Settings, Sidebar, TagsView } from './components'
+// import RightPanel from '@/components/RightPanel'
+import { AppMain, Navbar, Sidebar, TagsView } from './components'
 import ResizeMixin from './mixin/ResizeHandler'
 import { mapState, mapGetters } from 'vuex'
 
@@ -50,17 +50,17 @@ export default {
   components: {
     AppMain,
     Navbar,
-    RightPanel,
-    Settings,
-    Sidebar,
-    TagsView
+    // RightPanel,
+    // Settings,
+    Sidebar
+    // TagsView
   },
   mixins: [ResizeMixin],
   computed: {
     ...mapState({
       sidebar: state => state.app.sidebar,
       device: state => state.app.device,
-      showSettings: state => state.settings.showSettings,
+      // showSettings: state => state.settings.showSettings,
       needTagsView: state => state.settings.tagsView,
       fixedHeader: state => state.settings.fixedHeader,
       navs: state => state.nav
