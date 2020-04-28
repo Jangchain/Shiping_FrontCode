@@ -1,5 +1,11 @@
 <template>
   <div class="identify-model">
+    <div class="m-rule-nav">
+      <el-button-group>
+        <el-button @click="navTo('/rule')">数据规则</el-button>
+        <el-button type="info">识别模型</el-button>
+      </el-button-group>
+    </div>
     <sub-type></sub-type>
     <!-- <div>
       <document-characteristics v-if="$route.params.subType == 'documentCharacteristics'"></document-characteristics>
@@ -44,6 +50,14 @@ export default {
 };
 </script>
 <style lang="scss">
+.m-rule-nav {
+  padding: 20px;
+}
+.m-rule-nav button {
+  width: 500px;
+  line-height: 30px;
+  border-radius: 10px;
+}
 .el-tooltip__popper {
   max-width: 450px;
 }
