@@ -1,7 +1,12 @@
 <!-- 新建信息源共享文档 -->
 <template>
   <div>
-    <common-form :data="ruleForm" :rules="rules" @validated-data="handleValidatedData">
+    <common-form
+      :data="ruleForm"
+      :rules="rules"
+      @validated-data="handleValidatedData"
+      @test-connect="testConnect"
+    >
       <template v-slot:tree>
         <el-col :span="11">
           <el-card class="box-card">
@@ -37,70 +42,75 @@
   </div>
 </template>
 <script>
-import commonForm from './components/common-form'
+import commonForm from "./components/common-form";
+import { targetResDataRequest } from "@/api/data/newset";
+const Api = {
+  targetResDataRequest
+};
 
 export default {
-  name: 'Share',
+  name: "Share",
   components: {
     commonForm
   },
   data() {
     return {
       ruleForm: {
-        name: '',
-        description: '',
-        fileType: '',
-        ip: '',
-        username: '',
-        password: '',
-        domain: ''
+        name: "",
+        description: "",
+        fileType: "",
+        ip: "",
+        username: "",
+        password: "",
+        domain: "",
+        iType: "ResourceList"
       },
       rules: {
         date1: [
           {
-            type: 'date',
+            type: "date",
             required: true,
-            message: '请选择日期',
-            trigger: 'change'
+            message: "请选择日期",
+            trigger: "change"
           }
         ],
         date2: [
           {
-            type: 'date',
+            type: "date",
             required: true,
-            message: '请选择时间',
-            trigger: 'change'
+            message: "请选择时间",
+            trigger: "change"
           }
         ],
         type: [
           {
-            type: 'array',
+            type: "array",
             required: true,
-            message: '请至少选择一个活动性质',
-            trigger: 'change'
+            message: "请至少选择一个活动性质",
+            trigger: "change"
           }
         ],
         resource: [
-          { required: true, message: '请选择活动资源', trigger: 'change' }
+          { required: true, message: "请选择活动资源", trigger: "change" }
         ],
-        desc: [{ required: true, message: '请填写活动形式', trigger: 'blur' }]
+        desc: [{ required: true, message: "请填写活动形式", trigger: "blur" }]
       },
       treeData: [
         {
           id: 1,
-          label: '一级 1',
+          label: "一级 1",
           children: [
             {
               id: 4,
-              label: '二级 1-1',
+              label: "二级 1-1",
               children: [
                 {
                   id: 9,
-                  label: '三级 1-1-1'
+                  label: "三级 1-1-1"
                 },
                 {
                   id: 10,
-                  label: '三级 1-1-2'
+                  label: "三级 1-1-2"
                 }
               ]
             }
@@ -108,48 +118,56 @@ export default {
         },
         {
           id: 2,
-          label: '一级 2',
+          label: "一级 2",
           children: [
             {
               id: 5,
-              label: '二级 2-1'
+              label: "二级 2-1"
             },
             {
               id: 6,
-              label: '二级 2-2'
+              label: "二级 2-2"
             }
           ]
         },
         {
           id: 3,
-          label: '一级 3',
+          label: "一级 3",
           children: [
             {
               id: 7,
-              label: '二级 3-1'
+              label: "二级 3-1"
             },
             {
               id: 8,
-              label: '二级 3-2'
+              label: "二级 3-2"
             }
           ]
         }
       ],
       defaultProps: {
-        children: 'children',
-        label: 'label'
+        children: "children",
+        label: "label"
       }
-    }
+    };
   },
 
   created() {},
 
   methods: {
     handleValidatedData(data) {
-      console.log('handleValidatedData', data)
+      console.log("handleValidatedData", data);
+    },
+
+    // 测试连接
+    testConnect(data) {
+      console.log("测试连接", data);
+      // Api.targetResDataRequest(data).then(res => {
+      //   console.log(res);
+      // });
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

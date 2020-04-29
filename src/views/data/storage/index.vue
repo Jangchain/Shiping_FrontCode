@@ -15,7 +15,7 @@
                :pageSize="pageSize"
                :currentPage="currentPage">
       <div class="form-data">
-        <div class="title-name">Linux主机信息源列表</div>
+        <div class="title-name">存储信息源列表</div>
         <div class="title-form">
           <el-form :inline="true"
                    :model="searchCondition">

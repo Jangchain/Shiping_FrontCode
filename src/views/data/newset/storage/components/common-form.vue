@@ -199,6 +199,7 @@
       <el-button
         class="test-connect-btn"
         type="primary"
+        :loading="testConnectLoading"
         @click="testConnect"
       >测试链接</el-button>
 
@@ -209,6 +210,7 @@
       <el-form-item>
         <el-button
           type="primary"
+          :disabled="!saveable"
           @click="submitForm('ruleForm')"
         >保存</el-button>
       </el-form-item>
@@ -216,14 +218,17 @@
   </div>
 </template>
 <script>
-import formGroupTitle from '../../components/form-group-title'
+import formGroupTitle from "../../components/form-group-title";
 import {
   defalutRules,
   storageTypeData,
   fileTypeData,
   databaseTypeData
-} from './default-data'
-
+} from "./default-data";
+import { targetResDataRequest } from "@/api/data/newset";
+const Api = {
+  targetResDataRequest
+};
 export default {
   components: {
     formGroupTitle
@@ -232,13 +237,13 @@ export default {
     data: {
       type: Object,
       default: () => {
-        return {}
+        return {};
       }
     },
     rules: {
       type: Object,
       default: () => {
-        return {}
+        return {};
       }
     }
   },
@@ -248,93 +253,117 @@ export default {
       fileTypeData,
       databaseTypeData,
       defaultForm: {
-        name: '', // 信息源名称
-        description: '', // 备注
-        storageType: 'ali_oss', // 存储类型
-        fileType: '', // 类型
-        ip: '', // ip
-        port: '', // 端口
-        username: '', // 用户名
-        password: '', // 密码
-        domain: '', // 域名
-        databaseType: 'MySql', // 数据库类型
-        anonymousLogin: '0', // 匿名登录
-        keyType: 'password', // 密码类型
-        serverAddress: '', // 服务器地址
-        exchangeEdition: '', // 版本号
-        site: '', // 站点
-        lotusServerType: ''
+        name: "", // 信息源名称
+        description: "", // 备注
+        storageType: "ali_oss", // 存储类型
+        fileType: "", // 类型
+        ip: "", // ip
+        port: "", // 端口
+        username: "", // 用户名
+        password: "", // 密码
+        domain: "", // 域名
+        databaseType: "MySql", // 数据库类型
+        anonymousLogin: "0", // 匿名登录
+        keyType: "password", // 密码类型
+        serverAddress: "", // 服务器地址
+        exchangeEdition: "", // 版本号
+        site: "", // 站点
+        lotusServerType: ""
       },
       defalutRules,
       newRules: {},
       ruleForm: {},
       isAnonymousLogin: false,
-      isPassword: true
-    }
+      isPassword: true,
+      testConnectLoading: false,
+      saveable: false
+    };
   },
   watch: {
     isPassword(val) {
-      console.log(val)
+      console.log(val);
     }
   },
 
   created() {
-    this.newRules = Object.assign(this.defalutRules, this.rules)
-    console.log('this.data', this.data)
-    this.ruleForm = this.data
+    this.newRules = Object.assign(this.defalutRules, this.rules);
+    console.log("this.data", this.data);
+    this.ruleForm = this.data;
   },
   mounted() {
     // this.initForm()
-    this.handleAnonymousLogin()
-    this.handleKeyType()
+    this.handleAnonymousLogin();
+    this.handleKeyType();
   },
 
   methods: {
     // 测试连接
     testConnect() {
-      console.log('测试连接')
-      this.$emit('test-connect', this.ruleForm)
+      console.log("测试连接");
+      // this.$emit("test-connect", this.ruleForm);
+      const connectKeys = Object.keys(this.ruleForm).filter(
+        item => !["name", "description"].includes(item)
+      );
+      let validateStatus = true;
+      this.$refs.ruleForm.validateField(connectKeys, errorMsg => {
+        if (errorMsg) validateStatus = false;
+      });
+      if (validateStatus) {
+        this.targetResDataRequest(this.ruleForm);
+      }
+    },
+
+    // 测试连接请求
+    targetResDataRequest(data) {
+      this.testConnectLoading = true;
+      Api.targetResDataRequest(data)
+        .then(res => {
+          console.log(res);
+        })
+        .finally(() => {
+          this.testConnectLoading = false;
+        });
     },
 
     // 表单提交
     submitForm(formName) {
-      console.log('ruleForm', this.ruleForm)
+      console.log("ruleForm", this.ruleForm);
       // this.$emit('validated-data', this.ruleForm)
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.$emit('validated-data', this.ruleForm)
+          this.$emit("validated-data", this.ruleForm);
         } else {
-          console.log('error submit!!')
-          return false
+          console.log("error submit!!");
+          return false;
         }
-      })
+      });
     },
 
     // 初始化表单
     showFormItem(prop) {
       if (Object.keys(this.data).length) {
-        return Object.keys(this.data).includes(prop)
+        return Object.keys(this.data).includes(prop);
       }
-      return true
+      return true;
     },
 
     // 处理匿名登录切换
     handleAnonymousLogin(val) {
       if (!val) {
-        val = this.ruleForm.anonymousLogin
+        val = this.ruleForm.anonymousLogin;
       }
-      this.isAnonymousLogin = val === '1'
+      this.isAnonymousLogin = val === "1";
     },
 
     // 处理密码类型
     handleKeyType(val) {
       if (!val) {
-        val = this.ruleForm.keyType || 'password'
+        val = this.ruleForm.keyType || "password";
       }
-      this.isPassword = val === 'password'
+      this.isPassword = val === "password";
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
