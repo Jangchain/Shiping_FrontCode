@@ -1,22 +1,22 @@
 import request from '@/utils/request'
 
-function getTerminalByPage(data) {
+function getNetworkPortByPage(data) {
   return request.get('/network/source/port/get/page', {
     params: data
   })
 }
-function singleDel(data) {
+function singleDelPort(data) {
   return request.post('network/source/port/delete', {
     params: data
   })
 }
-function batchDel(data) {
+function batchDelPort(data) {
   return request.post('network/source/port/delete/all', {
     data
   })
 }
 export default {
-  getTerminalByPage,
-  singleDel,
-  batchDel
+  getNetworkPortByPage,
+  singleDelPort,
+  batchDelPort
 }

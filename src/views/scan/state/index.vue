@@ -20,36 +20,32 @@
                            :label="v.label"
                            :value="v.value" />
         </el-select>-->
-        <el-form
-          ref="ruleForm"
-          :model="ruleForm"
-          :rules="ruleRules"
-          class="login-form"
-          autocomplete="on"
-          label-position="right"
-        >
+        <el-form ref="ruleForm"
+                 :model="ruleForm"
+                 :rules="ruleRules"
+                 class="login-form"
+                 autocomplete="on"
+                 label-position="right">
           <el-form-item prop="date">
             <span id="spa">日期</span>
-            <el-input
-              ref="date"
-              v-model="ruleForm.date"
-              placeholder="date"
-              name="date"
-              type="text"
-              tabindex="1"
-              autocomplete="on"
-              size="mini"
-            />
+            <el-input ref="date"
+                      v-model="ruleForm.date"
+                      placeholder="date"
+                      name="date"
+                      type="text"
+                      tabindex="1"
+                      autocomplete="on"
+                      size="mini" />
           </el-form-item>
           <el-form-item prop="obj">
             <span id="spa">对象类型</span>
-            <el-select size="mini" v-model="selectValue" placeholder="全部">
-              <el-option
-                v-for="(v, k) in databaseTypeSelect"
-                :key="k"
-                :label="v.label"
-                :value="v.value"
-              />
+            <el-select size="mini"
+                       v-model="selectValue"
+                       placeholder="全部">
+              <el-option v-for="(v, k) in databaseTypeSelect"
+                         :key="k"
+                         :label="v.label"
+                         :value="v.value" />
             </el-select>
           </el-form-item>
         </el-form>
@@ -108,15 +104,16 @@
     <div id="main">
       <div id="lf">
         <span id="tre">事件排行</span>
-        <el-table
-          :header-cell-style="{background:'#eee',color:'#606266'}"
-          :data="tableData"
-          style="width: 100%"
-          :default-sort="{prop: 'date', order: 'descending'}"
-        >
-          <el-table-column prop="date" label="IP地址" align="center">
+        <el-table :header-cell-style="{background:'#eee',color:'#606266'}"
+                  :data="tableData"
+                  style="width: 100%"
+                  :default-sort="{prop: 'date', order: 'descending'}">
+          <el-table-column prop="date"
+                           label="IP地址"
+                           align="center">
             <template slot-scope="scope">
-              <el-popover trigger="hover" placement="top">
+              <el-popover trigger="hover"
+                          placement="top">
                 <p>IP: {{ scope.row.name }}</p>
                 <p>地区/部门: {{ scope.row.address }}</p>
                 <p>设备号: {{ scope.row.address }}</p>
@@ -124,15 +121,25 @@
                 <p>信息源1: {{ scope.row.address }}</p>
                 <p>信息源2: {{ scope.row.address }}</p>
                 <p>信息源3: {{ scope.row.address }}</p>
-                <div slot="reference" class="name-wrapper">
+                <div slot="reference"
+                     class="name-wrapper">
                   <el-tag size="medium">{{ scope.row.name }}</el-tag>
                 </div>
               </el-popover>
             </template>
           </el-table-column>
-          <el-table-column prop="name" label="IP类型" sortable align="center"></el-table-column>
-          <el-table-column prop="name" label="策略类型" sortable align="center"></el-table-column>
-          <el-table-column prop="address" label="事件数" align="center" :formatter="formatter"></el-table-column>
+          <el-table-column prop="name"
+                           label="IP类型"
+                           sortable
+                           align="center"></el-table-column>
+          <el-table-column prop="name"
+                           label="策略类型"
+                           sortable
+                           align="center"></el-table-column>
+          <el-table-column prop="address"
+                           label="事件数"
+                           align="center"
+                           :formatter="formatter"></el-table-column>
         </el-table>
       </div>
       <div id="rg">
@@ -148,18 +155,18 @@
               <el-dropdown-item>螺蛳粉</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
-          <chart height="100%" width="100%" />
+          <!--  <chart height="100%" width="100%" /> -->
         </div>
 
         <el-row style="background:#fff;padding:40px 50px 0;margin-bottom:32px;">
-          <el-tabs v-model="map" value @tab-click="handleClick">
-            <el-tab-pane
-              v-for="(item,i) in maps"
-              :key="i"
-              :label="item.label"
-              :name="item.name"
-              lazy
-            >
+          <el-tabs v-model="map"
+                   value
+                   @tab-click="handleClick">
+            <el-tab-pane v-for="(item,i) in maps"
+                         :key="i"
+                         :label="item.label"
+                         :name="item.name"
+                         lazy>
               <line-chart :chart-data="lineChartData" />
             </el-tab-pane>
           </el-tabs>
@@ -178,51 +185,71 @@
         </div>
         <p>
           <span>事件列表</span>
-          <el-input placeholder="输入搜索内容" v-model="input" size="small" style="width:260px">
-            <i slot="suffix" class="el-input__icon el-icon-search"></i>
+          <el-input placeholder="输入搜索内容"
+                    v-model="input"
+                    size="small"
+                    style="width:260px">
+            <i slot="suffix"
+               class="el-input__icon el-icon-search"></i>
           </el-input>
-          <el-button type="info" size="small">搜索</el-button>
+          <el-button type="info"
+                     size="small">搜索</el-button>
           <el-button size="small">高级搜索</el-button>
-          <el-button type="info" size="small">批量上报</el-button>
-          <el-button type="info" size="small">批量导出</el-button>
-          <el-button type="info" size="small">忽略</el-button>
-          <el-button type="info" size="small">列管理</el-button>
+          <el-button type="info"
+                     size="small">批量上报</el-button>
+          <el-button type="info"
+                     size="small">批量导出</el-button>
+          <el-button type="info"
+                     size="small">忽略</el-button>
+          <el-button type="info"
+                     size="small">列管理</el-button>
         </p>
-        <el-table
-          ref="multipleTable"
-          :data="tableData"
-          tooltip-effect="dark"
-          style="width: 100%"
-          :default-sort="{prop: 'date', order: 'descending'}"
-          @selection-change="handleSelectionChange"
-          :header-cell-style="{background:'#eee',color:'#606266'}"
-        >
-          <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column
-            prop="name"
-            label="敏感度"
-            sortable
-            align="center"
-            :filters="[{ text: '家', value: '家' }, { text: '公司', value: '公司' }]"
-            :filter-method="filterTag"
-          >
+        <el-table ref="multipleTable"
+                  :data="tableData"
+                  tooltip-effect="dark"
+                  style="width: 100%"
+                  :default-sort="{prop: 'date', order: 'descending'}"
+                  @selection-change="handleSelectionChange"
+                  :header-cell-style="{background:'#eee',color:'#606266'}">
+          <el-table-column type="selection"
+                           width="55"></el-table-column>
+          <el-table-column prop="name"
+                           label="敏感度"
+                           sortable
+                           align="center"
+                           :filters="[{ text: '家', value: '家' }, { text: '公司', value: '公司' }]"
+                           :filter-method="filterTag">
             <template slot-scope="scope">
-              <el-tag
-                :type="scope.row.tag === '家' ? 'primary' : 'success'"
-                disable-transitions
-              >{{scope.row.tag}}</el-tag>
+              <el-tag :type="scope.row.tag === '家' ? 'primary' : 'success'"
+                      disable-transitions>{{scope.row.tag}}</el-tag>
             </template>
           </el-table-column>
-          <el-table-column prop="name" label="匹配内容" align="center"></el-table-column>
+          <el-table-column prop="name"
+                           label="匹配内容"
+                           align="center"></el-table-column>
 
-          <el-table-column prop="name" label="数据类型" sortable align="center"></el-table-column>
-          <el-table-column prop="name" label="规则" align="center"></el-table-column>
-          <el-table-column prop="address" label="策略" align="center"></el-table-column>
-          <el-table-column fixed="right" label="操作" align="center">
+          <el-table-column prop="name"
+                           label="数据类型"
+                           sortable
+                           align="center"></el-table-column>
+          <el-table-column prop="name"
+                           label="规则"
+                           align="center"></el-table-column>
+          <el-table-column prop="address"
+                           label="策略"
+                           align="center"></el-table-column>
+          <el-table-column fixed="right"
+                           label="操作"
+                           align="center">
             <template slot-scope="scope">
-              <el-button @click="handleClick(scope.row)" type="text" size="small">上报</el-button>
-              <el-button @click="handleClick(scope.row)" type="text" size="small">下载</el-button>
-              <el-button type="text" size="small">忽略</el-button>
+              <el-button @click="handleClick(scope.row)"
+                         type="text"
+                         size="small">上报</el-button>
+              <el-button @click="handleClick(scope.row)"
+                         type="text"
+                         size="small">下载</el-button>
+              <el-button type="text"
+                         size="small">忽略</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -233,11 +260,11 @@
 
 <script>
 // 引入 ECharts 主模块
-import Chart from "@/components/Charts/BarChart";
+// import Chart from "@/components/Charts/BarChart";
 import LineChart from "../components/LineChart";
 export default {
   name: "BarChart",
-  components: { Chart, LineChart },
+  components: { LineChart },
   data() {
     const validate = (rule, value, callback) => {
       if (!value) {
@@ -336,7 +363,7 @@ export default {
     handleClick(row) {
       console.log(row);
     },
-    create() {},
+    create() { },
     resetDateFilter() {
       this.$refs.filterTable.clearFilter("date");
     },
@@ -350,7 +377,7 @@ export default {
       return row.tag === value;
     }
   },
-  created() {}
+  created() { }
 };
 </script>
  <style lang="scss">

@@ -73,7 +73,7 @@
 </template>
 <script>
 import Datatable from '../components/data-table'
-import request from "@/api/data/storgeSource";
+import request from "@/api/data/network";
 export default {
   name: 'portResource',
   components: { Datatable },
@@ -95,27 +95,27 @@ export default {
     }
   },
   created() {
-    this.getStorageSourceData()
+    this.getNetworkPortData()
     this.tableHeaderData = [
       {
         name: 'name',
         label: '信息源名称'
       },
       {
-        name: 'port',
-        label: 'FTP端口'
+        name: 'portEndValue',
+        label: '端口'
       },
       {
-        name: 'ip',
-        label: 'IP地址'
+        name: 'protocol',
+        label: '协议'
       },
       {
-        name: 'createDate',
-        label: '创建时间'
+        name: 'status',
+        label: '引用状态'
       },
       {
-        name: 'creator',
-        label: '创建者'
+        name: 'type',
+        label: '类型'
       },
       {
         name: 'description',
@@ -124,29 +124,39 @@ export default {
     ]
   },
   methods: {
-    getStorageSourceData(filter) {
+    getNetworkPortData(filter) {
       let params = {
         current: this.currentPage,
         size: this.pageSize,
-        resType: 'FTP'
+        descs: 'createDate'
       }
       params = Object.assign({}, params, filter)
-      request.getStorageSourceByPage(params).then(res => {
+      request.getNetworkPortByPage(params).then(res => {
+        this.tableData = []
         this.total = +res.data.total
-        this.tableData = res.data.records
+        res.data.records.forEach(val => {
+          this.tableData.push({
+            name: val.name,
+            portEndValue: val.portEndValue,
+            protocol: val.protocol,
+            status: val.status ? '是' : '否',
+            type: +val.type ? '自定义' : '预定义',
+            description: val.description
+          })
+        });
       })
     },
     search() {
       this.currentPage = 1
       this.pageSize = 10
-      this.getStorageSourceData(this.searchCondition)
+      this.getNetworkPortData(this.searchCondition)
     },
     newSet() {
-      this.$router.push(`/data/newset/storage/ftp`)
+      this.$router.push(`/data/newset/network/port`)
     },
     modifyRowData(val) {
       this.$router.push({
-        path: `/data/newset/storage/ftp`,
+        path: `/data/newset/network/port`,
         query: { id: val.id }
       })
     },
@@ -168,11 +178,11 @@ export default {
     },
     handleCurrentChange(val) {
       this.currentPage = val
-      this.getStorageSourceData()
+      this.getNetworkPortData()
     },
     handleSizeChange(val) {
       this.pageSize = val
-      this.getStorageSourceData()
+      this.getNetworkPortData()
     }
   }
 }

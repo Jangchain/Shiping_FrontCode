@@ -12,16 +12,17 @@
 import navList from '../components/nav-list'
 import { tabs } from './common'
 
-import emailResource from './emailResource'
+// TODO: 邮件和URL目前需求不明确，暂时不做
 import portResource from './portResource'
-import urlResource from './urlResource'
+// import emailResource from './emailResource'
+// import urlResource from './urlResource'
 
 export default {
   components: {
     navList,
-    emailResource,
     portResource,
-    urlResource
+    // emailResource,
+    // urlResource
   },
   data() {
     return {
