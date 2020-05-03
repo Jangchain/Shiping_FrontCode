@@ -39,7 +39,6 @@ export default {
         label: val.label
       })
     })
-    console.log('this.$route.params', this.$route.params)
     const type = this.$route.params.type
     if (type) {
       this.$route.meta.title = tabs.find(val => val.name === type).label

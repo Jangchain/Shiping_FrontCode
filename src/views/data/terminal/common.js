@@ -1,6 +1,6 @@
 export const tabs = [
   {
-    label: "终端信息源组1",
-    name: "terminalOne"
+    label: "终端信息源组",
+    name: "terminalGroup"
   }
 ];

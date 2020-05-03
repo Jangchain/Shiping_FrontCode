@@ -10,14 +10,16 @@
                   stripe
                   fit
                   highlight-current-row>
-          <el-table-column type="selection"
+          <el-table-column v-if="isShowModify"
+                           type="selection"
                            width="45" />
           <el-table-column v-for="(val, index) in tableHeaderData"
                            :key="index"
                            ndex
                            :prop="val.name"
                            :label="val.label" />
-          <el-table-column fixed="right"
+          <el-table-column v-if="isShowModify"
+                           fixed="right"
                            label="操作"
                            align="center"
                            width="280px">
@@ -46,7 +48,8 @@
       </el-pagination>
     </div>
 
-    <el-drawer :visible.sync="isShowDrawer"
+    <el-drawer v-if="isShowDraw"
+               :visible.sync="isShowDrawer"
                :show-close="false"
                :append-to-body="true">
       <div class="drawer-content">
@@ -99,6 +102,17 @@ export default {
       type: Number,
       default: 1
     },
+    /* 是否展示表格选择和修改删除按钮 */
+    isShowModify: {
+      type: Boolean,
+      default: true
+    },
+    /* 是否展示drawer组件 */
+    isShowDraw: {
+      type: Boolean,
+      default: true
+    },
+
   },
   data() {
     return {
