@@ -7,7 +7,7 @@
         </el-col>
         <el-col :span="20">
           <div class="form-data">
-            <div>{{tableTitle}}</div>
+            <div class="title-name">{{tableTitle}}</div>
             <div class="title-form">
               <el-form :inline="true"
                        :model="searchCondition">
@@ -54,20 +54,21 @@
           <el-tree ref="tree"
                    :data="treeData"
                    node-key="id"
+                   highlight-current
                    default-expand-all
-                   :expand-on-click-node="false"
-                   :filter-node-method="filterNode">
+                   :filter-node-method="filterNode"
+                   @node-click="ClickTreeNode">
             <span class="custom-tree-node"
                   slot-scope="{ node, data }">
               <span>{{ node.label }}</span>
               <span>
                 <el-button type="text"
                            icon="el-icon-edit"
-                           @click="() => appendTree(data)">
+                           @click="() => modifyTree(data)">
                 </el-button>
                 <el-button type="text"
                            icon="el-icon-delete"
-                           @click="() => removeTree(node, data)">
+                           @click="() => removeTree( data)">
                 </el-button>
               </span>
             </span>
@@ -106,24 +107,6 @@
   </div>
 </template>
 <script>
-const treedata = [
-  {
-    id: 1,
-    label: '一级 1',
-  }, {
-    id: 2,
-    label: '一级 2',
-  }, {
-    id: 3,
-    label: '一级 3',
-  }, {
-    id: 4,
-    label: '一级 4',
-  }, {
-    id: 5,
-    label: '一级 5',
-  }
-];
 //TODO: DEP主机状态字段不确定
 const deviceStatus = {
   0: '在线',
@@ -140,7 +123,8 @@ export default {
   data() {
     return {
       filterTreeText: '',
-      treeData: treedata,
+      treeData: [],
+      curTree: '',
       tableTitle: '全部',
       tableData: [],
       tableHeaderData: [],
@@ -189,7 +173,6 @@ export default {
     ]
   },
   methods: {
-    //TODO: 获取数表数据，数据格式不明确
     getTerminalGroupData(filter) {
       let params = {
         current: 1,
@@ -243,15 +226,29 @@ export default {
     newSet() {
       this.$router.push(`/data/newset/network/port`)
     },
-    modifyRowData(val) {
+    modifyTree(val) {
       this.$router.push({
         path: `/data/newset/network/port`,
         query: { id: val.id }
       })
     },
-    deleteRowData(val) {
+    //TODO:点击竖表 动态加载右侧表格
+    ClickTreeNode(val) {
+      this.tableTitle = val.label
+    },
+    removeTree(val) {
       this.dialogVisible = true
       this.delData = val
+    },
+    confirmDel() {
+      this.dialogVisible = false
+      console.log('this.delData', this.delData)
+      const params = {
+        id: this.delData.id
+      }
+      request.singleDel().then(res => {
+
+      })
     },
     handleCurrentChange(val) {
       this.currentPage = val
@@ -274,6 +271,7 @@ export default {
     .title-name {
       height: 58px;
       line-height: 58px;
+      min-width: 100px;
     }
     .form-data {
       flex: 1;

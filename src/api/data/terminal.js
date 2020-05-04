@@ -10,7 +10,23 @@ function getTerminalListByPage(data) {
     params: data
   })
 }
+function singleDel(data) {
+  return request({
+    url: "endpoint/source/depHostGroup/delete",
+    method: "post",
+    params: data
+  });
+}
+function batchDel(data) {
+  return request({
+    url: "endpoint/source/depHostGroup/delete/all",
+    method: "post",
+    params: data
+  });
+}
 export default {
   getTerminalGroupByPage,
-  getTerminalListByPage
+  getTerminalListByPage,
+  singleDel,
+  batchDel
 }

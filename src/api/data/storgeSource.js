@@ -15,16 +15,6 @@ function batchDel(data) {
     data
   })
 }
-function singleIntelligentLearning(data) {
-  return request.get('/srd/resource/machineLearning/get/page', {
-    params: data
-  })
-}
-function multiIntelligentLearning(data) {
-  return request.get('/srd/resource/documentFingerprints/get/page', {
-    params: data
-  })
-}
 export default {
   getStorageSourceByPage,
   singleDel,
