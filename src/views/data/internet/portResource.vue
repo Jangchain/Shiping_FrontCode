@@ -22,8 +22,8 @@
                    class="el-input__icon el-icon-search" />
               </el-input>
             </el-form-item>
-            <el-form-item label="IP">
-              <el-input v-model="searchCondition.ip"
+            <el-form-item label="协议">
+              <el-input v-model="searchCondition.protocol"
                         placeholder="请输入内容">
                 <i slot="suffix"
                    class="el-input__icon el-icon-search" />
@@ -86,7 +86,7 @@ export default {
       total: 0,
       searchCondition: {
         name: '',
-        ip: '',
+        protocol: '',
         description: ''
       },
       selection: [],
