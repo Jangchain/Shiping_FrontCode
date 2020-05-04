@@ -3,7 +3,7 @@
     <div class="content-in">
       <el-row :gutter="20">
         <el-col :span="4">
-          <div class="title-name">终端信息源组</div>
+          <div class="title-name">{{tableTitle}}</div>
         </el-col>
         <el-col :span="20">
           <div class="form-data">
@@ -87,22 +87,6 @@
         </el-col>
       </el-row>
     </div>
-
-    <el-dialog title="信息提示"
-               :visible.sync="dialogVisible"
-               width="30%">
-      <p class="dialog-tips">
-        <i class="el-icon-warning dialog-icon"></i>
-        <span class="dialog-content">是否确认删除信息源 ？</span>
-      </p>
-      <div>删除后将无法回复</div>
-      <span slot="footer"
-            class="dialog-footer">
-        <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary"
-                   @click="confirmDel">确定</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 <script>
@@ -189,7 +173,6 @@ export default {
     ]
   },
   methods: {
-    //TODO: 获取数表数据，数据格式不明确
     getTerminalGroupData(filter) {
       let params = {
         current: 1,
@@ -197,13 +180,9 @@ export default {
       }
       params = Object.assign({}, params, filter)
       request.getTerminalGroupByPage(params).then(res => {
-        this.treeData = []
-        res.data.records.forEach(val => {
-          this.treeData.push({
-            id: val.id,
-            label: val.name,
-          })
-        });
+        // this.treeData = []
+        // res.data.records.forEach(val => {
+        // });
       })
     },
     getTerminalListData(filter) {
@@ -231,6 +210,7 @@ export default {
       })
     },
     filterNode(value, data) {
+      console.log('value, data=', value, data)
       if (!value) return true;
       return data.label.indexOf(value) !== -1;
     },
@@ -239,7 +219,6 @@ export default {
       this.pageSize = 10
       this.getTerminalListData(this.searchCondition)
     },
-    //TODO:跳转路径待确认
     newSet() {
       this.$router.push(`/data/newset/network/port`)
     },
@@ -252,6 +231,11 @@ export default {
     deleteRowData(val) {
       this.dialogVisible = true
       this.delData = val
+    },
+    confirmDel() {
+      this.dialogVisible = false
+      console.log('this.delData', this.delData)
+      //TODO: 调用批量删除接口
     },
     handleCurrentChange(val) {
       this.currentPage = val
