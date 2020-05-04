@@ -3,45 +3,7 @@
     <div class="content-in">
       <el-row :gutter="20">
         <el-col :span="4">
-          <div class="title-name">{{tableTitle}}</div>
-        </el-col>
-        <el-col :span="20">
-          <div class="form-data">
-            <div>{{tableTitle}}</div>
-            <div class="title-form">
-              <el-form :inline="true"
-                       :model="searchCondition">
-                <el-form-item label="主机名称">
-                  <el-input v-model="searchCondition.name"
-                            placeholder="请输入内容">
-                  </el-input>
-                </el-form-item>
-                <el-form-item label="IP">
-                  <el-input v-model="searchCondition.ip"
-                            placeholder="请输入内容">
-                  </el-input>
-                </el-form-item>
-                <el-form-item label="系统类型">
-                  <el-input v-model="searchCondition.description"
-                            placeholder="请输入内容">
-                  </el-input>
-                </el-form-item>
-                <el-form-item label="DEP主机状态">
-                  <el-input v-model="searchCondition.description"
-                            placeholder="请输入内容">
-                  </el-input>
-                </el-form-item>
-                <el-form-item>
-                  <el-button type="primary"
-                             @click="search">查询</el-button>
-                </el-form-item>
-                <el-form-item>
-                  <el-button type="success"
-                             @click="newSet">新建组</el-button>
-                </el-form-item>
-              </el-form>
-            </div>
-          </div>
+          <div class="title-name">组织架构列表</div>
         </el-col>
       </el-row>
       <el-row :gutter="20">
@@ -54,20 +16,21 @@
           <el-tree ref="tree"
                    :data="treeData"
                    node-key="id"
+                   highlight-current
                    default-expand-all
-                   :expand-on-click-node="false"
-                   :filter-node-method="filterNode">
+                   :filter-node-method="filterNode"
+                   @node-click="ClickTreeNode">
             <span class="custom-tree-node"
                   slot-scope="{ node, data }">
               <span>{{ node.label }}</span>
               <span>
                 <el-button type="text"
                            icon="el-icon-edit"
-                           @click="() => appendTree(data)">
+                           @click="() => modifyTree(data)">
                 </el-button>
                 <el-button type="text"
                            icon="el-icon-delete"
-                           @click="() => removeTree(node, data)">
+                           @click="() => removeTree( data)">
                 </el-button>
               </span>
             </span>
@@ -87,27 +50,25 @@
         </el-col>
       </el-row>
     </div>
+
+    <el-dialog title="信息提示"
+               :visible.sync="dialogVisible"
+               width="30%">
+      <p class="dialog-tips">
+        <i class="el-icon-warning dialog-icon"></i>
+        <span class="dialog-content">是否确认删除信息源 ？</span>
+      </p>
+      <div>删除后将无法回复</div>
+      <span slot="footer"
+            class="dialog-footer">
+        <el-button @click="dialogVisible = false">取消</el-button>
+        <el-button type="primary"
+                   @click="confirmDel">确定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
-const treedata = [
-  {
-    id: 1,
-    label: '一级 1',
-  }, {
-    id: 2,
-    label: '一级 2',
-  }, {
-    id: 3,
-    label: '一级 3',
-  }, {
-    id: 4,
-    label: '一级 4',
-  }, {
-    id: 5,
-    label: '一级 5',
-  }
-];
 //TODO: DEP主机状态字段不确定
 const deviceStatus = {
   0: '在线',
@@ -124,7 +85,8 @@ export default {
   data() {
     return {
       filterTreeText: '',
-      treeData: treedata,
+      treeData: [],
+      curTree: '',
       tableTitle: '全部',
       tableData: [],
       tableHeaderData: [],
@@ -147,8 +109,8 @@ export default {
     }
   },
   created() {
-    this.getTerminalListData()
-    this.getTerminalGroupData()
+    this.getOrgListData()
+    this.getOrgTreeData()
     this.tableHeaderData = [
       {
         name: 'name',
@@ -173,44 +135,33 @@ export default {
     ]
   },
   methods: {
-    getTerminalGroupData(filter) {
-      let params = {
-        current: 1,
-        size: 20,
-      }
-      params = Object.assign({}, params, filter)
-      request.getTerminalGroupByPage(params).then(res => {
-        // this.treeData = []
-        // res.data.records.forEach(val => {
-        // });
+    getOrgTreeData(filter) {
+      request.getOrgTree().then(res => {
+        this.treeData = []
+        res.data.records.forEach(val => {
+          this.treeData.push({
+            id: val.id,
+            label: val.name,
+          })
+        });
       })
     },
-    getTerminalListData(filter) {
+    getOrgListData(filter) {
       let params = {
         current: this.currentPage,
         size: this.pageSize,
       }
       params = Object.assign({}, params, filter)
-      request.getTerminalListByPage(params).then(res => {
+      request.getOrgByPage(params).then(res => {
+        console.log('res==', res)
         this.tableData = []
         this.total = +res.data.total
         res.data.records.forEach(val => {
-          this.tableData.push({
-            name: val.name,
-            mac: val.mac,
-            ip: val.ip,
-            systemType: val.systemType,
-            Account_name: Account_name,
-            description: val.description,
-            groupId: val.groupId,
-            //TODO: DEP主机状态字段不确定
-            deviceStatus: val.deviceStatus,
-          })
+
         });
       })
     },
     filterNode(value, data) {
-      console.log('value, data=', value, data)
       if (!value) return true;
       return data.label.indexOf(value) !== -1;
     },
@@ -219,23 +170,33 @@ export default {
       this.pageSize = 10
       this.getTerminalListData(this.searchCondition)
     },
+    //TODO:跳转路径待确认
     newSet() {
       this.$router.push(`/data/newset/network/port`)
     },
-    modifyRowData(val) {
+    modifyTree(val) {
       this.$router.push({
         path: `/data/newset/network/port`,
         query: { id: val.id }
       })
     },
-    deleteRowData(val) {
+    //TODO:点击竖表 动态加载右侧表格
+    ClickTreeNode(val) {
+      this.tableTitle = val.label
+    },
+    removeTree(val) {
       this.dialogVisible = true
       this.delData = val
     },
     confirmDel() {
       this.dialogVisible = false
       console.log('this.delData', this.delData)
-      //TODO: 调用批量删除接口
+      const params = {
+        id: this.delData.id
+      }
+      request.singleDel().then(res => {
+
+      })
     },
     handleCurrentChange(val) {
       this.currentPage = val
@@ -258,6 +219,7 @@ export default {
     .title-name {
       height: 58px;
       line-height: 58px;
+      min-width: 100px;
     }
     .form-data {
       flex: 1;

@@ -14,7 +14,17 @@ const dataRouter = {
       meta: {
         title: "公共信息源",
         icon: "component"
-      }
+      },
+      children: [
+        {
+          path: ":type",
+          component: () => import("@/views/data/common"),
+          hidden: true,
+          meta: {
+            title: "组织架构"
+          }
+        }
+      ]
     },
     {
       path: "storage",

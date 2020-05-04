@@ -12,17 +12,21 @@
 import navList from '../components/nav-list'
 import { tabs } from './common'
 
-import terminalGroup from './terminalGroup'
+import organization from './organization'
+import account from './account'
+import network from './network'
 
 export default {
   components: {
     navList,
-    terminalGroup
+    organization,
+    account,
+    network
   },
   data() {
     return {
       navData: [],
-      activeName: 'terminalGroup',
+      activeName: 'organization',
       curIndex: 0, // 当前展示的nav下标,
     }
   },
@@ -45,7 +49,7 @@ export default {
   },
   methods: {
     navClick(val) {
-      this.$router.replace(`/data/terminal/${val.name}`)
+      this.$router.replace(`/data/common/${val.name}`)
     }
   }
 }
