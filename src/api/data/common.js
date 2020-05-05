@@ -5,19 +5,28 @@ function getOrgByPage(data) {
     params: data
   })
 }
+function getOrgById(data) {
+  return request({
+    url: "endpoint/source/accountDept/get",
+    method: "post",
+    params: data
+  });
+}
 function getOrgTree(data) {
   return request.get('endpoint/source/get/accountDept/tree', {
     params: data
   })
 }
-function singleDel(data) {
+function singleDelOrg(data) {
   return request({
-    url: "endpoint/source/depHostGroup/delete",
+    url: "endpoint/source/accountDept/delete",
     method: "post",
     params: data
   });
 }
 export default {
   getOrgByPage,
+  getOrgById,
   getOrgTree,
+  singleDelOrg
 }
