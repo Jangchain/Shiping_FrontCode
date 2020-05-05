@@ -1,43 +1,65 @@
 import request from "@/utils/request";
+import { encrypt } from "@/utils";
 
 // 存储资源连接
 export function targetResDataRequest({
-  domain,
-  fileType,
-  iType,
   ip,
+  port,
+  username,
   password,
-  path,
+  iType,
   type,
-  username
+  domain,
+  databaseType,
+  databaseName,
+  path,
+  sid,
+  schemaName,
+  serverAddress,
+  exchangeEdition,
+  lotusServerType,
+  keyType,
+  publicKey,
+  publicKeyName,
+  tableName,
+  share_username,
+  share_password,
+  storageBackend,
+  storageHostname,
+  storageTable,
+  indexSearchBackend,
+  indexSearchHostname
 }) {
   return request({
     url: "/storage/source/targetResDataRequest",
     method: "post",
     data: {
-      domain,
-      fileType,
-      iType,
       ip,
-      password,
-      path,
+      port,
+      username,
+      password: encrypt(password),
+      iType,
       type,
-      username
+      domain,
+      databaseType,
+      databaseName,
+      path,
+      sid,
+      schemaName,
+      serverAddress,
+      exchangeEdition,
+      lotusServerType,
+      keyType,
+      publicKey,
+      publicKeyName,
+      tableName,
+      share_username,
+      share_password,
+      storageBackend,
+      storageHostname,
+      storageTable,
+      indexSearchBackend,
+      indexSearchHostname
     }
-  });
-}
-
-export function login(data) {
-  return request({
-    url: "/common/auth/acct/login",
-    method: "post",
-    data
-  });
-}
-
-export function logout() {
-  return request({
-    url: "/common/auth/acct/logout",
-    method: "post"
   });
 }

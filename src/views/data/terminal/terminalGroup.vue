@@ -124,7 +124,6 @@ export default {
     return {
       filterTreeText: '',
       treeData: [],
-      curTree: '',
       tableTitle: '全部',
       tableData: [],
       tableHeaderData: [],
