@@ -5,34 +5,35 @@
   </div>
 </template>
 <script>
-import commonForm from './components/common-form'
+import commonForm from "./components/common-form";
 
 export default {
-  name: 'Linux',
+  name: "Linux",
   components: {
     commonForm
   },
   data() {
     return {
       ruleForm: {
-        name: '',
-        description: '',
-        ip: '',
-        port: '8080',
-        username: '',
-        password: '',
-        domain: '',
-        keyType: 'password',
-        publicKeyName: ''
+        taskType: "SFTP",
+        name: "",
+        description: "",
+        ip: "",
+        port: "",
+        username: "",
+        password: "",
+        domain: "",
+        passwordType: "PASSWORD",
+        publicKeyName: ""
       },
       rules: {}
-    }
+    };
   },
 
   created() {},
 
   methods: {}
-}
+};
 </script>
 
 <style lang="scss" scoped></style>

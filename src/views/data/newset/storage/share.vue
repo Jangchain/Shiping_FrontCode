@@ -56,12 +56,14 @@ export default {
   data() {
     return {
       ruleForm: {
+        taskType: 'FILE_SYSTEM',
+        type: "File",
         name: "",
         description: "",
-        fileType: "",
-        ip: "",
-        username: "",
-        password: "",
+        fileType: "share",
+        ip: "1.1.1.1",
+        username: "admin",
+        password: "12345",
         domain: "",
         iType: "ResourceList"
       },

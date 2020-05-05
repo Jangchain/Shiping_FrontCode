@@ -5,35 +5,38 @@
   </div>
 </template>
 <script>
-import commonForm from './components/common-form'
+import commonForm from "./components/common-form";
+import { SpValidators } from "./components/spValidators";
 
 export default {
-  name: 'Exchange',
+  name: "Exchange",
   components: {
     commonForm
   },
   data() {
     return {
       ruleForm: {
-        name: '',
-        description: '',
-        ip: '',
-        username: '',
-        password: '',
-        domain: '',
-        serverAddress: '',
-        exchangeEdition: ''
+        taskType: "EXCHANGE",
+        name: "",
+        description: "",
+        ip: "",
+        username: "",
+        password: "",
+        domain: "",
+        serverAddress: "",
+        exchangeEdition: "other"
       },
       rules: {
-
+        exchangeEdition: [SpValidators.required("请选择版本", "change")],
+        domain: [SpValidators.required(), SpValidators.domain()]
       }
-    }
+    };
   },
 
   created() {},
 
   methods: {}
-}
+};
 </script>
 
 <style lang="scss" scoped></style>

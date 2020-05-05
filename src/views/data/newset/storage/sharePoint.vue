@@ -15,6 +15,7 @@ export default {
   data() {
     return {
       ruleForm: {
+        taskType: 'SHARE_POINT',
         name: '',
         description: '',
         ip: '',

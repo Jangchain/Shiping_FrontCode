@@ -15,6 +15,7 @@ export default {
   data() {
     return {
       ruleForm: {
+        taskType: 'LOTUS',
         name: '',
         description: '',
         ip: '',

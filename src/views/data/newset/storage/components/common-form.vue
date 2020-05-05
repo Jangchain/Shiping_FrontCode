@@ -14,51 +14,6 @@
       </el-form-item>
 
       <el-form-item
-        v-if="showFormItem('fileType')"
-        label="类型"
-        prop="fileType"
-      >
-        <el-select v-model="ruleForm.fileType" placeholder="请选择类型">
-          <el-option
-            v-for="item in fileTypeData"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
-      </el-form-item>
-
-      <el-form-item
-        v-if="showFormItem('databaseType')"
-        label="数据库类型"
-        prop="databaseType"
-      >
-        <el-select v-model="ruleForm.databaseType" placeholder="请选择类型">
-          <el-option
-            v-for="item in databaseTypeData"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
-      </el-form-item>
-
-      <el-form-item
-        v-if="showFormItem('storageType')"
-        label="存储类型"
-        prop="storageType"
-      >
-        <el-select v-model="ruleForm.storageType" placeholder="请选择存储类型">
-          <el-option
-            v-for="item in storageTypeData"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
-      </el-form-item>
-
-      <el-form-item
         v-if="showFormItem('description')"
         label="备注"
         prop="description"
@@ -74,6 +29,39 @@
       <form-group-title title="认证信息" />
 
       <el-form-item
+        v-if="showFormItem('databaseType')"
+        label="数据库类型"
+        prop="databaseType"
+      >
+        <el-select
+          v-model="ruleForm.databaseType"
+          placeholder="请选择数据库类型"
+        >
+          <el-option
+            v-for="item in databaseTypeList"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+      </el-form-item>
+
+      <el-form-item
+        v-if="showFormItem('fileType')"
+        label="类型"
+        prop="fileType"
+      >
+        <el-select v-model="ruleForm.fileType" placeholder="请选择类型">
+          <el-option
+            v-for="item in fileTypeData"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+      </el-form-item>
+
+      <el-form-item
         v-if="showFormItem('anonymousLogin')"
         label="匿名登录"
         prop="anonymousLogin"
@@ -81,7 +69,6 @@
         <el-select
           v-model="ruleForm.anonymousLogin"
           placeholder="请选择是否匿名登录"
-          @change="handleAnonymousLogin"
         >
           <el-option label="是" value="1" />
           <el-option label="否" value="0" />
@@ -104,10 +91,7 @@
       </el-form-item>
 
       <el-form-item v-if="showFormItem('site')" label="站点" prop="site">
-        <el-select v-model="ruleForm.site" placeholder="请选择站点">
-          <el-option label="qq" value="qq" />
-          <el-option label="其他" value="other" />
-        </el-select>
+        <el-input v-model="ruleForm.site" placeholder="请输入站点" />
       </el-form-item>
 
       <el-form-item
@@ -123,23 +107,139 @@
         label="版本"
         prop="exchangeEdition"
       >
-        <el-select
-          v-model="ruleForm.exchangeEdition"
-          placeholder="请选择是否匿名登录"
-          @change="handleAnonymousLogin"
-        >
+        <el-select v-model="ruleForm.exchangeEdition" placeholder="请选择版本">
           <el-option label="2003" value="2003" />
           <el-option label="其他" value="other" />
         </el-select>
       </el-form-item>
 
-      <el-form-item v-if="showFormItem('port')" label="端口" prop="port">
-        <el-input v-model="ruleForm.port" placeholder="输入端口" />
+      <!-- 图数据库 -->
+      <el-form-item
+        v-if="
+          ruleForm.taskType == 'DATABASE' && ruleForm.databaseType == 'Neo4jv3'
+        "
+        label="版本"
+        prop="tuVersion"
+      >
+        <el-select v-model="ruleForm.tuVersion" placeholder="请选择版本">
+          <el-option label="Neo4j" value="Neo4j" />
+          <el-option label="Neo4jv3" value="Neo4jv3" />
+        </el-select>
+      </el-form-item>
+
+      <!-- 达梦 -->
+      <el-form-item
+        v-if="ruleForm.taskType == 'DATABASE' && ruleForm.databaseType == 'DM'"
+        label="版本"
+        prop="dmVersion"
+      >
+        <el-select v-model="ruleForm.dmVersion" placeholder="请选择版本">
+          <el-option label="达梦6" value="DM6" />
+          <el-option label="达梦7" value="DM7" />
+        </el-select>
+      </el-form-item>
+
+      <!-- 金仓 -->
+      <el-form-item
+        v-if="
+          ruleForm.taskType == 'DATABASE' && ruleForm.databaseType == 'Kingbase'
+        "
+        label="版本"
+        prop="kingBaseVersion"
+      >
+        <el-select v-model="ruleForm.kingBaseVersion" placeholder="请选择版本">
+          <el-option label="金仓" value="Kingbase" />
+          <el-option label="金仓4" value="Kingbase4" />
+        </el-select>
       </el-form-item>
 
       <el-form-item
-        v-if="showFormItem('username')"
-        v-show="!isAnonymousLogin"
+        v-if="
+          showFormItem('port') &&
+            ruleForm.databaseType != 'Sqlite' &&
+            ruleForm.databaseType != 'Access' &&
+            ruleForm.databaseType != 'janusgraph03'
+        "
+        label="端口"
+        prop="port"
+      >
+        <el-input v-model="ruleForm.port" placeholder="请输入端口" />
+      </el-form-item>
+
+      <!-- isJanusgraph03 -->
+      <el-form-item
+        v-if="isJanusgraph03"
+        label="存储端类型"
+        prop="storageBackend"
+      >
+        <el-select
+          v-model="ruleForm.storageBackend"
+          placeholder="请选择存储端类型"
+        >
+          <el-option label="Hbase" value="hbase" />
+        </el-select>
+      </el-form-item>
+
+      <el-form-item
+        v-if="isJanusgraph03"
+        label="存储端地址"
+        prop="storageHostname"
+      >
+        <el-input
+          v-model="ruleForm.storageHostname"
+          placeholder="请输入存储端地址"
+        />
+      </el-form-item>
+
+      <el-form-item v-if="isJanusgraph03" label="存储端表" prop="storageTable">
+        <el-input
+          v-model="ruleForm.storageTable"
+          placeholder="请输入存储端表"
+        />
+      </el-form-item>
+
+      <el-form-item
+        v-if="isJanusgraph03"
+        label="索引端存储类型"
+        prop="indexSearchBackend"
+      >
+        <el-select
+          v-model="ruleForm.indexSearchBackend"
+          placeholder="请选择索引端存储类型"
+        >
+          <el-option label="Elasticsearch" value="elasticsearch" />
+        </el-select>
+      </el-form-item>
+
+      <el-form-item
+        v-if="isJanusgraph03"
+        label="索引端地址"
+        prop="indexSearchHostname"
+      >
+        <el-input
+          v-model="ruleForm.indexSearchHostname"
+          placeholder="请输入索引端地址"
+        />
+      </el-form-item>
+
+      <el-form-item
+        v-if="ruleForm.databaseType == 'Oracle'"
+        label="SID"
+        prop="sid"
+      >
+        <el-input v-model="ruleForm.sid" placeholder="请输入SID" />
+      </el-form-item>
+
+      <el-form-item v-if="isDatabaseName" label="数据库" prop="databaseName">
+        <el-input v-model="ruleForm.databaseName" placeholder="请输入数据库" />
+      </el-form-item>
+
+      <el-form-item
+        v-if="
+          ruleForm.taskType == 'FTP'
+            ? ruleForm.anonymousLogin === '0'
+            : ruleForm.taskType != 'CLOUD_OBJECT_SAVE'
+        "
         label="用户名"
         prop="username"
       >
@@ -147,28 +247,19 @@
       </el-form-item>
 
       <el-form-item
-        v-if="showFormItem('keyType')"
+        v-if="showFormItem('passwordType')"
         label="密码类型"
-        prop="keyType"
+        prop="passwordType"
       >
-        <el-select
-          v-model="ruleForm.keyType"
-          placeholder="请选择密码类型"
-          @change="handleKeyType"
-        >
-          <el-option label="密码" value="password" />
-          <el-option label="秘钥" value="public_key" />
+        <el-select v-model="ruleForm.passwordType" placeholder="请选择密码类型">
+          <el-option label="密码" value="PASSWORD" />
+          <el-option label="秘钥" value="PUBLIC_KEY" />
         </el-select>
       </el-form-item>
 
-      <el-form-item
-        v-if="showFormItem('password')"
-        v-show="!isAnonymousLogin && isPassword"
-        label="密码"
-        prop="password"
-      >
+      <el-form-item v-if="isPassword" label="密码" prop="password">
         <el-input
-          v-model="ruleForm.password"
+          v-model.trim="ruleForm.password"
           placeholder="输入密码"
           type="password"
         />
@@ -185,11 +276,27 @@
           placeholder="请选择秘钥"
           style="width:337px"
         >
-          <el-option label="秘钥1" value="public_key" />
-          <el-option label="秘钥2" value="password" />
+          <el-option label="秘钥1" value="key1" />
+          <el-option label="秘钥2" value="key2" />
         </el-select>
         <span class="pl-5 pr-5" />
         <el-button type="primary">秘钥管理</el-button>
+      </el-form-item>
+
+      <!-- 云对象存储 -->
+      <el-form-item
+        v-if="showFormItem('storageType')"
+        label="存储类型"
+        prop="storageType"
+      >
+        <el-select v-model="ruleForm.storageType" placeholder="请选择存储类型">
+          <el-option
+            v-for="item in storageTypeList"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
       </el-form-item>
 
       <el-form-item v-if="showFormItem('domain')" label="域名" prop="domain">
@@ -220,12 +327,16 @@
 <script>
 import formGroupTitle from "../../components/form-group-title";
 import {
-  defalutRules,
-  storageTypeData,
+  storageTypeList,
   fileTypeData,
-  databaseTypeData
+  databaseTypeList,
+  cloudDatabaseTypeList,
+  portMap,
+  defalutRules
 } from "./default-data";
 import { targetResDataRequest } from "@/api/data/newset";
+import { formatTargetResData } from "./common-form";
+
 const Api = {
   targetResDataRequest
 };
@@ -249,52 +360,91 @@ export default {
   },
   data() {
     return {
-      storageTypeData,
+      storageTypeList,
       fileTypeData,
-      databaseTypeData,
-      defaultForm: {
-        name: "", // 信息源名称
-        description: "", // 备注
-        storageType: "ali_oss", // 存储类型
-        fileType: "", // 类型
-        ip: "", // ip
-        port: "", // 端口
-        username: "", // 用户名
-        password: "", // 密码
-        domain: "", // 域名
-        databaseType: "MySql", // 数据库类型
-        anonymousLogin: "0", // 匿名登录
-        keyType: "password", // 密码类型
-        serverAddress: "", // 服务器地址
-        exchangeEdition: "", // 版本号
-        site: "", // 站点
-        lotusServerType: ""
-      },
       defalutRules,
-      newRules: {},
+      // newRules: {},
       ruleForm: {},
-      isAnonymousLogin: false,
-      isPassword: true,
       testConnectLoading: false,
       saveable: false
     };
   },
+  computed: {
+    newRules() {
+      return Object.assign({}, this.defalutRules, this.rules);
+    },
+    databaseTypeList() {
+      return this.data.type === "DB" ? databaseTypeList : cloudDatabaseTypeList;
+    },
+
+    isPassword() {
+      // return this.ruleForm.keyType !== "public_key";
+      return this.ruleForm.taskType === "FTP"
+        ? this.ruleForm.anonymousLogin === "0"
+        : !(
+            this.ruleForm.taskType === "SFTP" &&
+            this.ruleForm.passwordType === "PUBLIC_KEY"
+          ) && this.ruleForm.taskType !== "CLOUD_OBJECT_SAVE";
+    },
+
+    isJanusgraph03() {
+      return (
+        this.ruleForm.taskType === "DATABASE" &&
+        this.ruleForm.databaseType === "janusgraph03"
+      );
+    },
+
+    // 判断是否显示数据库名
+    isDatabaseName() {
+      const taskType = this.ruleForm.taskType;
+      return (
+        (taskType === "DATABASE" || taskType === "CLOUD_DATABASE") &&
+        ((this.ruleForm.databaseType === "DM" &&
+          this.ruleForm.dmVersion === "DM6") ||
+          [
+            "SqlServer",
+            "DB2",
+            "Informix",
+            "Kingbase",
+            "PostgreSql",
+            "ux",
+            "HighGo",
+            "Teradata",
+            "Greenplum",
+            "Sybase",
+            "Gbase",
+            "Shentong",
+            "Shenzhou",
+            "Xugu"
+          ].includes(this.ruleForm.databaseType))
+      );
+    }
+  },
   watch: {
-    isPassword(val) {
-      console.log(val);
+    "ruleForm.databaseType": {
+      handler(val) {
+        this.ruleForm.port = portMap[val];
+      },
+      immediate: true
+    },
+    ruleForm: {
+      handler(val) {
+        this.$emit("change", val);
+      },
+      deep: true
+    },
+    data: {
+      handler(val) {
+        this.ruleForm = this.data;
+      },
+      immediate: true
     }
   },
 
   created() {
-    this.newRules = Object.assign(this.defalutRules, this.rules);
     console.log("this.data", this.data);
-    this.ruleForm = this.data;
   },
-  mounted() {
-    // this.initForm()
-    this.handleAnonymousLogin();
-    this.handleKeyType();
-  },
+  mounted() {},
 
   methods: {
     // 测试连接
@@ -309,7 +459,11 @@ export default {
         if (errorMsg) validateStatus = false;
       });
       if (validateStatus) {
-        this.targetResDataRequest(this.ruleForm);
+        const formData = Object.assign({}, this.ruleForm);
+
+        console.log("formData.fileType", formatTargetResData(formData));
+
+        this.targetResDataRequest(formatTargetResData(formData));
       }
     },
 
@@ -322,6 +476,7 @@ export default {
         })
         .finally(() => {
           this.testConnectLoading = false;
+          this.connectError();
         });
     },
 
@@ -347,20 +502,21 @@ export default {
       return true;
     },
 
-    // 处理匿名登录切换
-    handleAnonymousLogin(val) {
-      if (!val) {
-        val = this.ruleForm.anonymousLogin;
-      }
-      this.isAnonymousLogin = val === "1";
-    },
-
-    // 处理密码类型
-    handleKeyType(val) {
-      if (!val) {
-        val = this.ruleForm.keyType || "password";
-      }
-      this.isPassword = val === "password";
+    // 连接主机资源失败回调
+    connectError() {
+      this.$alert(
+        `<div class='text-left'>连接失败！请根据以下可能原因进行排查：<br>
+        &nbsp;&nbsp;1.目标信息是否填写正确。<br>
+        &nbsp;&nbsp;2.未知的用户名或错误密码。<br>
+        &nbsp;&nbsp;3.网络连接存在故障。<br>
+        &nbsp;&nbsp;4.未知的目标或目标未启动。<br>
+        &nbsp;&nbsp;5.端口未开放。<br>
+        &nbsp;&nbsp;6.访问权限不足。</div>`,
+        "错误",
+        {
+          dangerouslyUseHTMLString: true
+        }
+      );
     }
   }
 };

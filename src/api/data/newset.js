@@ -28,8 +28,19 @@ export function targetResDataRequest({
   storageHostname,
   storageTable,
   indexSearchBackend,
-  indexSearchHostname
+  indexSearchHostname,
+  fileType,
+  anonymousLogin,
+  readOnly,
+  site,
+  isScanAttachment
 }) {
+  if (password) {
+    password = encrypt(password);
+  }
+  if (share_password) {
+    share_password = encrypt(share_password);
+  }
   return request({
     url: "/storage/source/targetResDataRequest",
     method: "post",
@@ -37,7 +48,7 @@ export function targetResDataRequest({
       ip,
       port,
       username,
-      password: encrypt(password),
+      password,
       iType,
       type,
       domain,
@@ -59,7 +70,12 @@ export function targetResDataRequest({
       storageHostname,
       storageTable,
       indexSearchBackend,
-      indexSearchHostname
+      indexSearchHostname,
+      fileType,
+      anonymousLogin,
+      readOnly,
+      site,
+      isScanAttachment
     }
   });
 }

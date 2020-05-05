@@ -14,6 +14,7 @@ export default {
   data() {
     return {
       ruleForm: {
+        taskType: 'FTP',
         name: '',
         description: '',
         ip: '',

@@ -5,33 +5,35 @@
       <template v-slot:taskConnect>
         <div>dsss</div>
       </template>
-    </common-form></div>
+    </common-form>
+  </div>
 </template>
 <script>
-import commonForm from './components/common-form'
+import commonForm from "./components/common-form";
+import { SpValidators } from "./components/spValidators";
 
 export default {
-  name: 'CloudStorage',
+  name: "CloudStorage",
   components: {
     commonForm
   },
   data() {
     return {
       ruleForm: {
-        name: '',
-        description: '',
-        ip: '',
-        username: '',
-        password: '',
-        domain: '',
-        port: '5432',
-        storageType: '',
-        accessKeyId: '',
-        accessKeySecret: '',
-        endPoint: ''
+        taskType: "CLOUD_OBJECT_SAVE",
+        name: "",
+        description: "",
+        username: "",
+        password: "",
+        storageType: "ali_oss",
+        accessKeyId: "",
+        accessKeySecret: "",
+        endPoint: ""
       },
-      rules: {}
-    }
+      rules: {
+        storageType: [SpValidators.required("请选择存储类型", "change")]
+      }
+    };
   },
 
   created() {},
@@ -39,10 +41,10 @@ export default {
   methods: {
     // 测试连接
     testConnect(data) {
-      console.log('测试连接', data)
+      console.log("测试连接", data);
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped></style>
