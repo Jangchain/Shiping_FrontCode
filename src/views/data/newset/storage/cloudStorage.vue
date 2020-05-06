@@ -1,6 +1,6 @@
 <!-- 新建云对象存储信息源 -->
 <template>
-  <div>
+  <div class="cloud-object-save-create">
     <common-form :data="ruleForm" :rules="rules" @test-connect="testConnect">
       <template v-slot:taskConnect>
         <div>dsss</div>
@@ -31,20 +31,24 @@ export default {
         endPoint: ""
       },
       rules: {
-        storageType: [SpValidators.required("请选择存储类型", "change")]
+        storageType: [SpValidators.required("请选择存储类型", "change")],
+        accessKeyId: [SpValidators.required()],
+        accessKeySecret: [SpValidators.required()],
+        endPoint: [SpValidators.required()]
       }
     };
   },
 
   created() {},
 
-  methods: {
-    // 测试连接
-    testConnect(data) {
-      console.log("测试连接", data);
-    }
-  }
+  methods: {}
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.cloud-object-save-create {
+  >>> .test-connect-btn {
+    left: 640px;
+  }
+}
+</style>

@@ -285,8 +285,9 @@
 
       <!-- 云对象存储 -->
       <el-form-item
-        v-if="showFormItem('storageType')"
+        v-if="ruleForm.taskType == 'CLOUD_OBJECT_SAVE'"
         label="存储类型"
+        label-width="180px"
         prop="storageType"
       >
         <el-select v-model="ruleForm.storageType" placeholder="请选择存储类型">
@@ -297,6 +298,45 @@
             :value="item.value"
           />
         </el-select>
+      </el-form-item>
+
+      <el-form-item
+        v-if="ruleForm.taskType == 'CLOUD_OBJECT_SAVE'"
+        label-width="180px"
+        label="Access Key ID"
+        prop="accessKeyId"
+      >
+        <el-input
+          v-model.trim="ruleForm.accessKeyId"
+          placeholder="请输入Access Key ID"
+        />
+      </el-form-item>
+
+      <el-form-item
+        v-if="ruleForm.taskType == 'CLOUD_OBJECT_SAVE'"
+        label-width="180px"
+        label="Access Key Secret"
+        prop="accessKeySecret"
+      >
+        <el-input
+          v-model.trim="ruleForm.accessKeySecret"
+          placeholder="请输入Access Key Secret"
+        />
+      </el-form-item>
+
+      <el-form-item
+        v-if="
+          ruleForm.taskType == 'CLOUD_OBJECT_SAVE' &&
+            (ruleForm.storageType == 'ali_oss' || ruleForm.storageType == 's3')
+        "
+        label-width="180px"
+        label="endPoint"
+        prop="endPoint"
+      >
+        <el-input
+          v-model.trim="ruleForm.endPoint"
+          placeholder="请输入endPoint"
+        />
       </el-form-item>
 
       <el-form-item v-if="showFormItem('domain')" label="域名" prop="domain">

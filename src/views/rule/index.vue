@@ -7,26 +7,26 @@
       </el-button-group>
     </div>
     <div class="m-rule-list">
-      <p class="f-ar"><router-link :to="{ path: 'create' }"><el-button size="mini" type="success" icon="el-icon-circle-plus-outline">新增</el-button></router-link></p>
       <el-form :inline="true" :model="query">
         <el-form-item label="规则名称">
-          <el-input v-model="query.name" placeholder="规则名称" />
+          <el-input v-model="query.name" size="mini" placeholder="规则名称" />
         </el-form-item>
         <el-form-item label="规则类型">
-          <el-select v-model="query.subSystem" placeholder="规则类型">
+          <el-select v-model="query.subSystem" size="mini" placeholder="规则类型">
             <el-option v-for="(v, k) in subSystemList" :key="k" :label="v.title" :value="v.val" />
           </el-select>
         </el-form-item>
         <el-form-item label="添加方式">
-          <el-select v-model="query.definitionType" placeholder="添加方式">
+          <el-select v-model="query.definitionType" size="mini" placeholder="添加方式">
             <el-option v-for="(v, k) in definitionTypeList" :key="k" :label="v.title" :value="v.val" />
           </el-select>
         </el-form-item>
         <el-form-item label="备注">
-          <el-input v-model="query.description" placeholder="备注" />
+          <el-input v-model="query.description" size="mini" placeholder="备注" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" icon="el-icon-search" @click="getList(1)">查询</el-button>
+          <el-button size="mini" type="primary" icon="el-icon-search" @click="getList(1)">查询</el-button>
+          <router-link :to="{ path: '/rule/edit' }"><el-button size="mini" type="success" icon="el-icon-circle-plus-outline">新增</el-button></router-link>
         </el-form-item>
       </el-form>
       <el-table v-loading="listLoading" :data="list" element-loading-text="Loading">
@@ -39,13 +39,15 @@
         <el-table-column fixed="right" label="操作" align="center" width="280px">
           <template slot-scope="scope">
             <template v-if="selectable(scope.row, scope.$index)">
-              <router-link :to="{ path: 'edit?id=' + scope.row.id }">
+              <router-link :to="{ path: '/rule/edit?id=' + scope.row.id }">
                 <el-button size="mini" type="primary" icon="el-icon-edit">编辑</el-button>
               </router-link>
               <el-button size="mini" type="danger" plain icon="el-icon-delete" @click="remove(scope.row.id)">删除</el-button>
             </template>
             <template v-else>
-              <el-button size="mini" plain icon="el-icon-share" @click="remove(scope.row.id)">派生</el-button>
+              <router-link :to="{ path: '/rule/edit?type=ext&id=' + scope.row.id }">
+                <el-button size="mini" plain icon="el-icon-share">派生</el-button>
+              </router-link>
             </template>
           </template>
         </el-table-column>

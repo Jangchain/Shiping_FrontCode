@@ -15,6 +15,14 @@ const ruleRouter = {
       }
     },
     {
+      path: 'edit',
+      component: () => import('@/views/rule/ruleForm'),
+      hidden: true,
+      meta: {
+        title: '修改规则'
+      }
+    },
+    {
       path: 'identifyModel',
       name: 'identifyModel',
       component: () => import('@/views/rule/recognition'),

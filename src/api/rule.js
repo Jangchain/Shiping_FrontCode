@@ -8,3 +8,10 @@ export function pageRules(params) {
     params
   })
 }
+
+export function getRulesById(id) {
+  return request({
+    url: `/srd/tactic/rules/getRulesById/${id}`,
+    method: 'get'
+  })
+}
