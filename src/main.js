@@ -44,6 +44,14 @@ Object.keys(filters).forEach(key => {
 Vue.config.productionTip = false
 
 Vue.mixin({
+  computed: {
+    apiPrefix() {
+      return process.env.VUE_APP_BASE_API
+    }
+  },
+  beforeCreate() {
+    this.$store.commit('nav/SET_NAV_INDEX_BY_KEY', (location.hash.match(/^#\/(\w+)\/?/) || [])[1])
+  },
   methods: {
     navTo(url) {
       return this.$router.push(url)

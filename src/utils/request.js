@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { Message } from 'element-ui'
+import { Message, MessageBox } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 import MD5 from 'md5.js'
@@ -62,8 +62,7 @@ service.interceptors.response.use(
    * You can also judge the status by HTTP Status Code
    */
   response => {
-    console.log(response)
-    const res = response.data
+    const res = response.data || {}
 
     // if the custom code is not 20000, it is judged as an error.
     if (res.code) {
@@ -72,34 +71,29 @@ service.interceptors.response.use(
         type: 'error',
         duration: 5 * 1000
       })
-
-      // // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
-      // if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
-      //   // to re-login
-      //   MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
-      //     confirmButtonText: 'Re-Login',
-      //     cancelButtonText: 'Cancel',
-      //     type: 'warning'
-      //   }).then(() => {
-      //     store.dispatch('user/resetToken').then(() => {
-      //       location.reload()
-      //     })
-      //   })
-      // }
       return Promise.reject(new Error(res.message || 'Error'))
     } else {
       return res
     }
   },
   error => {
-    console.log('httpError', error)
-    const res = error.response.data
-    console.log(res)
+    const res = error.response.data || {}
     Message({
       message: res.message || '系统繁忙，请稍后重试',
       type: 'error',
       duration: 5 * 1000
     })
+    if ([10010066, 10010067].indexOf(res.code) > -1) {
+      MessageBox.confirm('你已离线，请重新登录', '提示', {
+        confirmButtonText: '重新登录',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        store.dispatch('user/resetToken').then(() => {
+          location.reload()
+        })
+      })
+    }
     return Promise.reject(error)
   }
 )
