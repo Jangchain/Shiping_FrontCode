@@ -1,7 +1,7 @@
 <!-- 新建云对象存储信息源 -->
 <template>
   <div class="cloud-object-save-create">
-    <common-form :data="ruleForm" :rules="rules" @test-connect="testConnect">
+    <common-form :data="ruleForm" :rules="rules">
       <template v-slot:taskConnect>
         <div>dsss</div>
       </template>

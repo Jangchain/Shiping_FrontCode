@@ -46,7 +46,7 @@ const adminRouter = {
     },
     {
       path: 'dept',
-      component: () => import('@/views/admin/index'),
+      component: () => import('@/views/admin/dept'),
       meta: { title: '组织管理', icon: 'eye-open', roles: ['1000000000000000000'] }
     },
     {
@@ -63,13 +63,7 @@ const adminRouter = {
     {
       path: 'setting',
       component: () => import('@/views/admin/setting'),
-      meta: { title: '基本设置', icon: 'eye-open', roles: ['1000000000000000000'] },
-      redirect: 'setting/auth',
-      children: [{
-        path: 'auth',
-        component: () => import('@/views/admin/setting/auth'),
-        meta: { title: '账号安全设置' }
-      }]
+      meta: { title: '基本设置', icon: 'eye-open', roles: ['1000000000000000000'] }
     },
     {
       path: 'alarm',

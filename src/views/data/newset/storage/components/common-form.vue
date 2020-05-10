@@ -375,7 +375,7 @@ import {
   defalutRules
 } from "./default-data";
 import { targetResDataRequest } from "@/api/data/newset";
-import { formatTargetResData } from "./common-form";
+import { formatTargetResData } from "./common-form-format";
 
 const Api = {
   targetResDataRequest

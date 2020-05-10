@@ -50,7 +50,7 @@ Vue.mixin({
     }
   },
   beforeCreate() {
-    this.$store.commit('nav/SET_NAV_INDEX_BY_KEY', (location.hash.match(/^#\/(\w+)\/?/) || [])[1])
+    store.commit('nav/SET_NAV_INDEX_BY_KEY', (location.hash.match(/^#\/(\w+)\/?/) || [])[1])
   },
   methods: {
     navTo(url) {

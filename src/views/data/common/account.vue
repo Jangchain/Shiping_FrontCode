@@ -3,31 +3,36 @@
     <div class="content-in">
       <el-row :gutter="20">
         <el-col :span="4">
-          <div class="title-name">终端信息源组</div>
+          <div class="title-name">用户分组</div>
         </el-col>
+        <!-- 表单 -->
         <el-col :span="20">
           <div class="form-data">
             <div class="title-name">{{tableTitle}}</div>
             <div class="title-form">
               <el-form :inline="true"
                        :model="searchCondition">
-                <el-form-item label="主机名称">
+                <el-form-item label="账号">
                   <el-input v-model="searchCondition.name"
+                            clearable
                             placeholder="请输入内容">
                   </el-input>
                 </el-form-item>
                 <el-form-item label="IP">
                   <el-input v-model="searchCondition.ip"
+                            clearable
                             placeholder="请输入内容">
                   </el-input>
                 </el-form-item>
-                <el-form-item label="系统类型">
-                  <el-input v-model="searchCondition.description"
+                <el-form-item label="电子邮箱">
+                  <el-input v-model="searchCondition.mail"
+                            clearable
                             placeholder="请输入内容">
                   </el-input>
                 </el-form-item>
-                <el-form-item label="DEP主机状态">
-                  <el-input v-model="searchCondition.description"
+                <el-form-item label="MAC地址">
+                  <el-input v-model="searchCondition.mac"
+                            clearable
                             placeholder="请输入内容">
                   </el-input>
                 </el-form-item>
@@ -36,8 +41,13 @@
                              @click="search">查询</el-button>
                 </el-form-item>
                 <el-form-item>
+                  <el-button type="danger"
+                             :disabled="!selection.length"
+                             @click="batchDel">批量删除</el-button>
+                </el-form-item>
+                <el-form-item>
                   <el-button type="success"
-                             @click="newSet">新建组</el-button>
+                             @click="newSet">新建</el-button>
                 </el-form-item>
               </el-form>
             </div>
@@ -45,6 +55,7 @@
         </el-col>
       </el-row>
       <el-row :gutter="20">
+        <!-- 竖表 -->
         <el-col :span="4">
           <div class="tree-filter-input">
             <el-input placeholder="输入关键字进行筛选"
@@ -59,31 +70,28 @@
                    :filter-node-method="filterNode"
                    @node-click="ClickTreeNode">
             <span class="custom-tree-node"
-                  slot-scope="{ node, data }">
-              <span>{{ node.label }}</span>
+                  slot-scope="{ data }">
               <span>
-                <el-button type="text"
-                           icon="el-icon-edit"
-                           @click="() => modifyTree(data)">
-                </el-button>
-                <el-button type="text"
-                           icon="el-icon-delete"
-                           @click="() => removeTree( data)">
-                </el-button>
+                <span :class="data.icon"></span>
+                <span>{{ data.label }}</span>
               </span>
             </span>
           </el-tree>
         </el-col>
         <el-col :span="20">
           <Datatable class="data-table"
+                     v-loading="tableloading"
                      @handleSizeChange="handleSizeChange"
                      @handleCurrentChange="handleCurrentChange"
+                     @modifyRowData="modifyRowData"
+                     @deleteRowData="deleteRowData"
+                     @selectionChange="selectionChange"
                      :tableData="tableData"
                      :tableHeaderData="tableHeaderData"
                      :total="total"
                      :pageSize="pageSize"
                      :currentPage="currentPage"
-                     :isShowModify="false">
+                     :isShowDraw="false">
           </Datatable>
         </el-col>
       </el-row>
@@ -107,21 +115,14 @@
   </div>
 </template>
 <script>
-//TODO: DEP主机状态字段不确定
-const deviceStatus = {
-  0: '在线',
-  1: '离线',
-  2: '网络异常离线',
-  3: '客户端异常离线',
-}
-
 import Datatable from '../components/data-table'
-import request from "@/api/data/terminal";
+import request from "@/api/data/common";
 export default {
-  name: 'terminalGroup',
+  name: 'account',
   components: { Datatable },
   data() {
     return {
+      tableloading: true,
       filterTreeText: '',
       treeData: [],
       curTree: '',
@@ -134,11 +135,13 @@ export default {
       searchCondition: {
         name: '',
         ip: '',
-        systemType: '',
-        deviceStatus: ''
+        mac: '',
+        mail: ''
       },
       dialogVisible: false,
-      delData: []
+      delData: [],
+      selection: [],
+      curGroupId: '',//当前表格展示的组
     }
   },
   watch: {
@@ -147,116 +150,168 @@ export default {
     }
   },
   created() {
-    this.getTerminalListData()
-    this.getTerminalGroupData()
+    this.getAccountListData()
+    this.getAccountGroupData()
+    //TODO:字段确认：工号和账号区别？用哪个字段。
+    //TODO:字段确认：所在位置是哪个字段，目前接口没有范返回。
     this.tableHeaderData = [
       {
         name: 'name',
-        label: '主机名称'
+        label: '账号'
+      },
+      {
+        name: 'username',
+        label: '真实姓名'
+      },
+      {
+        name: 'departmentName',
+        label: '部门'
+      },
+      {
+        name: 'jobNum',
+        label: '工号'
+      },
+      {
+        name: 'phone',
+        label: '电话号码'
+      },
+      {
+        name: '',
+        label: '所在位置'
+      },
+      {
+        name: 'mail',
+        label: '电子邮箱'
+      },
+      {
+        name: 'ip',
+        label: '用户IP'
       },
       {
         name: 'mac',
         label: 'MAC地址'
-      },
-      {
-        name: 'ip',
-        label: 'IP地址'
-      },
-      {
-        name: 'systemType',
-        label: '系统类型'
-      },
-      {
-        name: 'deviceStatus',
-        label: 'DEP主机状态'
       }
     ]
   },
   methods: {
-    getTerminalGroupData(filter) {
+    //TODO:竖表数据结构，交互逻辑待确定，新建页面，删除等
+    /* 获取组 竖表数据 */
+    getAccountGroupData(filter) {
       let params = {
         current: 1,
         size: 20,
       }
       params = Object.assign({}, params, filter)
-      request.getTerminalGroupByPage(params).then(res => {
-        this.treeData = []
-        res.data.records.forEach(val => {
-          this.treeData.push({
-            id: val.id,
-            label: val.name,
-          })
-        });
+      request.getAccountGroupByPage(params).then(res => {
+        if (res.code === 0) {
+          this.treeData = this.treeDataFormat(res.data.records)
+        }
+      }).catch(err => {
+        console.log(err)
       })
     },
-    getTerminalListData(filter) {
+    treeDataFormat(data) {
+      data.forEach(val => {
+        val.label = val.name
+        val.icon = 'el-icon-folder'
+        if (val.children && val.children.length > 0) {
+          // val.icon = 'el-icon-folder'
+          this.treeDataFormat(val.children)
+        } else {
+          // val.icon = 'el-icon-s-custom'
+        }
+      })
+      return data
+    },
+    /* 获取单个组数据 竖表数据 */
+    getSingleAccountGroupData() {
+      request.getAccountGroupSingle(this.curGroupId).then(res => {
+        if (res, code === 0) {
+          //TODO:
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    /* 人员列表，表格数据 */
+    getAccountListData() {
+      this.tableloading = true;
       let params = {
         current: this.currentPage,
         size: this.pageSize,
       }
-      params = Object.assign({}, params, filter)
-      request.getTerminalListByPage(params).then(res => {
-        this.tableData = []
-        this.total = +res.data.total
-        res.data.records.forEach(val => {
-          this.tableData.push({
-            name: val.name,
-            mac: val.mac,
-            ip: val.ip,
-            systemType: val.systemType,
-            Account_name: Account_name,
-            description: val.description,
-            groupId: val.groupId,
-            //TODO: DEP主机状态字段不确定
-            deviceStatus: val.deviceStatus,
-          })
-        });
+      params = Object.assign({}, params, this.searchCondition, { groupId: this.curGroupId })
+      request.getAccountByPage(params).then(res => {
+        if (res.code === 0) {
+          this.tableloading = false;
+          this.tableData = res.data.records
+          this.total = +res.data.total
+        }
+      }).catch(err => {
+        console.log(err)
       })
     },
+    /* 竖表搜索 */
     filterNode(value, data) {
       if (!value) return true;
       return data.label.indexOf(value) !== -1;
     },
+    //TODO:点击竖表 动态加载竖表
+    ClickTreeNode(val) {
+      this.tableTitle = val.label;
+      this.curGroupId = val.id;
+      this.getSingleAccountGroupData();
+      this.currentPage = 1
+      this.pageSize = 10
+      this.getAccountListData();
+    },
     search() {
       this.currentPage = 1
       this.pageSize = 10
-      this.getTerminalListData(this.searchCondition)
+      this.getAccountListData()
     },
     //TODO:跳转路径待确认
     newSet() {
       this.$router.push(`/data/newset/network/port`)
     },
-    modifyTree(val) {
-      this.$router.push({
-        path: `/data/newset/network/port`,
-        query: { id: val.id }
-      })
+    modifyRowData(val) {
+      // this.$router.push({
+      //   path: `/data/newset/storage/cloudDatabase`,
+      //   query: { id: val.id }
+      // })
     },
-    //TODO:点击竖表 动态加载右侧表格
-    ClickTreeNode(val) {
-      this.tableTitle = val.label
-    },
-    removeTree(val) {
+    deleteRowData(val) {
       this.dialogVisible = true
-      this.delData = val
+      this.delData = [val]
+    },
+    batchDel() {
+      this.dialogVisible = true
+      this.delData = this.selection
+    },
+    selectionChange(val) {
+      this.selection = val
     },
     confirmDel() {
-      this.dialogVisible = false
-      console.log('this.delData', this.delData)
-      const params = {
-        id: this.delData.id
-      }
-      request.singleDel().then(res => {
-
+      this.dialogVisible = false;
+      const ids = [];
+      this.delData.forEach(val => {
+        ids.push(val.id)
+      })
+      request.batchDelAccount({ ids }).then(res => {
+        if (res.code === 0) {
+          this.search()
+        }
+      }).catch(err => {
+        console.log(err)
       })
     },
     handleCurrentChange(val) {
       this.currentPage = val
-      this.getTerminalListData()
+      this.getAccountListData()
     },
     handleSizeChange(val) {
       this.pageSize = val
-      this.getTerminalListData()
+      this.getAccountListData()
     }
   }
 }
