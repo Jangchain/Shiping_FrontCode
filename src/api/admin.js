@@ -183,11 +183,47 @@ export function setIPAndMark(data, id) {
   })
 }
 
-// //删除内网IP
-// export function setIPAndMark(data, id) {
-//   return request({
-//     url: `srd/dms/intranet/setIPAndMark?componentId=${id}`,
-//     method: 'post',
-//     data
-//   })
-// }
+export function getDeptTree() {
+  return request.get(`common/auth/dept/get/list/tree`)
+}
+
+export function getDeptTreeById(id) {
+  return request.get(`common/auth/dept/get/list/tree/${id}`)
+}
+
+export function getAuthorityList(data, id) {
+  return request.get(`common/auth/dept/get/authority/acct/list/${id}`, {
+    params: data
+  })
+}
+
+//添加部门
+export function insertDept(data) {
+  return request({
+    url: `common/auth/dept/insert`,
+    method: 'post',
+    data
+  }) 
+}
+
+//删除部门
+export function deleteDept(id) {
+  return request({
+    url: `common/auth/dept/delete/${id}`,
+    method: 'post',
+  })
+}
+
+//获取部门信息
+export function getDept(id) {
+  return request.get(`common/auth/dept/get/${id}`)
+}
+
+//更新部门信息
+export function updateDept(data) {
+  return request({
+    url: `common/auth/dept/update`,
+    method: 'post',
+    data
+  })
+}

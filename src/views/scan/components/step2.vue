@@ -24,166 +24,457 @@
       </ul>
     </div>
     <div id="bts">
-      <p>选取信息源</p>
-      <el-tabs type="border-card">
-        <el-tab-pane label="存储类目标">
-          <div id="left">
-            <el-table :data="tableData" style="width: 100%">
-              <el-table-column label="存储信息源" align="center">
-                  <template slot-scope="scope">
-                   <el-switch
-                    v-model="scope.value1"
-                    active-color="#13ce66"
-                    inactive-color="#ff4949">
-                    </el-switch>
-                </template>
-              </el-table-column>
-              <el-table-column
-                align="right" label="类型" >
-                    <template slot="header" slot-scope="scope">
-                        <el-button type="text">类型</el-button>
-                        <el-select v-model="scope.select" slot="prepend" placeholder="请选择">
-                            <el-option v-for="typelo in types" :key="typelo.value" :label="typelo.value"></el-option>
-                        </el-select>
-                    </template>
-                </el-table-column>
-            </el-table>
-          </div>
-          <div id="right">
-              <el-table :data="tableData" style="width: 100%">
-              <el-table-column label="存储信息源" align="center">
-                  <template slot-scope="scope">
-                   <el-switch
-                    v-model="scope.value1"
-                    active-color="#13ce66"
-                    inactive-color="#ff4949">
-                    </el-switch>
-                </template>
-              </el-table-column>
-              <el-table-column
-                align="right" label="类型" >
-                    <template slot="header" slot-scope="scope">
-                        <el-button type="text">类型</el-button>
-                        <el-select v-model="scope.select" placeholder="请选择">
-                          <el-option v-for="typelo in types" :value="typelo.label" :key="typelo.value">
-                          </el-option>
-                      </el-select>
-                    </template>
-                </el-table-column>
-            </el-table>
-          </div>
-        <span id="aa">信息源解释说明信息源解释说明信息源解释说明信息源解释说明，去新建信息源。</span>
-
-        </el-tab-pane>
-        <el-tab-pane label="终端类目标">配置管理</el-tab-pane>
-      </el-tabs>
-      <div id="btn">
-        <el-button id="btns" @click="back()">上一步</el-button>
-        <el-button id="btns" type="primary" @click="go()">下一步</el-button>
-      </div>
+      <p id="txt">请在以下列表选择相关信息源，也可通过新建创建信息源，新建的数据默认选中，与信息源列表数据同步更新.</p>
+      <el-button type="success">新建</el-button>
+      <el-select v-model="value" placeholder="请选择" @change="selectChange(value)">
+        <el-option v-for="item in types" :key="item.value" :label="item.label" :value="item.value"></el-option>
+      </el-select>
+      <Datatable
+        @select="select"
+        @setCurrentRow="setCurrentRow"
+        @handleSizeChange="handleSizeChange"
+        @handleCurrentChange="handleCurrentChange"
+        @modifyRowData="modifyRowData"
+        @deleteRowData="deleteRowData"
+        :isStep2=true
+        :list="list"
+        :tableData="tableData"
+        :tableHeaderData="tableHeaderData"
+        :total="total"
+        :widthes="widthes"
+        :typesStep2="typesStep2"
+        :pageSize="pageSize"
+        :currentPage="currentPage"
+      ></Datatable>
     </div>
   </div>
 </template>
 
 <script>
+import Datatable from "../components/data-table";
+import { sourceGetPage } from "@/api/scan";
 export default {
-    name:'step2',
+  name: "step2",
+  components: {
+    Datatable
+  },
   data() {
     return {
-      value1:'',
-      tableData: [
-          {
-            value1:true,
-            select:''
-          },
-          {
-            value1:true,
-            select:''
-          },
-          {
-            value1:true,
-            select:''
-          },
+      value: "",
+      pageSize: 10,
+      currentPage: 1,
+      tableData: [],
+      tableHeaderData: [],
+      total: 10,
+      widthes: 0,
+      typesStep2: 0,
+      types: [
         {
-            value1:true,
-            select:''
-          },
-          {
-            value1:true,
-            select:''
-          },
-          {
-            value1:true,
-            select:''
-          },{
-            value1:true,
-            select:''
-          },
-          {
-            value1:false,
-            select:''
-          },
-          {
-            value1:true,
-            select:''
-          },
+          value: "file",
+          label: "共享文件"
+        },
+        {
+          value: "DATABASE",
+          label: "数据库"
+        },
+        {
+          value: "FTP",
+          label: "FTP"
+        },
+        {
+          value: "SFTP",
+          label: "Linux主机"
+        },
+        {
+          value: "EXCHANGE",
+          label: "Exchange"
+        },
+        {
+          value: "SHARE_POINT",
+          label: "SharePoint"
+        },
+        {
+          value: "LOTUS",
+          label: "Lotus"
+        },
+        {
+          value: "WEBDAV",
+          label: "WebDAV"
+        },
+        {
+          value: "CLOUD_DATABASE",
+          label: "云数据库"
+        },
+        {
+          value: "CLOUD_OBJECT_SAVE",
+          label: "云对象存储"
+        }
       ],
-      types:[
-           {
-              value: 'all',
-              label: '全部',
-            },
-            {
-              value: 'share',
-              label: '共享文档',
-            },
-            {
-              value: 'oracle',
-              label: '数据库',
-            },
-            {
-              value: 'ftps',
-              label: 'FTP',
-            },
-            {
-              value: 'linuxs',
-              label: 'Linux主机',
-            },
-            {
-              value: 'changes',
-              label: 'Exchange',
-            },
-            {
-              value: 'sahres',
-              label: 'SharePoint',
-            },
-            {
-              value: 'lotu',
-              label: 'Lotus',
-            },
-            {
-              value: 'webs',
-              label: 'WebDAV',
-            },
-            {
-              value: 'coluds',
-              label: '云数据库',
-            },
-            {
-              value: 'storage',
-              label: '云对象存储',
-            },
+      title: [
+        [
+          {
+            name: "name",
+            label: "信息源名称"
+          },
+          {
+            name: "ip",
+            label: "IP地址"
+          },
+          {
+            name: "createDate",
+            label: "创建时间"
+          },
+          {
+            name: "creator",
+            label: "创建者"
+          },
+          {
+            name: "description",
+            label: "备注"
+          }
+        ],
+        [
+          {
+            name: "name",
+            label: "信息源名称"
+          },
+          {
+            name: "databaseType",
+            label: "数据库类型"
+          },
+          {
+            name: "ip",
+            label: "IP地址"
+          },
+          {
+            name: "createDate",
+            label: "创建时间"
+          },
+          {
+            name: "creator",
+            label: "创建者"
+          },
+          {
+            name: "description",
+            label: "备注"
+          }
+        ],
+        [
+          {
+            name: "name",
+            label: "信息源名称"
+          },
+          {
+            name: "port",
+            label: "FTP端口"
+          },
+          {
+            name: "ip",
+            label: "IP地址"
+          },
+          {
+            name: "createDate",
+            label: "创建时间"
+          },
+          {
+            name: "creator",
+            label: "创建者"
+          },
+          {
+            name: "description",
+            label: "备注"
+          }
+        ],
+        [
+          {
+            name: "name",
+            label: "信息源名称"
+          },
+          {
+            name: "username",
+            label: "登录名"
+          },
+          {
+            name: "databaseType",
+            label: "认证方式"
+          },
+          {
+            name: "ip",
+            label: "IP地址"
+          },
+          {
+            name: "createDate",
+            label: "创建时间"
+          },
+          {
+            name: "creator",
+            label: "创建者"
+          },
+          {
+            name: "description",
+            label: "备注"
+          }
+        ],
+        [
+          {
+            name: "name",
+            label: "信息源名称"
+          },
+          {
+            name: "username",
+            label: "域名"
+          },
+          {
+            name: "databaseType",
+            label: "版本"
+          },
+          {
+            name: "databaseType",
+            label: "服务器地址"
+          },
+          {
+            name: "ip",
+            label: "IP地址"
+          },
+          {
+            name: "createDate",
+            label: "创建时间"
+          },
+          {
+            name: "creator",
+            label: "创建者"
+          },
+          {
+            name: "description",
+            label: "备注"
+          }
+        ],
+        [
+          {
+            name: "name",
+            label: "信息源名称"
+          },
+          {
+            name: "port",
+            label: "域名"
+          },
+          {
+            name: "username",
+            label: "用户名"
+          },
+          {
+            name: "ip",
+            label: "IP地址"
+          },
+          {
+            name: "createDate",
+            label: "创建时间"
+          },
+          {
+            name: "creator",
+            label: "创建者"
+          },
+          {
+            name: "description",
+            label: "备注"
+          }
+        ],
+        [
+          {
+            name: "name",
+            label: "信息源名称"
+          },
+          {
+            name: "lotusServerType",
+            label: "Lotus类型"
+          },
+          {
+            name: "port",
+            label: "端口"
+          },
+          {
+            name: "username",
+            label: "用户名"
+          },
+          {
+            name: "ip",
+            label: "IP地址"
+          },
+          {
+            name: "createDate",
+            label: "创建时间"
+          },
+          {
+            name: "creator",
+            label: "创建者"
+          },
+          {
+            name: "description",
+            label: "备注"
+          }
+        ],
+        [
+          {
+            name: "name",
+            label: "信息源名称"
+          },
+          {
+            name: "lotusServerType",
+            label: "资源树"
+          },
+          {
+            name: "username",
+            label: "用户名"
+          },
+          {
+            name: "ip",
+            label: "IP地址"
+          },
+          {
+            name: "createDate",
+            label: "创建时间"
+          },
+          {
+            name: "creator",
+            label: "创建者"
+          },
+          {
+            name: "description",
+            label: "备注"
+          }
+        ],
+        [
+          {
+            name: "name",
+            label: "信息源名称"
+          },
+          {
+            name: "databaseType",
+            label: "数据库类型"
+          },
+          {
+            name: "port",
+            label: "端口"
+          },
+          {
+            name: "ip",
+            label: "IP地址"
+          },
+          {
+            name: "createDate",
+            label: "创建时间"
+          },
+          {
+            name: "creator",
+            label: "创建者"
+          },
+          {
+            name: "description",
+            label: "备注"
+          }
+        ],
+        [
+          {
+            name: "name",
+            label: "信息源名称"
+          },
+          {
+            name: "databaseType",
+            label: "存储类型"
+          },
+          {
+            name: "Access Key ID",
+            label: "id"
+          },
+          {
+            name: "createDate",
+            label: "创建时间"
+          },
+          {
+            name: "creator",
+            label: "创建者"
+          },
+          {
+            name: "description",
+            label: "备注"
+          }
+        ]
       ],
-      select:''
+      list:{}
+      
     };
   },
   methods: {
-    back(){
-      this.$router.push('./step1')
+    select(row){
+      console.log(row)
+      this.list = row;
     },
-    go(){
-      this.$router.push('./step3')
+    setCurrentRow(e){
+      console.log(e)
+    },
+    sourceList() {
+      const data = {
+        current: this.currentPage,
+        size: this.pageSize,
+        resType: this.value
+      };
+      sourceGetPage(data).then(res => {
+        console.log(res);
+        if (res.code == 0) {
+          this.tableData = res.data.records;
+          this.total =Number(res.data.total) ,
+         this.currentPage = res.data.current
+        }
+      });
+    },
+    selectChange(value) {
+      let _this = this;
+      this.types.forEach((item, index) => {
+        console.log(index);
+        if (item.value === value) {
+          // _this.tableHeaderData[0].label = item.label
+          _this.tableHeaderData = _this.title[index];
+        }
+      });
+      this.sourceList();
+    },
+    modifyRowData(val) {
+      console.log(val);
+    },
+    deleteRowData(val) {
+      console.log(val);
+    },
+    handleCurrentChange(val) {
+      console.log(val);
+    },
+    handleSizeChange(val) {
+      console.log(val);
     }
+  },
+  mounted() {
+    this.tableHeaderData = [
+      {
+        name: "name",
+        label: "信息源名称"
+      },
+      {
+        name: "ip",
+        label: "IP地址"
+      },
+      {
+        name: "createDate",
+        label: "创建时间"
+      },
+      {
+        name: "creator",
+        label: "创建者"
+      },
+      {
+        name: "description",
+        label: "备注"
+      }
+    ];
+    this.sourceList();
   }
 };
 </script>
@@ -192,65 +483,13 @@ export default {
 #bts {
   width: 100%;
   margin-left: 40px;
-  p {
-    font-size: 24px;
-    font-weight: bold;
-    color: rgba(16, 16, 16, 1);
-  }
-  .el-tabs{
-    width: 80vw;
-      .el-tab-pane{
-          display: flex;
-          flex-direction: row;
-          justify-content: space-around;
-          #aa{
-            position: absolute;
-            top: 500px;
-            display: inline-block;
-            height: 40px;
-            font-size: 14px;
-            color: #101010;
-          }
-          #left{
-              width: 800px;
-              margin-left: 0;
-              margin-bottom: 84px;
-             .el-table th.is-leaf, .el-table td{
-               border: none;
-             }
-             .el-table::before {//去掉最下面的那一条线
-                height: 0px;
-              }
-              .el-table th{
-                  background: #eee;
-                }
-          }
-          #right{
-            margin-left: 20px;
-              width: 800px;
-              .el-table th.is-leaf, .el-table td{
-               border: none;
-             }
-             .el-table::before {//去掉最下面的那一条线
-                height: 0px;
-              }
-              .el-table th{
-                background: #eee;
-                height: 40px;
-              }
-          }
-      }
-  }
-  #btn{
-    width: 100%;
-    margin-top: 71px;
-    .el-button{
-      width: 200px;
-      height: 60px;
-    }
+  #txt {
+    font-size: 16px;
+    font-weight: normal;
+    color: #999;
+    line-height: 2.5rem;
   }
 }
-
 </style>
 <style lang="scss" scoped>
 #top1 {
@@ -258,59 +497,69 @@ export default {
   width: 100%;
   height: 100px;
   background: #2a41c1;
-  // margin-top: 20px;
-  border-bottom: solid 1px rgba(255, 0, 0, 0);
-  ul{
+  ul {
     display: flex;
     flex-direction: row;
-    border-bottom: solid 1px rgb(19, 18, 18);
+    border-bottom: solid 1px rgba(19, 18, 18, 0.123);
   }
- ul li{
-   width: 240px;
-   height: 120px;
-   padding-top: 20px;
-   margin-top: -20px;
-   margin-right: 0;
-   margin-left: 0;
-   list-style: none;
-   border-radius: 10px 10px 0 0;
-   line-height: 100px;
-   display: flex;
-   flex-direction: row;
-   justify-content: space-around;
-   background: #fff;
-   i{
-     &:nth-of-type(1){
-     width: 60px;
-     height: 60px;
-     border-radius: 30px;
-    margin-top: 20px;
-    line-height: 60px;
-    text-align: center;
-   }
-   em{
-      display: inline-block;
-      width: 10px;
-      height: 10px;
-      background: #fff;
-      line-height: 100px;
-      margin-top: 44px;
-      color: #D4D4D4;
-   }
-   }
- }
- ul li:nth-child(3){
-   padding-top: 0;
-   height: 100px;
-   background: #2a41c1;
-   margin-top: 0;
- }
- ul li:nth-child(4){
-   padding-top: 0;
-   height: 100px;
-   background: #2a41c1;
-   margin-top: 0;
- }
+  ul li {
+    width: 240px;
+    height: 120px;
+    padding-top: 20px;
+    margin-top: -20px;
+    margin-right: 0;
+    margin-left: 0;
+    list-style: none;
+    line-height: 100px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    background: #fff;
+    &:nth-of-type(1) {
+      border-radius: 10px 0px 0 0;
+    }
+    &:nth-of-type(2) {
+      border-radius: 0 10px 0 0;
+    }
+    i {
+      &:nth-of-type(1) {
+        width: 60px;
+        height: 60px;
+        border-radius: 30px;
+        margin-top: 20px;
+        line-height: 60px;
+        text-align: center;
+        color: white;
+      }
+      em {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        background: #fff;
+        line-height: 100px;
+        margin-top: 44px;
+        color: #d4d4d4;
+      }
+    }
+  }
+  ul li:nth-child(3) {
+    padding-top: 0;
+    height: 100px;
+    background: #2a41c1;
+    margin-top: 0;
+    i {
+      color: #333;
+    }
+  }
+  ul li:nth-child(4) {
+    padding-top: 0;
+    height: 100px;
+    background: #2a41c1;
+    margin-top: 0;
+    i {
+      color: #333;
+    }
+  }
 }
 i {
   font-style: normal;

@@ -50,6 +50,12 @@ const adminRouter = {
       meta: { title: '组织管理', icon: 'eye-open', roles: ['1000000000000000000'] }
     },
     {
+      path: 'dept/edit',
+      component: () => import('@/views/admin/deptEdit'),
+      meta: { title: '组织管理' },
+      hidden: true
+    },
+    {
       path: 'hostwhite',
       component: () => import('@/views/admin/hostwhite'),
       meta: { title: '主机白名单管理', icon: 'eye-open' }

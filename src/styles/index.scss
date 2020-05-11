@@ -208,3 +208,51 @@ aside {
 .component-edit-bg p{
   margin: 0;
 }
+
+.dept-tree-position{
+  position: relative;
+}
+
+.dept-tree-position .el-tree{
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 9;
+  width: 200px;
+  height: 200px;
+  background-color: #fff;
+  border: 1px solid #f1f1f1;
+  border-radius: 5px;
+  overflow: auto;
+}
+
+.custom-tree-node {
+  display: block;
+  width: 100%;
+  line-height: 28px;
+}
+
+.custom-tree-node .option {
+  float: right;
+  margin-right: 20px;
+}
+
+.dept-main{
+  height: calc(100vh - 110px);
+}
+
+.dept-main .el-row{
+  height: calc(100vh - 140px);
+}
+.dept-main .dept-left, .dept-main .dept-right {
+  height: calc(100vh - 140px);
+}
+
+.dept-main .dept-left {
+  padding-right: 10px;
+  border-right: 1px solid #f1f1f1;
+}
+
+.dept-main .dept-right {
+  padding-left: 10px;
+}

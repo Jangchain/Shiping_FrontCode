@@ -79,3 +79,55 @@ export function targetResDataRequest({
     }
   });
 }
+
+// 增加端口资源
+export function networkPortInsert({
+  name,
+  portStartValue,
+  portEndValue,
+  protocol,
+  username,
+  componentId,
+  description
+}) {
+  return request({
+    url: "network/source/port/insert",
+    method: "post",
+    data: {
+      name,
+      portStartValue,
+      portEndValue,
+      protocol,
+      username,
+      componentId,
+      description
+    }
+  });
+}
+
+// 更新端口资源
+export function networkPortUpdate({
+  id,
+  name,
+  portStartValue,
+  portEndValue,
+  protocol,
+  username,
+  componentId,
+  description
+}) {
+  return request({
+    url: "network/source/port/update",
+    method: "post",
+    data: {
+      id,
+      name,
+      portStartValue,
+      portEndValue,
+      protocol,
+      username,
+      componentId,
+      description
+    }
+  });
+}

@@ -13,13 +13,7 @@
             <el-dropdown-item>螺蛳粉</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
-        <!-- <el-select size="mini" v-model="selectValue"
-                         placeholder="当日数据">
-                <el-option v-for="(v, k) in states"
-                           :key="k"
-                           :label="v.label"
-                           :value="v.value" />
-        </el-select>-->
+        
         <el-form
           ref="ruleForm"
           :model="ruleForm"
@@ -130,14 +124,14 @@
               </el-popover>
             </template>
           </el-table-column>
-          <el-table-column prop="name" label="IP类型" sortable align="center"></el-table-column>
-          <el-table-column prop="name" label="策略类型" sortable align="center"></el-table-column>
-          <el-table-column prop="address" label="事件数" align="center" :formatter="formatter"></el-table-column>
+          <el-table-column prop="type" label="IP类型" sortable align="center"></el-table-column>
+          <el-table-column prop="names" label="策略类型" sortable align="center"></el-table-column>
+          <el-table-column prop="addres" label="事件数" align="center" :formatter="formatter"></el-table-column>
         </el-table>
       </div>
       <div id="rg">
         <div class="chart-container">
-          <el-dropdown>
+          <!-- <el-dropdown>
             <span class="el-dropdown-link">
               当日数据
               <i></i>
@@ -147,7 +141,7 @@
               <el-dropdown-item>狮子头</el-dropdown-item>
               <el-dropdown-item>螺蛳粉</el-dropdown-item>
             </el-dropdown-menu>
-          </el-dropdown>
+          </el-dropdown> -->
           <chart height="100%" width="100%" />
         </div>
 
@@ -160,7 +154,7 @@
               :name="item.name"
               lazy
             >
-              <line-chart :chart-data="lineChartData" />
+              <!-- <line-chart :chart-data="lineChartData" /> -->
             </el-tab-pane>
           </el-tabs>
         </el-row>
@@ -190,7 +184,7 @@
         </p>
         <el-table
           ref="multipleTable"
-          :data="tableData"
+          :data="tableData1"
           tooltip-effect="dark"
           style="width: 100%"
           :default-sort="{prop: 'date', order: 'descending'}"
@@ -198,7 +192,7 @@
           @selection-change="handleSelectionChange"
         >
           <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column
+          <!-- <el-table-column
             prop="name"
             label="敏感度"
             sortable
@@ -217,12 +211,48 @@
 
           <el-table-column prop="name" label="数据类型" sortable align="center"></el-table-column>
           <el-table-column prop="name" label="规则" align="center"></el-table-column>
-          <el-table-column prop="address" label="策略" align="center"></el-table-column>
+          <el-table-column prop="address" label="策略" align="center"></el-table-column>-->
+
+          <el-table-column prop="code" label="编号" align="center"></el-table-column>
+          <el-table-column prop="name" label="项目名称" align="center"></el-table-column>
+
+          <el-table-column prop="systemName" label="系统名称" sortable align="center"></el-table-column>
+          <el-table-column prop="recordNumber" label="备案证明编号" align="center"></el-table-column>
+          <el-table-column prop="industry" label="行业" align="center"></el-table-column>
+          <el-table-column prop="address" label="标准体系" align="center"></el-table-column>
+          <el-table-column prop="detectUnit" label="被检单位名称" align="center"></el-table-column>
+          <el-table-column
+            prop="createTime"
+            label="创建时间"
+            sortable
+            align="center"
+            column-key="date"
+            :filters="[{text: '2016-05-01', value: '2016-05-01'}, {text: '2016-05-02', value: '2016-05-02'}, {text: '2016-05-03', value: '2016-05-03'}, {text: '2016-05-04', value: '2016-05-04'}]"
+            :filter-method="filterHandler"
+          ></el-table-column>
+          <!--  <el-table-column
+            prop="createTime"
+            label="创建时间"
+            sortable
+            align="center"
+            :filters="[{ text: '家', value: 'createTime' }, { text: '公司', value: 'createTime' }]"
+            :filter-method="filterTag"
+          >
+            <template slot-scope="scope">
+              <el-tag
+                :type="scope.row.tag === 'createTime' ? 'primary' : 'success'"
+                disable-transitions
+              >{{scope.row.tag}}</el-tag>
+            </template>
+          </el-table-column>-->
           <el-table-column fixed="right" label="操作" align="center">
             <template slot-scope="scope">
-              <el-button type="text" size="small" @click="handleClick(scope.row)">上报</el-button>
+              <el-button @click="edit(scope.row)" type="text" size="small"><!-- 上报 -->编辑</el-button>
+              <el-button @click="handleClick(scope.row)" type="text" size="small"><!-- 下载 -->删除</el-button>
+              <!-- <el-button type="text" size="small">忽略</el-button> -->
+              <!-- <el-button type="text" size="small" @click="handleClick(scope.row)">上报</el-button>
               <el-button type="text" size="small" @click="handleClick(scope.row)">下载</el-button>
-              <el-button type="text" size="small">忽略</el-button>
+              <el-button type="text" size="small">忽略</el-button> -->
             </template>
           </el-table-column>
         </el-table>
@@ -233,8 +263,9 @@
 
 <script>
 // 引入 ECharts 主模块
-// import Chart from "@/components/Charts/BarChart";
+import Chart from "@/components/Charts/BarChart";
 import LineChart from "../components/LineChart";
+import { scanComplianceQueryPage,scanComplianceModify } from "@/api/scan";
 export default {
   name: "BarChart",
   components: { Chart, LineChart },
@@ -284,18 +315,8 @@ export default {
         date: [{ required: true, trigger: "blur", validator: validate }],
         obj: [{ required: true, trigger: "blur", validator: valiobj }]
       },
-      tableData: [
-        {
-          date: "01",
-          name: "王小虎",
-          address: "1518 "
-        },
-        {
-          date: "02",
-          name: "王小虎",
-          address: "1519 "
-        }
-      ],
+      tableData: [],
+      tableData1: [],
       map: "hour",
       maps: [
         {
@@ -323,7 +344,12 @@ export default {
           value: "1"
         }
       ],
-      selectValue: ""
+      selectValue: "",
+      date: {
+        descs: "createTime",
+        current: 1,
+        size: 10
+      }
     };
   },
   created() {},
@@ -349,9 +375,48 @@ export default {
     },
     filterTag(value, row) {
       return row.tag === value;
+    },
+    filterHandler(value, row, column) {
+      const property = column["property"];
+      return row[property] === value;
+    },
+    stateShow() {
+      scanComplianceQueryPage(this.date).then(res => {
+        console.log(res.code);
+        //  console.log(res.data.records)
+        if (res.code == 0) {
+          this.tableData1 = res.data.records;
+          console.log(this.tableData1);
+        }
+      });
+    },
+    edit(row){
+      console.log(row)
+      /* const list = {
+          code: "0002",
+          detectUnit: "江苏省中医院",
+          extendedStandard: "",
+          id: "33590e73764d43de9aece3c78612625f",
+          industry: "7cfdbdda3b4011e9acb0b06ebf3411be",
+          managerPosition: "医生",
+          name: "测试2",
+          password: "",
+          recordNumber: "01234567890000000",
+          standardSystem: "",
+          systemName: "测试项目",
+          unitAddress: "江苏省",
+          unitManager: "酱酱",
+          unitOrgCode: "12345678-1",
+          unitProvince: "江苏省",
+      } */
+      // scanComplianceModify
     }
+  },
+  created() {
+    this.stateShow();
   }
-};
+  };
+
 </script>
  <style lang="scss">
 .left {

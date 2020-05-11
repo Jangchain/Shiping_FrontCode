@@ -39,3 +39,26 @@ export default {
   methods: {}
 };
 </script>
+<style lang="scss">
+.identify-model {
+  padding: 10px;
+  .form-article {
+  }
+  .create-title {
+    height: 60px;
+    font-size: 24px;
+    line-height: 60px;
+    padding-left: 10px;
+    color: #fff;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    i {
+      cursor: pointer;
+    }
+  }
+  .create-content {
+    width: 80%;
+    margin: 0 auto;
+  }
+}
+</style>

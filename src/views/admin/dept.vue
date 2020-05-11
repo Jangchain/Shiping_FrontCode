@@ -1,152 +1,150 @@
 <template>
-  <div class="app-container">
+  <div class="dept-main" style="padding:15px">
     <el-row :gutter="10">
-      <el-col :span="6">
-        <el-card>
-          <div slot="header">
-            <span>组织部门</span>
-          </div>
-          <div>
-            <el-button type="success" size="mini" @click="onSubmit">新增部门</el-button>
-          </div>
-          <el-tree :data="[{ label: '未知用户组' }]">
-            <span slot-scope="{ node, data }">
-              <span>
-                <el-button type="text" size="mini" icon="el-icon-edit"></el-button>
-                <el-button type="text" size="mini" icon="el-icon-delete"></el-button>
-              </span>
-            </span>
-          </el-tree>
-        </el-card>
+      <el-col :span="8" class="dept-left">
+        <p>组织部门</p>
+        <p><el-button type="primary" size="small" @click="createDept">新增部门</el-button></p>
+        <el-tree :data="deptTree" :props="defaultProps" :expand-on-click-node="false" :render-content="renderContent"></el-tree>
       </el-col>
-      <el-col :span="18">
-        <el-card>
-          <div slot="header">
-            <span>已授权用户列表</span>
-          </div>
-          <div>
-            <el-button size="mini" @click="onSubmit">刷新</el-button>
-          </div>
-          <el-table :data="list">
-            <el-table-column type="selection" width="55" />
-            <el-table-column prop="userName" label="用户名" />
-            <el-table-column prop="realName" label="真实姓名" />
-            <el-table-column prop="roleName" label="用户角色" />
-            <el-table-column prop="acctState" label="用户状态" />
-            <el-table-column prop="type" label="用户类型" />
-            <el-table-column prop="onlineState" label="是否在线" />
-            <el-table-column prop="phone" label="手机号" />
-            <el-table-column prop="deptName" label="部门" />
-            <el-table-column prop="email" label="邮箱" />
-          </el-table>
-          <div class="f-p10 f-ar">
-            <el-pagination :total="pager.total" :page-size="pager.size" background layout="prev,pager,next" @current-change="getList" />
-          </div>
-        </el-card>
+      <el-col :span="16" class="dept-right">
+        <p>已授权用户列表</p>
+        <el-form inline :model="searchForm" class="search-form">
+          <el-form-item>
+            <el-button type="primary" @click="search(1)">刷新</el-button>
+          </el-form-item>
+        </el-form>
+        <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%">
+          <el-table-column label="用户名" width="120">
+            <template slot-scope="{row}">
+              {{ row.userName }}
+            </template>
+          </el-table-column>
+          <el-table-column label="真实姓名" width="120">
+            <template slot-scope="{row}">
+              {{ row.creatorUserName }}
+            </template>
+          </el-table-column>
+          <el-table-column label="用户角色" show-overflow-tooltip>
+            <template slot-scope="{row}">
+              {{ row.roleName }}
+            </template>
+          </el-table-column>
+          <el-table-column label="用户状态" show-overflow-tooltip>
+            <template slot-scope="{row}">
+              {{ row.acctStateDesc }}
+            </template>
+          </el-table-column>
+          <el-table-column label="用户类型" show-overflow-tooltip>
+            <template slot-scope="{row}">
+              {{ row.typeDesc }}
+            </template>
+          </el-table-column>
+          <el-table-column label="手机号" show-overflow-tooltip>
+            <template slot-scope="{row}">
+              {{ row.phone }}
+            </template>
+          </el-table-column>
+          <el-table-column label="是否在线" show-overflow-tooltip>
+            <template slot-scope="{row}">
+              {{ row.onlineStateDesc }}
+            </template>
+          </el-table-column>
+          <el-table-column label="部门" show-overflow-tooltip>
+            <template slot-scope="{row}">
+              {{ row.deptName }}
+            </template>
+          </el-table-column>
+          <el-table-column label="邮箱" show-overflow-tooltip>
+            <template slot-scope="{row}">
+              {{ row.email }}
+            </template>
+          </el-table-column>
+        </el-table>
+        <div class="pager">
+          <el-pagination :current-page="searchForm.current" :page-size="searchForm.size" layout="total, prev, pager, next, jumper" :total="pager.total" @current-change="pageChange">
+          </el-pagination>
+        </div>
       </el-col>
+      
+      
     </el-row>
   </div>
 </template>
-
 <script>
-import http from '@/api/http'
-import _ from 'lodash'
-
+import { getAuthorityList, getDeptTree, deleteDept } from "@/api/admin";
 export default {
   data() {
     return {
-      pager: {
-        total: 0,
-        size: 10
+      tableData: [],
+      pager: { total: 0 },
+      searchForm: {
+        current: 1,
+        size: 10,
       },
-      query: {},
-      list: null,
-      menus: [],
-      AUTH_MANAGE: {
-        weeklyTime: []
-      },
-      groupArr: [{
-          note: '告警邮箱配置',
-          v: 'ALARM_CONFIG'
-        },
-        {
-          note: '告警级别及开关',
-          v: 'ALARM_LEVEL'
-        },
-        {
-          note: '帐户扫描',
-          v: 'SCAN_ACCT'
-        },
-        {
-          note: '帐户安全配置',
-          v: 'AUTH_MANAGE'
-        },
-        {
-          note: '邮箱中心配置',
-          v: 'EMAIL_SETTING'
-        },
-        {
-          note: '认证服务配置',
-          v: 'LDAP_SETTING'
-        },
-        {
-          note: '审计日志存放位置',
-          v: 'AUDIT_INFO_LOCATION'
-        },
-        {
-          note: '日志容量阈值配置',
-          v: 'LOG_ALARM'
-        },
-
-        {
-          note: 'syslog日志服务器设置',
-          v: 'SYSLOG_SETTING'
-        },
-
-        {
-          note: '网络设置',
-          v: 'NETWORK_SETTING'
-        },
-
-        {
-          note: '时间设置',
-          v: 'TIME_SETTING'
-        },
-        {
-          note: '操作日志设置',
-          v: 'AUDIT_INFO_SETTING'
-        }
-      ]
-    }
+      deptTree: [],
+      defaultProps: {
+        children: 'children',
+        label: 'name'
+      }
+    };
   },
   created() {
-    http.get('/common/sys/param/get/basic/setting/menu', {}).then(r => {
-      const menus = r.data
-      this.menus = _.filter(this.groupArr, o => {
-        return menus.indexOf(o.v) > -1
-      })
-    })
+    this.search(1);
+    this.getTree()
   },
   methods: {
-    uploaded() {
-      this.$alert('上传成功', '提示')
+    renderContent(h, { node, data, store }) {
+      return (
+        <span class="custom-tree-node">
+          <span>{node.label}</span>
+          <span class="option">
+            <el-button size="mini" type="text" on-click={ () => this.edit(data) }>编辑</el-button>
+            <el-button size="mini" type="text" on-click={ () => this.remove(node, data) }>删除</el-button>
+          </span>
+        </span>);
     },
-    uploadError(e) {
-      const r = JSON.parse(e.message) || {}
-      this.$alert(r.message || '上传失败', '提示')
-    }
+    getTree() {
+      getDeptTree().then(r => {
+        if(r.code === 0) {
+          this.deptTree = r.data
+        }
+      })
+    },
+    createDept() {
+      this.$router.push({
+        path: "/admin/dept/edit?type=create"
+      });
+    },
+    search(page) {
+      this.searchForm.current = page || this.searchForm.current;
+      
+      getAuthorityList(this.searchForm, '1000000000000000000')
+        .then(res => {
+          if (res.code === 0) {
+            this.tableData = res.data.records;
+            this.searchForm.current = Number(res.data.current);
+            this.pager.total = Number(res.data.total);
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    edit(data) {
+      this.$router.push({
+        path: `/admin/dept/edit?id=${data.id}&type=edit`
+      });
+    },
+    remove(node, data) {
+      deleteDept(data.id).then(r => {
+        this.$alert('操作成功', '提示', {
+          callback: () => {
+            this.getTree()
+          }
+        })
+      })
+    },
+    pageChange(page) {},
   }
-}
+};
 </script>
-
-<style scoped>
-.m-panel {
-  padding-bottom: 15px;
-}
-.m-panel .h4 {
-  font-weight: bold;
-}
-.m-panel .b {
-  font-size: 12px;
-}
-</style>

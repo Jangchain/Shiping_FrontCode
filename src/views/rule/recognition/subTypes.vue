@@ -24,13 +24,12 @@ export default {
   },
   computed: {
     activeMenu() {
-      const route = this.$route;
-      const { meta, path } = route;
+      const { meta, name } = this.$route;
       // if set path, the sidebar will highlight the path you set
       if (meta.activeMenu) {
         return meta.activeMenu;
       }
-      return path.split("/")[3];
+      return name;
     }
   },
   methods: {

@@ -63,15 +63,6 @@ export default {
   created() {
     if (this.$route.query.id) {
       this.formType = this.$route.query.type
-      // if( === 'detail')
-      // if (this.$route.query.id) {
-      //   this.formType = 'edit'
-      // } else if() {
-      //   this.formType = 'detail'
-      // } else {
-      //   this.formType = 'create'
-      // }
-
 
       const id = this.$route.query.id
       getHostwhiteById(id).then((r) => {

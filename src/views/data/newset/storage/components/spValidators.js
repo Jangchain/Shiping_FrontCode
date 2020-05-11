@@ -9,7 +9,7 @@ export class SpValidators {
     return {
       validator: (rule, value, callback) => {
         if (value && value.length <= min) {
-          callback(new Error('长度不能小于' + min));
+          callback(new Error("长度不能小于" + min));
         }
         callback();
       },
@@ -17,12 +17,12 @@ export class SpValidators {
     };
   }
 
-   // 校验最大长度
+  // 校验最大长度
   static maxLength(max, trigger = "blur") {
     return {
       validator: (rule, value, callback) => {
         if (value && value.length >= max) {
-          callback(new Error('长度不能大于' + max));
+          callback(new Error("长度不能大于" + max));
         }
         callback();
       },
@@ -66,7 +66,7 @@ export class SpValidators {
         if (value && !reg.test(value)) {
           callback(new Error("端口号必须为整数"));
         }
-        console.log('value', value.toString())
+        console.log("value", value.toString());
         const valueArr = value.toString().split(symbol);
         for (let i = 0; i < valueArr.length; i++) {
           if (Number(valueArr[i]) < min) {
@@ -88,6 +88,34 @@ export class SpValidators {
       validator: (rule, value, callback) => {
         if (value && !reg.test(value)) {
           callback(new Error(`不能包含非法字符<>'":\/*+=\${}?|&%`));
+        }
+        callback();
+      },
+      trigger
+    };
+  }
+
+  //  校验类型是否为为number
+  static number(trigger = "blur") {
+    const reg = /^(?:-?\d+|-?\d{1,3}(?:,\d{3})+)?(?:\.\d+)?$/;
+    return {
+      validator: (rule, value, callback) => {
+        if (value && !reg.test(value)) {
+          callback(new Error(`请输入数字`));
+        }
+        callback();
+      },
+      trigger
+    };
+  }
+
+  //  校验非法字符
+  static illegal(trigger = "blur") {
+    const reg = /^[\u4e00-\u9fa5_a-zA-Z0-9]+$/g;
+    return {
+      validator: (rule, value, callback) => {
+        if (value && !reg.test(value)) {
+          callback(new Error(`请输入汉字、字母、数字、下划线`));
         }
         callback();
       },

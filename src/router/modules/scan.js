@@ -27,104 +27,49 @@ const scanRouter = {
           component: () => import('@/views/scan/tactics/tactics'),
           meta: { title: '新建策略', icon: 'skill' }
           // hidden: true,
-
         },
         {
           path: 'asset',
           component: () => import('@/views/scan/tactics/asset'),
           meta: { title: '数据资产分布', icon: 'skill' },
-          // hidden: true,
-          children: [
-            {
-              path: 'step1',
-              component: () => import('@/views/scan/components/step1'),
-              meta: { title: '数据资产分布', icon: 'skill' }
-          // hidden: true,
-            },
-            {
-              path: 'step2',
-              component: () => import('@/views/scan/components/step2')
-            },
-            {
-              path: 'step3',
-              component: () => import('@/views/scan/components/step3')
-            },
-            {
-              path: 'step4',
-              component: () => import('@/views/scan/components/step4')
-            }
-          ]
+          hidden: true,
         },
         {
           path: 'exit',
           component: () => import('@/views/scan/tactics/exit'),
           meta: { title: '数据出境检查', icon: 'skill' },
-          // hidden: true,
-          children: [
-            {
-              path: 'step1',
-              component: () => import('@/views/scan/components/step1'),
-              meta: { title: '数据出境检查', icon: 'skill' }
-          // hidden: true,
-            },
-            {
-              path: 'step2',
-              component: () => import('@/views/scan/components/step2')
-            },
-            {
-              path: 'step3',
-              component: () => import('@/views/scan/components/step3')
-            },
-            {
-              path: 'step4',
-              component: () => import('@/views/scan/components/step4')
-            }
-          ]
+          hidden: true,
         },
         {
           path: 'transfer',
           component: () => import('@/views/scan/tactics/transfer'),
           meta: { title: '数据传输安全', icon: 'skill' },
-          // hidden: true,
-          children: [
-            {
-              path: 'step1',
-              component: () => import('@/views/scan/components/step1'),
-              meta: { title: '数据传输安全', icon: 'skill' }
-          // hidden: true,
-            },
-            {
-              path: 'step2',
-              component: () => import('@/views/scan/components/step2')
-            },
-            {
-              path: 'step3',
-              component: () => import('@/views/scan/components/step3')
-            },
-            {
-              path: 'step4',
-              component: () => import('@/views/scan/components/step4')
-            }
-          ]
+          hidden: true,
         },
         {
           path: 'newpolicy',
           component: () => import('@/views/scan/tactics/newpolicy'),
-          meta: { title: '新建策略', icon: 'skill' }
-          // hidden: true,
+          meta: { title: '新建策略', icon: 'skill' },
+          hidden: true,
         },
         {
           path: 'task',
           component: () => import('@/views/scan/tactics/task'),
-          meta: { title: '检测任务', icon: 'skill' }
+          meta: { title: '检测任务', icon: 'skill' },
           // hidden: true,
         },
         {
           path: 'newtask',
           component: () => import('@/views/scan/tactics/newtask'),
-          meta: { title: '新建任务', icon: 'skill' }
+          meta: { title: '新建任务', icon: 'skill' },
           // hidden: true,
-        }
+        },
+        /* {
+          path: 'taskModify',
+          component: () => import('@/views/scan/tactics/taskModify'),
+          meta: { title: '修改任务', icon: 'skill' },
+          hidden: true,
+        } */
       ]
     },
 
