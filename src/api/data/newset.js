@@ -131,3 +131,15 @@ export function networkPortUpdate({
     }
   });
 }
+
+// 根据ID查询存储资源
+export function getTargetResById(id) {
+  return request({
+    url: `storage/source/getTargetResById/${id}`,
+    method: "get",
+    data: {}
+  }).then(res => {
+    return res.data
+  });
+}
+

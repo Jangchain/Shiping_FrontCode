@@ -265,7 +265,7 @@ export default {
   computed: {
     protocolValue() {
       const protocol = protocols.find(item => item.label === this.ruleForm.protocol);
-      return protocol || '';
+      return protocol ? protocol.value : ''
     }
   },
 

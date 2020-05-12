@@ -9,10 +9,10 @@
       />
     </el-tabs>
 
-    <div class="form-content">
+    <div v-loading="loading" class="form-content">
       <h3>新建{{ formTitle }}信息源</h3>
       <el-scrollbar style="height:calc(100vh - 285px)">
-        <component :is="activeName" />
+        <component :is="activeName" @loading="handleLoading" />
       </el-scrollbar>
     </div>
 
@@ -89,7 +89,8 @@ export default {
     return {
       tabs,
       activeName: "share",
-      errorDialogVisible: true
+      errorDialogVisible: true,
+      loading: false
     };
   },
 
@@ -107,6 +108,10 @@ export default {
     handleClick(tab) {
       this.$route.meta.title = tab.label;
       this.$router.push(`/data/newset/storage/${tab.name}`);
+    },
+
+    handleLoading(value) {
+      this.loading = value;
     }
   }
 };
