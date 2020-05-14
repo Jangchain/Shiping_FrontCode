@@ -1,7 +1,7 @@
 <template>
-  <div>
-    <div><i class="el-icon-arrow-left" @click="$router.back()"></i> 关键字</div>
-    <div>
+  <div class="keyword-create">
+    <div class="create-title"><i class="el-icon-arrow-left" @click="$router.back()"></i> | 关键字</div>
+    <div class="create-content">
       <el-form inline :model="form.spPlcCcContentClassifiers" class="form">
         <el-form-item label="名称">
           <el-input v-model="form.spPlcCcContentClassifiers.name" placeholder="名称"></el-input>
@@ -16,7 +16,18 @@
         </el-form-item>
       </el-form>
       <div v-if="form.spPlcCcContentClassifiers.contentClassifierType == 'KEY_PHRASES'">
-
+        <label>单个关键词</label>
+        <el-form :model="form.keyPhrases" class="form" style="width:500px" label-position="left" label-width="100px">
+          <el-form-item>
+            <el-checkbox v-model="form.keyPhrases.isMatchWhole" true-label="1" false-label="0">是否精确匹配</el-checkbox>
+          </el-form-item>
+          <el-form-item label="关键字">
+            <el-input v-model="form.keyPhrases.value" placeholder="关键字"></el-input>
+          </el-form-item>
+          <el-form-item label="字符间距">
+            <el-input-number v-model="form.keyPhrases.letterSpace" controls-position="right" :min="0" :max="5"></el-input-number>
+          </el-form-item>
+        </el-form>
       </div>
       <div v-else-if="form.spPlcCcContentClassifiers.contentClassifierType == 'KEY_PHRASES_COUPLE'">
         <label>关键字对配置</label>
@@ -39,7 +50,27 @@
         </el-form>
       </div>
       <div v-else-if="form.spPlcCcContentClassifiers.contentClassifierType == 'LEXICON'">
-
+        <label>关键字组</label>
+        <div>
+          <el-button @click="addKeyword">添加行</el-button>
+        </div>
+        <el-form class="form" style="width:500px" label-position="left" label-width="100px">
+          <el-form-item v-for="(item,key) in form.lexiconsItemList" :key="key">
+            <el-col :span="6">
+              <el-input v-model="item.value" placeholder="关键字"></el-input>
+            </el-col>
+            <el-col :span="6">
+              <el-select v-model="item.isCaseSensitive" placeholder="是否精确匹配">
+                <el-option v-for="(val,index) in ['否','是']" :key="index" :label="val" :value="Number(index)"></el-option>
+              </el-select>
+            </el-col>
+            <el-col :span="6">
+              <el-input-number v-model="item.weight" controls-position="right" :min="1" :max="999"></el-input-number>
+            </el-col>
+            <el-col :span="6">
+            </el-col>
+          </el-form-item>
+        </el-form>
       </div>
     </div>
   </div>
@@ -53,6 +84,12 @@ export default {
           name: "",
           description: "",
           contentClassifierType: "KEY_PHRASES"
+        },
+        keyPhrases: {
+          isSegmentation: "0",
+          isMatchWhole: "0",
+          value: "",
+          letterSpace: 0
         }
       },
       contentClassifierTypeMap: {
@@ -62,13 +99,23 @@ export default {
       }
     };
   },
+  created() {},
   methods: {
     changeType(type) {
       switch (type) {
         case "KEY_PHRASES":
-          this.form.keyPhrases = {};
+          delete this.form.keyPhrasesCouple;
+          delete this.form.lexiconsItemList;
+          this.form.keyPhrases = {
+            isSegmentation: "0",
+            isMatchWhole: "0",
+            value: "",
+            letterSpace: 0
+          };
           break;
         case "KEY_PHRASES_COUPLE":
+          delete this.form.keyPhrases;
+          delete this.form.lexiconsItemList;
           this.form.keyPhrasesCouple = {
             value1: "",
             value2: "",
@@ -76,10 +123,38 @@ export default {
           };
           break;
         case "LEXICON":
-          this.form.lexiconsItemList = [];
+          delete this.form.keyPhrases;
+          delete this.form.keyPhrasesCouple;
+          this.$set(this.form, "lexiconsItemList", []);
+          this.form.lexiconsItemList.push({
+            pccLexiconId: "",
+            elementIndex: 0,
+            weight: 1,
+            lexiconType: "Phrase",
+            value: "",
+            isCaseSensitive: 0
+          });
           break;
       }
+    },
+    addKeyword() {
+      const index = this.form.lexiconsItemList.length;
+      this.form.lexiconsItemList.push({
+        pccLexiconId: "",
+        elementIndex: index,
+        weight: 1,
+        lexiconType: "Phrase",
+        value: "",
+        isCaseSensitive: 0
+      });
     }
   }
 };
 </script>
+<style lang="scss">
+.keyword-create{
+  .create-title{
+     background: rgb(223, 145, 255);
+  }
+}
+</style>

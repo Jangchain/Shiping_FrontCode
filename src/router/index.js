@@ -15,6 +15,7 @@ import treatingRouter from './modules/treating'
 import analyzeRouter from './modules/analyze'
 import dataRouter from './modules/data'
 import ruleRouter from './modules/rule'
+import adminRouter from './modules/admin'
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -101,18 +102,7 @@ export const asyncRoutes = [
   analyzeRouter,
   dataRouter,
   ruleRouter,
-  {
-    path: '/admin',
-    component: Layout,
-    meta: { title: '管理员' },
-    children: [
-      {
-        path: '',
-        component: () => import('@/views/admin/index'),
-        meta: { title: '状态', icon: 'eye-open' }
-      }
-    ]
-  },
+  adminRouter,
 
   {
     path: '/help',

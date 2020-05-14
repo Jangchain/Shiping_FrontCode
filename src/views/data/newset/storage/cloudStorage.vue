@@ -1,48 +1,54 @@
 <!-- 新建云对象存储信息源 -->
 <template>
-  <div>
-    <common-form :data="ruleForm" :rules="rules" @test-connect="testConnect">
+  <div class="cloud-object-save-create">
+    <common-form :data="ruleForm" :rules="rules">
       <template v-slot:taskConnect>
         <div>dsss</div>
       </template>
-    </common-form></div>
+    </common-form>
+  </div>
 </template>
 <script>
-import commonForm from './components/common-form'
+import commonForm from "./components/common-form";
+import { SpValidators } from "./components/spValidators";
 
 export default {
-  name: 'CloudStorage',
+  name: "CloudStorage",
   components: {
     commonForm
   },
   data() {
     return {
       ruleForm: {
-        name: '',
-        description: '',
-        ip: '',
-        username: '',
-        password: '',
-        domain: '',
-        port: '5432',
-        storageType: '',
-        accessKeyId: '',
-        accessKeySecret: '',
-        endPoint: ''
+        taskType: "CLOUD_OBJECT_SAVE",
+        name: "",
+        description: "",
+        username: "",
+        password: "",
+        storageType: "ali_oss",
+        accessKeyId: "",
+        accessKeySecret: "",
+        endPoint: ""
       },
-      rules: {}
-    }
+      rules: {
+        storageType: [SpValidators.required("请选择存储类型", "change")],
+        accessKeyId: [SpValidators.required()],
+        accessKeySecret: [SpValidators.required()],
+        endPoint: [SpValidators.required()]
+      }
+    };
   },
 
   created() {},
 
-  methods: {
-    // 测试连接
-    testConnect(data) {
-      console.log('测试连接', data)
-    }
-  }
-}
+  methods: {}
+};
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.cloud-object-save-create {
+  >>> .test-connect-btn {
+    left: 640px;
+  }
+}
+</style>

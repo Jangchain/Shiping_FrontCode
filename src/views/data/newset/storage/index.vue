@@ -9,66 +9,69 @@
       />
     </el-tabs>
 
-    <div class="form-content">
+    <div v-loading="loading" class="form-content">
       <h3>新建{{ formTitle }}信息源</h3>
-      <component :is="activeName" />
+      <el-scrollbar style="height:calc(100vh - 285px)">
+        <component :is="activeName" @loading="handleLoading" />
+      </el-scrollbar>
     </div>
+
   </div>
 </template>
 <script>
-import share from './share'
-import database from './database'
-import ftp from './ftp'
-import linux from './linux'
-import exchange from './exchange'
-import lotus from './lotus'
-import webDav from './webDav'
-import cloudDatabase from './cloudDatabase'
-import cloudStorage from './cloudStorage'
-import sharePoint from './sharePoint'
+import share from "./share";
+import database from "./database";
+import ftp from "./ftp";
+import linux from "./linux";
+import exchange from "./exchange";
+import lotus from "./lotus";
+import webDav from "./webDav";
+import cloudDatabase from "./cloudDatabase";
+import cloudStorage from "./cloudStorage";
+import sharePoint from "./sharePoint";
 
 const tabs = [
   {
-    label: '共享文档',
-    name: 'share'
+    label: "共享文档",
+    name: "share"
   },
   {
-    label: '数据库',
-    name: 'database'
+    label: "数据库",
+    name: "database"
   },
   {
-    label: 'FTP',
-    name: 'ftp'
+    label: "FTP",
+    name: "ftp"
   },
   {
-    label: 'Linux主机',
-    name: 'linux'
+    label: "Linux主机",
+    name: "linux"
   },
   {
-    label: 'Exchange',
-    name: 'exchange'
+    label: "Exchange",
+    name: "exchange"
   },
   {
-    label: 'sharePoint',
-    name: 'sharePoint'
+    label: "SharePoint",
+    name: "sharePoint"
   },
   {
-    label: 'Lotus',
-    name: 'lotus'
+    label: "Lotus",
+    name: "lotus"
   },
   {
-    label: 'webDav',
-    name: 'webDav'
+    label: "webDav",
+    name: "webDav"
   },
   {
-    label: '云数据库',
-    name: 'cloudDatabase'
+    label: "云数据库",
+    name: "cloudDatabase"
   },
   {
-    label: '云对象存储',
-    name: 'cloudStorage'
+    label: "云对象存储",
+    name: "cloudStorage"
   }
-]
+];
 export default {
   components: {
     share,
@@ -85,25 +88,31 @@ export default {
   data() {
     return {
       tabs,
-      activeName: 'share'
-    }
+      activeName: "share",
+      errorDialogVisible: true,
+      loading: false
+    };
   },
 
   created() {
-    const type = this.$route.params.type
-    const tab = this.tabs.find(n => n.name === type)
+    const type = this.$route.params.type;
+    const tab = this.tabs.find(n => n.name === type);
     if (tab) {
-      this.$route.meta.title = tab.label
-      this.formTitle = tab.label
+      this.$route.meta.title = tab.label;
+      this.formTitle = tab.label;
     }
-    this.activeName = type
+    this.activeName = type;
   },
 
   methods: {
     handleClick(tab) {
-      this.$route.meta.title = tab.label
-      this.$router.push(`/data/newset/storage/${tab.name}`)
+      this.$route.meta.title = tab.label;
+      this.$router.push(`/data/newset/storage/${tab.name}`);
+    },
+
+    handleLoading(value) {
+      this.loading = value;
     }
   }
-}
+};
 </script>

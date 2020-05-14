@@ -15,13 +15,14 @@ export default {
   data() {
     return {
       ruleForm: {
+        taskType: 'CLOUD_DATABASE',
         name: '',
         description: '',
         ip: '',
         username: '',
         password: '',
         domain: '',
-        databaseType: 'mysql',
+        databaseType: 'MySql',
         port: '5432'
       },
       rules: {}

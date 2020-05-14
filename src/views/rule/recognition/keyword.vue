@@ -23,10 +23,10 @@
         <el-button type="success" @click="create">新建</el-button>
       </el-form-item>
     </el-form>
-    <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55">
+    <el-table ref="multipleTable" v-loading="loading" :data="tableData" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
+      <el-table-column type="selection" width="55" :selectable="selectable">
       </el-table-column>
-      <el-table-column prop="spPlcCcContentClassifiers.name" label="名称" width="120">
+      <el-table-column prop="spPlcCcContentClassifiers.name" label="名称" width="120" show-overflow-tooltip>
       </el-table-column>
       <el-table-column label="所属类型" width="120">
         <template slot-scope="{row}">
@@ -37,7 +37,7 @@
       </el-table-column>
       <el-table-column label="关键字数">
         <template slot-scope="{row}">
-          {{ row.lexiconsItemList&&row.lexiconsItemList.length }}
+          {{ countItemList(row) }}
         </template>
       </el-table-column>
       <el-table-column label="规则中使用">
@@ -53,8 +53,8 @@
       <el-table-column prop="spPlcCcContentClassifiers.updateDate" label="修改时间">
       </el-table-column>
       <el-table-column label="操作">
-        <el-button type="text" size="mini" @click="edit">编辑</el-button>
-        <el-button type="text" size="mini">删除</el-button>
+        <el-button type="text" size="mini" disabled @click="edit">编辑</el-button>
+        <el-button type="text" size="mini" disabled>删除</el-button>
       </el-table-column>
     </el-table>
     <div class="pager">
@@ -68,6 +68,7 @@ import { getContentClassifierByPage } from "@/api/identifyModel";
 export default {
   data() {
     return {
+      loading: false,
       tableData: [],
       selection: [],
       pager: { total: 0 },
@@ -93,6 +94,7 @@ export default {
   },
   methods: {
     search(page) {
+      this.loading = true;
       this.searchForm.current = page || this.searchForm.current;
       getContentClassifierByPage(this.searchForm)
         .then(res => {
@@ -101,9 +103,10 @@ export default {
             this.searchForm.current = Number(res.data.current);
             this.pager.total = Number(res.data.total);
           }
+          this.loading = false;
         })
-        .catch(err => {
-          console.log(err);
+        .catch(_ => {
+          this.loading = false;
         });
     },
     refresh() {
@@ -122,6 +125,24 @@ export default {
     },
     pageChange(page) {
       this.search(page);
+    },
+    selectable(row, index) {
+      return row.spPlcCcContentClassifiers.definitionType === "C_USER_DEFINE";
+    },
+    countItemList(row) {
+      let count = 0;
+      switch (row.spPlcCcContentClassifiers.contentClassifierType) {
+        case "KEY_PHRASES":
+          count = 1;
+          break;
+        case "KEY_PHRASES_COUPLE":
+          count = 2;
+          break;
+        case "LEXICON":
+          count = row.lexiconsItemList && row.lexiconsItemList.length;
+          break;
+      }
+      return count;
     }
   }
 };

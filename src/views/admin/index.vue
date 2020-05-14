@@ -12,6 +12,7 @@ export default {
     }
   },
   created() {
+    this.$store.commit('nav/SET_NAV_INDEX_BY_KEY', (location.hash.match(/^#\/(\w+)\/?/) || [])[1])
   }
 }
 </script>

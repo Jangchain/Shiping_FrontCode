@@ -15,7 +15,17 @@
         <ul>
           <template v-for="(v, i) in navs.data">
             <template v-if="v.location === 'right'">
-              <li v-if="v.key === 'admin'" :key="v.key" :class="{ active: i === navs.current }" @click="changeNav(i)"><svg-icon icon-class="user" /> {{ roleName }}</li>
+              <li v-if="v.key === 'admin'" :key="v.key" :class="{ active: i === navs.current }" @click="changeNav(i)">
+                <el-dropdown>
+                  <span class="el-dropdown-nav">
+                    <svg-icon icon-class="user" /> {{ roleName }}
+                  </span>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item><router-link :to="{ path: '/admin/password' }">修改密码</router-link></el-dropdown-item>
+                    <el-dropdown-item divided><span style="display:block;" @click="logout">退出登录</span></el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </li>
               <li v-else :key="v.key" :class="{ active: i === navs.current }" @click="changeNav(i)">{{ v.val }}</li>
             </template>
           </template>
@@ -78,6 +88,10 @@ export default {
     }
   },
   methods: {
+    async logout() {
+      await this.$store.dispatch('user/logout')
+      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+    },
     handleClickOutside() {
       this.$store.dispatch('app/closeSideBar', { withoutAnimation: false })
     },
@@ -187,5 +201,13 @@ export default {
 
   #app .main-container.noSideBar {
     margin-left: 0;
+  }
+
+  .el-dropdown-nav {
+    color: #b9c9dd;
+  }
+
+  .active .el-dropdown-nav {
+    color: #fff;
   }
 </style>

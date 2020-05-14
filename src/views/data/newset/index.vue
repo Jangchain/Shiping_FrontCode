@@ -12,8 +12,8 @@
 </template>
 
 <script>
-import navTabs from './components/nav-tabs'
-import createMain from './components/create-main'
+import navTabs from "./components/nav-tabs";
+import createMain from "./components/create-main";
 
 export default {
   components: {
@@ -21,18 +21,18 @@ export default {
     createMain
   },
   data() {
-    return {}
+    return {};
   },
   created() {},
   methods: {}
-}
+};
 </script>
 <style lang="scss" scoped>
 @import "~@/styles/mixin.scss";
 .source-create-page {
   .create-nav {
     text-align: center;
-    padding: 20px 0;
+    padding: 5px 0 15px;
     background-color: rgb(4, 30, 95);
   }
   .create-content-container {

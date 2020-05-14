@@ -4,7 +4,7 @@ const scanRouter = {
   path: '/scan',
   component: Layout,
   meta: { title: '合规检测' },
-  redirect: '/scan/state',
+  redirect: '/scan/analyze',
   children: [
     {
       path: 'state',
@@ -17,7 +17,7 @@ const scanRouter = {
       meta: { title: '统计分析', icon: 'chart' }
     },
     {
-      path: '/index',
+      path: 'index',
       component: () => import('@/views/scan/tactics/index'),
       meta: { title: '策略', icon: 'skill' },
       // redirect: '/tactics/tactics',
@@ -25,93 +25,32 @@ const scanRouter = {
         {
           path: 'tactics',
           component: () => import('@/views/scan/tactics/tactics'),
-          meta: { title: '新建策略', icon: 'skill' },
+          meta: { title: '新建策略', icon: 'skill' }
           // hidden: true,
-          
         },
         {
-          path: '/asset',
+          path: 'asset',
           component: () => import('@/views/scan/tactics/asset'),
           meta: { title: '数据资产分布', icon: 'skill' },
-          // hidden: true,
-          children:[
-            {
-              path: 'step1',
-              component: () => import('@/views/scan/components/step1'),
-              meta: { title: '数据资产分布', icon: 'skill' },
-          // hidden: true,
-            },
-            {
-              path: 'step2',
-              component: () => import('@/views/scan/components/step2'),
-            },
-            {
-              path: 'step3',
-              component: () => import('@/views/scan/components/step3'),
-            },
-            {
-              path: 'step4',
-              component: () => import('@/views/scan/components/step4'),
-            },
-          ]
+          hidden: true,
         },
         {
-          path: '/exit',
+          path: 'exit',
           component: () => import('@/views/scan/tactics/exit'),
           meta: { title: '数据出境检查', icon: 'skill' },
-          // hidden: true,
-          children:[
-            {
-              path: 'step1',
-              component: () => import('@/views/scan/components/step1'),
-              meta: { title: '数据出境检查', icon: 'skill' },
-          // hidden: true,
-            },
-            {
-              path: 'step2',
-              component: () => import('@/views/scan/components/step2'),
-            },
-            {
-              path: 'step3',
-              component: () => import('@/views/scan/components/step3'),
-            },
-            {
-              path: 'step4',
-              component: () => import('@/views/scan/components/step4'),
-            },
-          ]
+          hidden: true,
         },
         {
-          path: '/transfer',
+          path: 'transfer',
           component: () => import('@/views/scan/tactics/transfer'),
           meta: { title: '数据传输安全', icon: 'skill' },
-          // hidden: true,
-          children:[
-            {
-              path: 'step1',
-              component: () => import('@/views/scan/components/step1'),
-              meta: { title: '数据传输安全', icon: 'skill' },
-          // hidden: true,
-            },
-            {
-              path: 'step2',
-              component: () => import('@/views/scan/components/step2'),
-            },
-            {
-              path: 'step3',
-              component: () => import('@/views/scan/components/step3'),
-            },
-            {
-              path: 'step4',
-              component: () => import('@/views/scan/components/step4'),
-            },
-          ]
+          hidden: true,
         },
         {
           path: 'newpolicy',
           component: () => import('@/views/scan/tactics/newpolicy'),
           meta: { title: '新建策略', icon: 'skill' },
-          // hidden: true,
+          hidden: true,
         },
         {
           path: 'task',
@@ -125,13 +64,19 @@ const scanRouter = {
           meta: { title: '新建任务', icon: 'skill' },
           // hidden: true,
         },
+        /* {
+          path: 'taskModify',
+          component: () => import('@/views/scan/tactics/taskModify'),
+          meta: { title: '修改任务', icon: 'skill' },
+          hidden: true,
+        } */
       ]
     },
 
     {
-      path: '/setup',
+      path: 'setup',
       component: () => import('@/views/scan/setup/index'),
-      meta: { title: '设置', icon: 'component' },
+      meta: { title: '设置', icon: 'component' }
     }
   ]
 }

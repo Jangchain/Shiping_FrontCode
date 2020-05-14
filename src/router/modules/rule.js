@@ -15,8 +15,19 @@ const ruleRouter = {
       }
     },
     {
+      path: 'edit',
+      component: () => import('@/views/rule/ruleForm'),
+      hidden: true,
+      meta: {
+        title: '修改规则'
+      }
+    },
+    {
       path: 'identifyModel',
       name: 'identifyModel',
+      redirect: {
+        name: 'documentCharacteristics'
+      },
       component: () => import('@/views/rule/recognition'),
       meta: {
         title: '识别模型',
@@ -24,6 +35,7 @@ const ruleRouter = {
       },
       children: [{
         path: 'documentCharacteristics',
+        name: 'documentCharacteristics',
         component: () => import('@/views/rule/recognition/documentCharacteristics'),
         meta: {
           title: '文档特征',
@@ -31,6 +43,7 @@ const ruleRouter = {
         }
       }, {
         path: 'keyword',
+        name: 'keyword',
         component: () => import('@/views/rule/recognition/keyword'),
         meta: {
           title: '关键字',
@@ -38,6 +51,7 @@ const ruleRouter = {
         }
       }, {
         path: 'match',
+        name: 'match',
         component: () => import('@/views/rule/recognition/match'),
         meta: {
           title: '匹配模式',
@@ -45,6 +59,7 @@ const ruleRouter = {
         }
       }, {
         path: 'documentFingerprint',
+        name: 'documentFingerprint',
         component: () => import('@/views/rule/recognition/documentFingerprint'),
         meta: {
           title: '文档指纹',
@@ -52,6 +67,7 @@ const ruleRouter = {
         }
       }, {
         path: 'databaseFingerprint',
+        name: 'databaseFingerprint',
         component: () => import('@/views/rule/recognition/databaseFingerprint'),
         meta: {
           title: '数据库指纹',
@@ -59,6 +75,7 @@ const ruleRouter = {
         }
       }, {
         path: 'singleIntelligentLearning',
+        name: 'singleIntelligentLearning',
         component: () => import('@/views/rule/recognition/singleIntelligentLearning'),
         meta: {
           title: '二维智能学习',
@@ -66,6 +83,7 @@ const ruleRouter = {
         }
       }, {
         path: 'multiIntelligentLearning',
+        name: 'multiIntelligentLearning',
         component: () => import('@/views/rule/recognition/multiIntelligentLearning'),
         meta: {
           title: '多维智能学习',

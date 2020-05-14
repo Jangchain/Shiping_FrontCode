@@ -13,23 +13,32 @@
                        :model="searchCondition">
                 <el-form-item label="主机名称">
                   <el-input v-model="searchCondition.name"
+                            clearable
                             placeholder="请输入内容">
                   </el-input>
                 </el-form-item>
                 <el-form-item label="IP">
                   <el-input v-model="searchCondition.ip"
+                            clearable
                             placeholder="请输入内容">
                   </el-input>
                 </el-form-item>
                 <el-form-item label="系统类型">
                   <el-input v-model="searchCondition.description"
+                            clearable
                             placeholder="请输入内容">
                   </el-input>
                 </el-form-item>
                 <el-form-item label="DEP主机状态">
-                  <el-input v-model="searchCondition.description"
-                            placeholder="请输入内容">
-                  </el-input>
+                  <el-select v-model="searchCondition.deviceStatus"
+                             clearable
+                             placeholder="请选择">
+                    <el-option v-for="item in deviceStatusOptions"
+                               :key="item.value"
+                               :label="item.label"
+                               :value="item.value">
+                    </el-option>
+                  </el-select>
                 </el-form-item>
                 <el-form-item>
                   <el-button type="primary"
@@ -48,10 +57,12 @@
         <el-col :span="4">
           <div class="tree-filter-input">
             <el-input placeholder="输入关键字进行筛选"
+                      clearable
                       v-model="filterTreeText">
             </el-input>
           </div>
-          <el-tree ref="tree"
+          <el-tree v-loading="treeloading"
+                   ref="tree"
                    :data="treeData"
                    node-key="id"
                    highlight-current
@@ -75,7 +86,8 @@
           </el-tree>
         </el-col>
         <el-col :span="20">
-          <Datatable class="data-table"
+          <Datatable v-loading="tableloading"
+                     class="data-table"
                      @handleSizeChange="handleSizeChange"
                      @handleCurrentChange="handleCurrentChange"
                      :tableData="tableData"
@@ -122,6 +134,8 @@ export default {
   components: { Datatable },
   data() {
     return {
+      treeloading: true,
+      tableloading: true,
       filterTreeText: '',
       treeData: [],
       tableTitle: '全部',
@@ -136,6 +150,13 @@ export default {
         systemType: '',
         deviceStatus: ''
       },
+      deviceStatusOptions: [
+        { value: '', label: '全部' },
+        { value: 0, label: '在线' },
+        { value: 1, label: '离线' },
+        { value: 2, label: '网络异常离线' },
+        { value: 3, label: '客户端异常离线' }
+      ],
       dialogVisible: false,
       delData: []
     }
@@ -179,13 +200,18 @@ export default {
       }
       params = Object.assign({}, params, filter)
       request.getTerminalGroupByPage(params).then(res => {
-        this.treeData = []
-        res.data.records.forEach(val => {
-          this.treeData.push({
-            id: val.id,
-            label: val.name,
-          })
-        });
+        if (res.code === 0) {
+          this.treeloading = false
+          this.treeData = []
+          res.data.records.forEach(val => {
+            this.treeData.push({
+              id: val.id,
+              label: val.name,
+            })
+          });
+        }
+      }).catch(err => {
+        console.log(err)
       })
     },
     getTerminalListData(filter) {
@@ -194,22 +220,28 @@ export default {
         size: this.pageSize,
       }
       params = Object.assign({}, params, filter)
+      this.tableloading = true
       request.getTerminalListByPage(params).then(res => {
-        this.tableData = []
-        this.total = +res.data.total
-        res.data.records.forEach(val => {
-          this.tableData.push({
-            name: val.name,
-            mac: val.mac,
-            ip: val.ip,
-            systemType: val.systemType,
-            Account_name: Account_name,
-            description: val.description,
-            groupId: val.groupId,
-            //TODO: DEP主机状态字段不确定
-            deviceStatus: val.deviceStatus,
-          })
-        });
+        if (res.code === 0) {
+          this.tableloading = false
+          this.tableData = []
+          this.total = +res.data.total
+          res.data.records.forEach(val => {
+            this.tableData.push({
+              name: val.name,
+              mac: val.mac,
+              ip: val.ip,
+              systemType: val.systemType,
+              Account_name: Account_name,
+              description: val.description,
+              groupId: val.groupId,
+              //TODO: DEP主机状态字段不确定
+              deviceStatus: val.deviceStatus,
+            })
+          });
+        }
+      }).catch(err => {
+        console.log(err)
       })
     },
     filterNode(value, data) {
@@ -221,13 +253,12 @@ export default {
       this.pageSize = 10
       this.getTerminalListData(this.searchCondition)
     },
-    //TODO:跳转路径待确认
     newSet() {
-      this.$router.push(`/data/newset/network/port`)
+      this.$router.push(`/data/newset/terminal`)
     },
     modifyTree(val) {
       this.$router.push({
-        path: `/data/newset/network/port`,
+        path: `/data/newset/terminal`,
         query: { id: val.id }
       })
     },

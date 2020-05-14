@@ -6,14 +6,10 @@ function getNetworkPortByPage(data) {
   })
 }
 function singleDelPort(data) {
-  return request.post('network/source/port/delete', {
-    params: data
-  })
+  return request.post('network/source/port/delete', data)
 }
 function batchDelPort(data) {
-  return request.post('network/source/port/delete/all', {
-    data
-  })
+  return request.post('network/source/port/delete/all', data)
 }
 export default {
   getNetworkPortByPage,

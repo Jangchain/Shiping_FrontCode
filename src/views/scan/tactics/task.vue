@@ -1,322 +1,128 @@
 <template>
-  <div>
-    <p style="background:#031e5e;padding:20px;margin:0;font-size:22px;color:#54D1FF;padding-bottom:0">
-      <span style="color:#fff">新建检测任务-</span>选择任务类型
-    </p>
-    <navList :nav-list="navData" :curIndex="curIndex" @navClick="navClick" />
-    <el-tabs id="tabes" type="border-card" v-model="radio" @tab-click="tabChange()">
-      <el-tab-pane label="检测策略" name="policy">
-        <Datatable
-          v-if="!activeName"
-          @handleSizeChange="handleSizeChange"
-          @handleCurrentChange="handleCurrentChange"
-          @modifyRowData="modifyRowData"
-          @deleteRowData="deleteRowData"
-          :tableData="tableData"
-          :tableHeaderData="tableHeaderData"
-          :total="total"
-        >
-          <div class="form-data">
-            <div class="title-name">策略列表</div>
-            <div class="title-form">
-              <el-form :inline="true">
-                <el-form-item label="策略类型">
-                  <el-select v-model="selectValue" placeholder="全部">
-                    <el-option
-                      v-for="(v, k) in databaseTypeSelect"
-                      :key="k"
-                      :label="v.label"
-                      :value="v.value"
-                    />
-                  </el-select>
-                </el-form-item>
-                <el-form-item label>
-                  <el-input v-model="searchValue" placeholder="请输入内容">
-                    <i slot="suffix" class="el-input__icon el-icon-search" />
-                  </el-input>
-                </el-form-item>
-                <el-form-item>
-                  <el-button type="primary" @click="gettableData(1)">搜索</el-button>
-                </el-form-item>
-                <el-form-item>
-                  <el-button type="danger" @click="gettableData(1)">批量删除</el-button>
-                </el-form-item>
-                <el-form-item>
-                  <el-button type="danger" @click="gettableData(1)">批量禁用</el-button>
-                </el-form-item>
-                <el-form-item>
-                  <el-button type="primary" @click="gettableData(1)">批量启用</el-button>
-                </el-form-item>
-                <el-form-item>
-                  <el-button type="success" @click="news(1)">新建</el-button>
-                </el-form-item>
-              </el-form>
-            </div>
-          </div>
-        </Datatable>
-      </el-tab-pane>
-      <el-tab-pane label="检测任务" name="task1">
-        <Datatable
-          v-if="!activeName"
-          @handleSizeChange="handleSizeChange"
-          @handleCurrentChange="handleCurrentChange"
-          @modifyRowData="modifyRowData"
-          @deleteRowData="deleteRowData"
-          :tableData="tableData"
-          :tableHeaderData="tableHeaderData1"
-          :total="total"
-        >
-          <div class="form-data">
-            <div class="title-name">任务列表</div>
-            <div class="title-form">
-              <el-form :inline="true">
-                <el-form-item label="任务类型">
-                  <el-select v-model="selectValue" placeholder="全部">
-                    <el-option
-                      v-for="(v, k) in databaseTypeSelect"
-                      :key="k"
-                      :label="v.label"
-                      :value="v.value"
-                    />
-                  </el-select>
-                </el-form-item>
-                <el-form-item label>
-                  <el-input v-model="searchValue" placeholder="请输入内容">
-                    <i slot="suffix" class="el-input__icon el-icon-search" />
-                  </el-input>
-                </el-form-item>
-                <el-form-item>
-                  <el-button type="primary" @click="gettableData(1)">搜索</el-button>
-                </el-form-item>
-                <el-form-item>
-                  <el-button type="danger" @click="gettableData(1)">批量删除</el-button>
-                </el-form-item>
-                <el-form-item>
-                  <el-button type="danger" @click="gettableData(1)">批量禁用</el-button>
-                </el-form-item>
-                <el-form-item>
-                  <el-button type="primary" @click="gettableData(1)">批量启用</el-button>
-                </el-form-item>
-                <el-form-item>
-                  <el-button type="success" @click="news(1)">新建</el-button>
-                </el-form-item>
-              </el-form>
-            </div>
-          </div>
-        </Datatable>
-      </el-tab-pane>
-    </el-tabs>
-    <component :is="activeName" />
+  <div id="tol">
+    <div id="find">
+      <h3>检查任务类</h3>
+      <em></em>
+      <ul>
+        <li style="background:#f1455b;border:solid 8px #fcdade" @click="save()">
+          <img src="../images/2.png" alt />
+          <i>存储检查任务</i>
+        </li>
+        <li style="background:#37c19d;border:solid 8px #d7f3eb">
+          <img src="../images/3.png" alt />
+          <i @click="scan()">终端扫描任务</i>
+        </li>
+        <li style="background:#505382;border:solid 8px #dcdde6">
+          <img src="../images/4.png" alt />
+          <i @click="capacity()">智能分类任务</i>
+        </li>
+        <li style="background:#3b7bc1;border:solid 8px #d8e5f3">
+          <img src="../images/6.png" alt />
+          <i @click="modules()">模块分类任务</i>
+        </li>
+      </ul>
+    </div>
+    <div id="look">
+      <h3>监控任务类</h3>
+      <em></em>
+      <ul>
+        <li style="background:#bfa342;border:solid 8px #bfa34233">
+          <img src="../images/5.png" alt />
+          <i @click="control()">网络监控任务</i>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
 <script>
-import navList from "../components/nav-list";
-import Datatable from "../components/data-table";
-import { tabs } from "./common";
 export default {
-  components: {
-    navList,
-    Datatable
-  },
   data() {
     return {
-      navData: [],
-      activeName: "",
-      curIndex: 2, // 当前展示的nav下标,
-      tableData: [],
-      tableHeaderData: [],
-      tableHeaderData1: [],
-      total: 10,
-      radio:'task1',
-      databaseTypeSelect: [
-        {
-          label: "全部",
-          value: "all"
-        }
-      ],
-      selectValue: "",
-      searchValue: ""
-    };
-  },
-  created() {
-    tabs.forEach(val => {
-      this.navData.push({
-        icon: require("../images/1.png"),
-        name: val.name,
-        label: val.label
-      });
-      this.databaseTypeSelect.push({
-        label: val.label,
-        value: val.name
-      });
-    });
-    console.log("this.$route.params", this.$route.params);
-    const type = this.$route.params.type;
-    if (type) {
-      this.$route.meta.title = tabs.find(val => val.name === type).label;
-      this.activeName = type;
-      this.curIndex = tabs.findIndex(val => val.name === type);
-    }
-  },
-  mounted() {
-    this.tableHeaderData = [
-      {
-        name: "name",
-        label: "策略名"
-      },
-      {
-        name: "databaseType",
-        label: "策略类型"
-      },
 
-      {
-        name: "creator",
-        label: "创建者"
-      },
-      {
-        name: "obj",
-        label: "检测对象"
-      },
-      {
-        name: "nums",
-        label: "扫描数据量"
-      },
-      {
-        name: "num",
-        label: "事件数"
-      },
-      {
-        name: "date",
-        label: "运行周期"
-      },
-      {
-        name: "times",
-        label: "时间"
-      },
-      {
-        name: "static",
-        label: "状态"
-      }
-    ];
-    this.tableHeaderData1 = [
-      {
-        name: "name",
-        label: "任务名"
-      },
-      {
-        name: "databaseType",
-        label: "任务类型"
-      },
-{
-        name: "obj",
-        label: "检测目标"
-      },
-      {
-        name: "creator",
-        label: "创建者"
-      },
-      
-      {
-        name: "nums",
-        label: "起始时间"
-      },
-      {
-        name: "num",
-        label: "扫描总数"
-      },
-      {
-        name: "date",
-        label: "扫描文件大小"
-      },
-      {
-        name: "times",
-        label: "已处理"
-      },
-      {
-        name: "static",
-        label: "未处理"
-      },
-      {
-        name: "times",
-        label: "进度"
-      },
-      {
-        name: "static",
-        label: "状态"
-      }
-    ];
-    this.gettableData();
+    }
   },
   methods: {
-    navClick(val) {
-      console.log(`${val.name}`)
-      // this.$router.replace(`/scan/tactics/${val.name}`);
+    save() {
+      this.$router.push('./newtask')
     },
-    news() {
-      this.$router.push("./newtask");
-    },
-    tabChange(){
-      this.$router.push('./tactics')
-    },
-    gettableData(page) {
-      this.tableData = [];
-      for (let index = 0; index < 10; index++) {
-        this.tableData.push({
-          name: "信息源名称" + index,
-          databaseType: "信息源类型" + index,
-          ip: "IP地址" + index,
-          createDate: "创建时间" + index,
-          description: "备注" + index,
-          creator: "创建者" + index,
-          domain: "域名" + index,
-          port: "端口" + index,
-          lastModifyDate: "最后修改时间" + index
-        });
-      }
-    },
-    modifyRowData(val) {
-      console.log(val);
-    },
-    deleteRowData(val) {
-      console.log(val);
-    },
-    handleCurrentChange(val) {
-      console.log(val);
-    },
-    handleSizeChange(val) {
-      console.log(val);
-    }
+    scan() {},
+    capacity() {},
+    modules() {},
+    control() {}
   }
 };
 </script>
 <style lang="scss">
-.nav-list .grid-content .content-in.bgColor[data-v-5fbfcc2e]{
-  background-color: #fff;
-}
 </style>
 <style lang="scss" scoped>
-@import "~@/styles/mixin.scss";
-.form-data {
-  padding-top: 35px;
-  .title-name {
-    float: left;
-    height: 36px;
-    line-height: 36px;
-  }
-  .title-form {
-    float: right;
+#tol {
+  width: 50%;
+  margin: 0 auto;
+  background: #fff;
+  padding: 5rem;
+}
+i {
+  font-style: normal;
+}
+ul {
+  padding-top: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  li {
+   position: relative;
+    list-style: none;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 90px;
+    height: 80px;
+    border: 8px solid hotpink;
+    border-radius: 2rem;
+    background: #f1455b;
+    &:nth-of-type(2){
+      background:#f1455b;
+      border:solid 3px #f1455b33
+    }
+    img {
+      width: 32px;
+      height: 32px;
+    }
+    i {
+      position: absolute;
+      top: 6rem;
+      font-size: 0.75rem;
+    }
   }
 }
-#tabes{
-  padding: 10px;
-  .data-area[data-v-487df30c]{
-    padding: 0;
+#find {
+  padding-bottom: 60px;
+  position: relative;
+  h3 {
+    z-index: 3;
   }
-  .form-data[data-v-79f1e701]{
-    padding: 0;
+  em {
+    display: inline-block;
+    position: absolute;
+    top: 10px;
+    width: 80%;
+    left: 120px;
+    height: 0px;
+    border-bottom: dashed 1px red;
   }
-
 }
-
+#look {
+  position: relative;
+  em {
+    display: inline-block;
+    position: absolute;
+    top: 10px;
+    width: 80%;
+    left: 120px;
+    height: 0px;
+    border-bottom: dashed 1px red;
+  }
+}
 </style>

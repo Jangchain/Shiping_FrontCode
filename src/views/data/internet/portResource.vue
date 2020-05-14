@@ -1,6 +1,7 @@
 <template>
   <div class="data-area">
-    <Datatable @handleSizeChange="handleSizeChange"
+    <Datatable v-loading="loading"
+               @handleSizeChange="handleSizeChange"
                @handleCurrentChange="handleCurrentChange"
                @modifyRowData="modifyRowData"
                @deleteRowData="deleteRowData"
@@ -9,7 +10,8 @@
                :tableHeaderData="tableHeaderData"
                :total="total"
                :pageSize="pageSize"
-               :currentPage="currentPage">
+               :currentPage="currentPage"
+               :isShowDraw="false">
       <div class="form-data">
         <div class="title-name">信息源列表</div>
         <div class="title-form">
@@ -17,23 +19,25 @@
                    :model="searchCondition">
             <el-form-item label="信息源名称">
               <el-input v-model="searchCondition.name"
+                        clearable
                         placeholder="请输入内容">
-                <i slot="suffix"
-                   class="el-input__icon el-icon-search" />
               </el-input>
             </el-form-item>
             <el-form-item label="协议">
-              <el-input v-model="searchCondition.protocol"
-                        placeholder="请输入内容">
-                <i slot="suffix"
-                   class="el-input__icon el-icon-search" />
-              </el-input>
+              <el-select v-model="searchCondition.protocol"
+                         clearable
+                         placeholder="请选择">
+                <el-option v-for="item in protocolOptions"
+                           :key="item.value"
+                           :label="item.label"
+                           :value="item.value">
+                </el-option>
+              </el-select>
             </el-form-item>
             <el-form-item label="备注">
               <el-input v-model="searchCondition.description"
+                        clearable
                         placeholder="请输入内容">
-                <i slot="suffix"
-                   class="el-input__icon el-icon-search" />
               </el-input>
             </el-form-item>
             <el-form-item>
@@ -73,12 +77,13 @@
 </template>
 <script>
 import Datatable from '../components/data-table'
-import request from "@/api/data/network";
+import request from "@/api/data/internet";
 export default {
   name: 'portResource',
   components: { Datatable },
   data() {
     return {
+      loading: true,
       tableData: [],
       tableHeaderData: [],
       pageSize: 10,
@@ -89,6 +94,56 @@ export default {
         protocol: '',
         description: ''
       },
+      protocolOptions: [
+        {
+          value: '',
+          label: '全部'
+        },
+        {
+          value: "FTP-DATA",
+          label: "FTP-DATA"
+        },
+        {
+          value: "FTP",
+          label: "FTP"
+        },
+        {
+          value: "TELNET",
+          label: "TELNET"
+        },
+        {
+          value: "SMTP",
+          label: "SMTP"
+        },
+        {
+          value: "HTTP",
+          label: "HTTP"
+        },
+        {
+          value: "SMTPS",
+          label: "SMTPS"
+        },
+        {
+          value: "POP",
+          label: "POP"
+        },
+        {
+          value: "IMAP",
+          label: "IMAP"
+        },
+        {
+          value: "TNS",
+          label: "TNS"
+        },
+        {
+          value: "MSN",
+          label: "MSN"
+        },
+        {
+          value: "HTTPS",
+          label: "HTTPS"
+        }
+      ],
       selection: [],
       dialogVisible: false,
       delData: []
@@ -131,19 +186,26 @@ export default {
         descs: 'createDate'
       }
       params = Object.assign({}, params, filter)
+      this.loading = true
       request.getNetworkPortByPage(params).then(res => {
-        this.tableData = []
-        this.total = +res.data.total
-        res.data.records.forEach(val => {
-          this.tableData.push({
-            name: val.name,
-            portEndValue: val.portEndValue,
-            protocol: val.protocol,
-            status: val.status ? '是' : '否',
-            type: +val.type ? '自定义' : '预定义',
-            description: val.description
-          })
-        });
+        if (res.code === 0) {
+          this.loading = false
+          this.tableData = []
+          this.total = +res.data.total
+          res.data.records.forEach(val => {
+            this.tableData.push({
+              id: val.id,
+              name: val.name,
+              portEndValue: val.portEndValue,
+              protocol: val.protocol,
+              status: val.status ? '是' : '否',
+              type: +val.type ? '自定义' : '预定义',
+              description: val.description
+            })
+          });
+        }
+      }).catch(err => {
+        console.log(err)
       })
     },
     search() {
@@ -152,17 +214,17 @@ export default {
       this.getNetworkPortData(this.searchCondition)
     },
     newSet() {
-      this.$router.push(`/data/newset/network/port`)
+      this.$router.push(`/data/newset/internet`)
     },
     modifyRowData(val) {
       this.$router.push({
-        path: `/data/newset/network/port`,
+        path: `/data/newset/internet`,
         query: { id: val.id }
       })
     },
     deleteRowData(val) {
       this.dialogVisible = true
-      this.delData = val
+      this.delData = [val]
     },
     batchDel() {
       this.dialogVisible = true
@@ -173,8 +235,17 @@ export default {
     },
     confirmDel() {
       this.dialogVisible = false
-      console.log('this.delData', this.delData)
-      //调用批量删除接口
+      const ids = []
+      this.delData.forEach(val => {
+        ids.push(val.id)
+      })
+      request.batchDelPort({ ids: ids }).then(res => {
+        if (res.code === 0) {
+          this.search()
+        }
+      }).catch(err => {
+        console.log(err)
+      })
     },
     handleCurrentChange(val) {
       this.currentPage = val

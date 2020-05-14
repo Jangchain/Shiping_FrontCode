@@ -16,7 +16,7 @@
       <match v-else-if="$route.params.subType == 'match'"></match>
       <multi-intelligent-learning v-else-if="$route.params.subType == 'multiIntelligentLearning'"></multi-intelligent-learning>
     </div> -->
-    <router-view></router-view>
+    <router-view class="sub-content-list"></router-view>
   </div>
 </template>
 <script>
@@ -60,5 +60,8 @@ export default {
 }
 .el-tooltip__popper {
   max-width: 450px;
+}
+.sub-content-list {
+  padding:10px;
 }
 </style>

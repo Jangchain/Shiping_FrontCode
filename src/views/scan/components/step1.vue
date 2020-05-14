@@ -26,36 +26,25 @@
     <div id="bts">
       <p>添加基本信息</p>
       <el-form ref="form" :model="form" label-width="130px" :label-position="labelPosition">
-        <el-form-item label="策略名称" placeholder="输入名称">
-          <el-input width="450" v-model="form.name"></el-input>
+        <el-form-item label="组件">
+          <el-select v-model="form.region" placeholder="请选择">
+            <el-option label="SP132" value="SP132"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="名称" placeholder="输入名称">
+          <el-input v-model="form.name"></el-input>
         </el-form-item>
         <el-form-item label="检测日期">
           <el-date-picker v-model="form.date" type="date" placeholder="选择日期"></el-date-picker>
         </el-form-item>
         <el-form-item label="检查单位" placeholder="输入检查单位">
-          <el-input v-model="form.name"></el-input>
+          <el-input v-model="form.unit"></el-input>
         </el-form-item>
         <el-form-item label="检查人" placeholder="输入检查人名">
-          <el-input v-model="form.name"></el-input>
-        </el-form-item>
-        <el-form-item label="组件">
-          <el-select v-model="form.region" placeholder="请选择">
-            <el-option label="NM-192.168.10.124" value="NM-192.168.10.124"></el-option>
-            <el-option label="NP-192.168.10.124" value="NP-192.168.10.124"></el-option>
-            <el-option label="EP-192.190.10.110" value="EP-192.190.10.110"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="受检单位">
-          <el-select v-model="form.region1" placeholder="选择受检单位">
-            <el-option label="区域一" value="shanghai"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
-          </el-select>
+          <el-input v-model="form.inspector"></el-input>
         </el-form-item>
         <el-form-item label="备注">
-          <el-input type="textarea" v-model="form.desc"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button id="btn1" type="primary" @click="onSubmit">下一步</el-button>
+          <el-input type="textarea" v-model="form.description"></el-input>
         </el-form-item>
       </el-form>
     </div>
@@ -65,18 +54,18 @@
 <script>
 export default {
   name: "step1",
+ props: {
+    form: {
+      type: Object,
+      default: {}
+    },
+  },
   data() {
     return {
-      form: {},
+      // form: {},
       labelPosition: "left",
-      a:'1'
     };
   },
-  methods: {
-    onSubmit() {
-      this.$router.push('./step2')
-    }
-  }
 };
 </script>
 
@@ -94,6 +83,13 @@ export default {
     height: 60px;
     padding: 0;
   }
+  .el-form{
+    height: 50vh;
+    overflow-y: scroll;
+    border: solid 1px rgba(128, 128, 128, 0.308);
+    padding: 20px;
+    margin-bottom: 50px;
+  }
 }
 </style>
 <style lang="scss" scoped>
@@ -106,7 +102,7 @@ export default {
   ul{
     display: flex;
     flex-direction: row;
-    border-bottom: solid 1px rgb(19, 18, 18);
+    border-bottom: solid 1px rgba(19, 18, 18, 0.123);
   }
  ul li{
    width: 240px;

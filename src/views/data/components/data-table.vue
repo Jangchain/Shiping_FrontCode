@@ -6,7 +6,6 @@
         <el-table @row-click="rowClick"
                   @selection-change="handleSelectionChange"
                   :data="tableData"
-                  element-loading-text="Loading"
                   stripe
                   fit
                   highlight-current-row>
@@ -14,6 +13,7 @@
                            type="selection"
                            width="45" />
           <el-table-column v-for="(val, index) in tableHeaderData"
+                           show-overflow-tooltip
                            :key="index"
                            ndex
                            :prop="val.name"
@@ -120,7 +120,8 @@ export default {
       drawerData: {},
     }
   },
-  created() { },
+  created() {
+  },
   methods: {
     handleSizeChange(val) {
       //每页条数变化

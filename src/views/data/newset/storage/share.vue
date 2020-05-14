@@ -43,9 +43,9 @@
 </template>
 <script>
 import commonForm from "./components/common-form";
-import { targetResDataRequest } from "@/api/data/newset";
+import { getTargetResById } from "@/api/data/newset";
 const Api = {
-  targetResDataRequest
+  getTargetResById
 };
 
 export default {
@@ -55,13 +55,16 @@ export default {
   },
   data() {
     return {
+      id: "",
       ruleForm: {
+        taskType: "FILE_SYSTEM",
+        type: "File",
         name: "",
         description: "",
-        fileType: "",
-        ip: "",
-        username: "",
-        password: "",
+        fileType: "share",
+        ip: "1.1.1.1",
+        username: "admin",
+        password: "12345",
         domain: "",
         iType: "ResourceList"
       },
@@ -152,7 +155,12 @@ export default {
     };
   },
 
-  created() {},
+  created() {
+    // this.id = "7301ac98e27d4aa08f15628e314a6626";
+    if (this.id) {
+      this.getInfo(this.id);
+    }
+  },
 
   methods: {
     handleValidatedData(data) {
@@ -165,6 +173,32 @@ export default {
       // Api.targetResDataRequest(data).then(res => {
       //   console.log(res);
       // });
+    },
+
+    // 获取信息
+    getInfo(id) {
+      this.$emit("loading", true);
+      Api.getTargetResById(id)
+        .then(res => {
+          console.log("res", res);
+          this.info = res;
+          const { ip, domain, username, name, description } = res.targetRes;
+          const ruleForm = {
+            taskType: "FILE_SYSTEM",
+            type: "File",
+            name,
+            description,
+            fileType: "share",
+            ip,
+            username,
+            password: "",
+            domain
+          };
+          this.ruleForm = Object.assign({}, this.ruleForm, ruleForm)
+        })
+        .finally(() => {
+          this.$emit("loading", false);
+        });
     }
   }
 };

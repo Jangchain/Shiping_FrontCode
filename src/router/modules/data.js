@@ -138,7 +138,17 @@ const dataRouter = {
             icon: "component",
             type: "public"
           },
-          hidden: true
+          hidden: true,
+          children: [
+            {
+              path: ":type",
+              component: () => import("@/views/data/newset/public"),
+              meta: {
+                title: "组织架构",
+                type: "public"
+              }
+            }
+          ]
         }
       ]
     }

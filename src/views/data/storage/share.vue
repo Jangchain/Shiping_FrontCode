@@ -1,6 +1,7 @@
 <template>
   <div class="data-area">
-    <Datatable @handleSizeChange="handleSizeChange"
+    <Datatable v-loading="loading"
+               @handleSizeChange="handleSizeChange"
                @handleCurrentChange="handleCurrentChange"
                @modifyRowData="modifyRowData"
                @deleteRowData="deleteRowData"
@@ -17,23 +18,20 @@
                    :model="searchCondition">
             <el-form-item label="信息源名称">
               <el-input v-model="searchCondition.name"
+                        clearable
                         placeholder="请输入内容">
-                <i slot="suffix"
-                   class="el-input__icon el-icon-search" />
               </el-input>
             </el-form-item>
             <el-form-item label="IP">
               <el-input v-model="searchCondition.ip"
+                        clearable
                         placeholder="请输入内容">
-                <i slot="suffix"
-                   class="el-input__icon el-icon-search" />
               </el-input>
             </el-form-item>
             <el-form-item label="备注">
               <el-input v-model="searchCondition.description"
+                        clearable
                         placeholder="请输入内容">
-                <i slot="suffix"
-                   class="el-input__icon el-icon-search" />
               </el-input>
             </el-form-item>
             <el-form-item>
@@ -79,6 +77,7 @@ export default {
   components: { Datatable },
   data() {
     return {
+      loading: true,
       tableData: [],
       tableHeaderData: [],
       pageSize: 10,
@@ -126,10 +125,16 @@ export default {
         size: this.pageSize,
         resType: 'file'
       }
+      this.loading = true;
       params = Object.assign({}, params, filter)
       request.getStorageSourceByPage(params).then(res => {
-        this.total = +res.data.total
-        this.tableData = res.data.records
+        if (res.code === 0) {
+          this.loading = false;
+          this.total = +res.data.total
+          this.tableData = res.data.records
+        }
+      }).catch(err => {
+        console.log(err)
       })
     },
     search() {
