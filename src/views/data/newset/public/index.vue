@@ -1,22 +1,20 @@
 <template>
   <div>
-    <el-tabs v-model="activeName"
-             type="card"
-             @tab-click="handleClick">
-      <el-tab-pane v-for="tab in tabs"
-                   :key="tab.name"
-                   :label="tab.label"
-                   :name="tab.name" />
+    <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
+      <el-tab-pane
+        v-for="tab in tabs"
+        :key="tab.name"
+        :label="tab.label"
+        :name="tab.name"
+      />
     </el-tabs>
 
-    <div v-loading="loading">
+    <div v-loading="loading" class="form-content">
       <h3>新建{{ formTitle }}信息源</h3>
       <el-scrollbar style="height:calc(100vh - 285px)">
-        <component :is="activeName"
-                   @loading="handleLoading" />
+        <component :is="activeName" @loading="handleLoading" />
       </el-scrollbar>
     </div>
-
   </div>
 </template>
 <script>
@@ -42,7 +40,7 @@ export default {
   components: {
     orgination,
     account,
-    network,
+    network
   },
   data() {
     return {
@@ -55,7 +53,8 @@ export default {
   },
 
   created() {
-    const type = this.$route.params.type;
+    const type = this.$route.params.type || 'orgination';
+    console.log("type==", type);
     const tab = this.tabs.find(n => n.name === type);
     if (tab) {
       this.$route.meta.title = tab.label;

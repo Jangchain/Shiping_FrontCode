@@ -29,12 +29,13 @@
               <span>基础分享</span>
             </div>
             <el-tree
-              :data="treeData"
-              show-checkbox
-              node-key="id"
-              default-expand-all
               :props="defaultProps"
-            />
+              :load="loadDefaultTreeNode"
+              lazy
+              show-checkbox
+              @check-change="handleDefaultTreeCheckChange"
+            >
+            </el-tree>
           </el-card>
         </el-col>
       </template>
@@ -43,9 +44,10 @@
 </template>
 <script>
 import commonForm from "./components/common-form";
-import { getTargetResById } from "@/api/data/newset";
+import { getTargetResById, targetResDataRequest } from "@/api/data/newset";
 const Api = {
-  getTargetResById
+  getTargetResById,
+  targetResDataRequest
 };
 
 export default {
@@ -149,14 +151,14 @@ export default {
         }
       ],
       defaultProps: {
-        children: "children",
-        label: "label"
+        label: "label",
+        children: "children"
       }
     };
   },
 
   created() {
-    // this.id = "7301ac98e27d4aa08f15628e314a6626";
+    this.id = "7301ac98e27d4aa08f15628e314a6626";
     if (this.id) {
       this.getInfo(this.id);
     }
@@ -192,14 +194,91 @@ export default {
             ip,
             username,
             password: "",
-            domain
+            domain,
+            targetId: res.targetResInfos[0].targetResId,
+            path: "",
+            iType: "ResourceList"
           };
-          this.ruleForm = Object.assign({}, this.ruleForm, ruleForm)
+          this.ruleForm = Object.assign({}, this.ruleForm, ruleForm);
+          this.getTreeData(ruleForm);
         })
         .finally(() => {
           this.$emit("loading", false);
         });
-    }
+    },
+
+    getTreeData(data) {
+      if (data.fileType === "share") {
+        data.fileType = "";
+      }
+      delete data.password;
+      Api.targetResDataRequest(data).then(res => {
+        if (res.errCode === 510000) {
+          // 默认共享
+          const defaultTreeData = [];
+          // 默认共享
+          res.defaultDir.forEach((item, index) => {
+            const nameArr = item.split("/");
+            const obj = {
+              id: index + 1,
+              pId: 0,
+              name: nameArr.slice(1, nameArr.length).join("/"),
+              isParent: true,
+              parentName: item
+            };
+            defaultTreeData.push(obj);
+            this.defaultTreeData = defaultTreeData;
+            // if (
+            //   this.form.value.databaseType == "Access" ||
+            //   this.form.value.databaseType == "Sqlite" ||
+            //   (this.taskType == "FILE_SYSTEM" &&
+            //     this.form.value.fileType == "VMDK")
+            // ) {
+            //   obj["nocheck"] = true;
+            // }
+          });
+          console.log("defaultData", defaultTreeData);
+        }
+        console.log("res---targetResDataRequest", res);
+      });
+    },
+
+    loadDefaultTreeNode(node, resolve) {
+      console.log(node);
+      if (node.level === 0) {
+        return resolve([{ label: "region1" }, { label: "region2" }]);
+      }
+      if (node.level > 3) return resolve([]);
+
+      var hasChild;
+      if (node.data.label === "region1") {
+        hasChild = true;
+      } else if (node.data.label === "region2") {
+        hasChild = false;
+      } else {
+        hasChild = Math.random() > 0.5;
+      }
+
+      setTimeout(() => {
+        var data;
+        if (hasChild) {
+          data = [
+            {
+              label: "zone" + this.count++
+            },
+            {
+              label: "zone" + this.count++
+            }
+          ];
+        } else {
+          data = [];
+        }
+
+        resolve(data);
+      }, 500);
+    },
+
+    handleDefaultTreeCheckChange() {}
   }
 };
 </script>

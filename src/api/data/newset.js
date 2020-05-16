@@ -33,7 +33,8 @@ export function targetResDataRequest({
   anonymousLogin,
   readOnly,
   site,
-  isScanAttachment
+  isScanAttachment,
+  targetId
 }) {
   if (password) {
     password = encrypt(password);
@@ -75,8 +76,11 @@ export function targetResDataRequest({
       anonymousLogin,
       readOnly,
       site,
-      isScanAttachment
+      isScanAttachment,
+      targetId
     }
+  }).then(res => {
+    return res.data
   });
 }
 

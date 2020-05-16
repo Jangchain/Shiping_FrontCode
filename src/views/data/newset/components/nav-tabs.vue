@@ -10,48 +10,52 @@
 <script>
 const tabs = [
   {
-    value: 'storage',
-    label: '存储信息源',
-    redirect: 'storage/share'
+    value: "storage",
+    label: "存储信息源",
+    redirect: "storage/share"
   },
   {
-    value: 'internet',
-    label: '网络信息源'
+    value: "internet",
+    label: "网络信息源"
   },
   {
-    value: 'terminal',
-    label: '终端信息源'
+    value: "terminal",
+    label: "终端信息源"
   },
   {
-    value: 'public',
-    label: '公共信息源'
+    value: "public",
+    label: "公共信息源"
   }
-]
+];
 export default {
-  name: 'NavTabs',
+  name: "NavTabs",
   data() {
     return {
       tabs,
-      activeTab: ''
-    }
+      activeTab: ""
+    };
   },
   computed: {
     redirectUri() {
-      const tab = tabs.find(n => n.value === this.activeTab)
-      return tab ? tab.redirect || tab.value : ''
+      const tab = tabs.find(n => n.value === this.activeTab);
+      return tab ? tab.redirect || tab.value : "";
     }
   },
   created() {
-    if (this.$route.name === 'newset') {
-      this.$router.push(`/data/newset/storage/share`)
+    console.log("this.$route.name", this.$route.name);
+    if (this.$route.name === "newset") {
+      this.$router.push(`/data/newset/storage/share`);
     }
-    const type = this.$route.meta.type
-    this.activeTab = type
+    if (this.$route.name === "dataNewsetPublic") {
+      this.$router.push(`/data/newset/public/orgination`);
+    }
+    const type = this.$route.meta.type;
+    this.activeTab = type;
   },
   methods: {
     handleChange() {
-      this.$router.push(`/data/newset/${this.redirectUri}`)
+      this.$router.push(`/data/newset/${this.redirectUri}`);
     }
   }
-}
+};
 </script>
