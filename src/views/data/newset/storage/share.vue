@@ -2,40 +2,57 @@
 <template>
   <div>
     <common-form
+      ref="commonForm"
       :data="ruleForm"
       :rules="rules"
       @validated-data="handleValidatedData"
-      @test-connect="testConnect"
     >
       <template v-slot:tree>
         <el-col :span="11">
-          <el-card class="box-card">
+          <el-card v-if="defineTreeDataIsLoad" class="box-card">
             <div slot="header" class="clearfix">
               <span>自定义分享</span>
             </div>
-            <el-tree
-              :data="treeData"
-              show-checkbox
-              node-key="id"
-              default-expand-all
-              :props="defaultProps"
-            />
+            <el-scrollbar :vertical="true" style="height:300px;">
+              <el-tree
+                ref="defineTree"
+                :props="defaultProps"
+                :load="loadDefineTreeNode"
+                :default-expanded-keys="['/']"
+                node-key="path"
+                lazy
+                show-checkbox
+                @check="handleDefaultTreeCheckChange"
+              >
+                <span slot-scope="{ node }" class="span-ellipsis">
+                  <span :title="node.label">{{ node.label }}</span>
+                </span>
+              </el-tree>
+            </el-scrollbar>
           </el-card>
         </el-col>
         <el-col :span="1"><span class="pl-5" /></el-col>
         <el-col :span="11">
-          <el-card class="box-card">
+          <el-card v-if="defaultTreeDataIsLoad" class="box-card">
             <div slot="header" class="clearfix">
               <span>基础分享</span>
             </div>
-            <el-tree
-              :props="defaultProps"
-              :load="loadDefaultTreeNode"
-              lazy
-              show-checkbox
-              @check-change="handleDefaultTreeCheckChange"
-            >
-            </el-tree>
+            <el-scrollbar :vertical="true" style="height:300px;">
+              <el-tree
+                ref="defaultTree"
+                :props="defaultProps"
+                :load="loadDefaultTreeNode"
+                :default-expanded-keys="['/']"
+                node-key="path"
+                lazy
+                show-checkbox
+                @check="handleDefaultTreeCheckChange"
+              >
+                <span slot-scope="{ node }" class="span-ellipsis">
+                  <span :title="node.label">{{ node.label }}</span>
+                </span>
+              </el-tree>
+            </el-scrollbar>
           </el-card>
         </el-col>
       </template>
@@ -49,15 +66,35 @@ const Api = {
   getTargetResById,
   targetResDataRequest
 };
+import { SpValidators } from "./components/spValidators";
 
 export default {
   name: "Share",
   components: {
     commonForm
   },
+  props: {
+    id: {
+      type: [Number, String],
+      default: ""
+    },
+
+    connectData: {
+      type: Object,
+      default() {
+        return {};
+      }
+    },
+
+    info: {
+      type: Object,
+      default() {
+        return {};
+      }
+    }
+  },
   data() {
     return {
-      id: "",
       ruleForm: {
         taskType: "FILE_SYSTEM",
         type: "File",
@@ -66,115 +103,59 @@ export default {
         fileType: "share",
         ip: "1.1.1.1",
         username: "admin",
-        password: "12345",
+        password: "",
         domain: "",
         iType: "ResourceList"
       },
       rules: {
-        date1: [
-          {
-            type: "date",
-            required: true,
-            message: "请选择日期",
-            trigger: "change"
-          }
-        ],
-        date2: [
-          {
-            type: "date",
-            required: true,
-            message: "请选择时间",
-            trigger: "change"
-          }
-        ],
-        type: [
-          {
-            type: "array",
-            required: true,
-            message: "请至少选择一个活动性质",
-            trigger: "change"
-          }
-        ],
-        resource: [
-          { required: true, message: "请选择活动资源", trigger: "change" }
-        ],
-        desc: [{ required: true, message: "请填写活动形式", trigger: "blur" }]
+        password: [SpValidators.required()]
       },
-      treeData: [
-        {
-          id: 1,
-          label: "一级 1",
-          children: [
-            {
-              id: 4,
-              label: "二级 1-1",
-              children: [
-                {
-                  id: 9,
-                  label: "三级 1-1-1"
-                },
-                {
-                  id: 10,
-                  label: "三级 1-1-2"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          id: 2,
-          label: "一级 2",
-          children: [
-            {
-              id: 5,
-              label: "二级 2-1"
-            },
-            {
-              id: 6,
-              label: "二级 2-2"
-            }
-          ]
-        },
-        {
-          id: 3,
-          label: "一级 3",
-          children: [
-            {
-              id: 7,
-              label: "二级 3-1"
-            },
-            {
-              id: 8,
-              label: "二级 3-2"
-            }
-          ]
-        }
-      ],
       defaultProps: {
-        label: "label",
-        children: "children"
-      }
+        label: "name",
+        children: "children",
+        isLeaf: "leaf"
+      },
+      defaultTreeDataIsLoad: false,
+      defaultTreeData: [],
+      defineTreeDataIsLoad: false,
+      defineTreeData: []
     };
   },
 
-  created() {
-    this.id = "7301ac98e27d4aa08f15628e314a6626";
-    if (this.id) {
-      this.getInfo(this.id);
+  watch: {
+    connectData(val) {
+      // 是否编辑
+      if (this.id) {
+        console.log("是否编辑", this.connectData);
+        this.ruleForm = Object.assign({}, this.ruleForm, this.connectData);
+        this.$nextTick(() => {
+          this.$refs.commonForm.testConnect();
+        });
+      }
     }
   },
+
+  created() {},
 
   methods: {
     handleValidatedData(data) {
       console.log("handleValidatedData", data);
     },
 
-    // 测试连接
-    testConnect(data) {
-      console.log("测试连接", data);
-      // Api.targetResDataRequest(data).then(res => {
-      //   console.log(res);
-      // });
+    // 编辑获取信息参数处理
+    formatGetTreeData(data) {
+      const { ip, domain, username } = data.targetRes;
+      const formatData = {
+        type: "File",
+        fileType: "",
+        ip,
+        username,
+        domain,
+        targetId: data.targetResInfos[0].targetResId,
+        path: "",
+        iType: "ResourceList"
+      };
+      return formatData;
     },
 
     // 获取信息
@@ -184,101 +165,144 @@ export default {
         .then(res => {
           console.log("res", res);
           this.info = res;
-          const { ip, domain, username, name, description } = res.targetRes;
-          const ruleForm = {
-            taskType: "FILE_SYSTEM",
-            type: "File",
+          const { name, description, password } = res.targetRes;
+          const baseRuleForm = {
             name,
             description,
-            fileType: "share",
-            ip,
-            username,
-            password: "",
-            domain,
-            targetId: res.targetResInfos[0].targetResId,
-            path: "",
-            iType: "ResourceList"
+            password
           };
-          this.ruleForm = Object.assign({}, this.ruleForm, ruleForm);
-          this.getTreeData(ruleForm);
+          const ruleForm = this.formatGetTreeData(res);
+          this.ruleForm = Object.assign(
+            {},
+            this.ruleForm,
+            ruleForm,
+            baseRuleForm
+          );
+          this.getDefaultTreeData(ruleForm);
+
+          if (!password) {
+            this.rules.password = [SpValidators.maxLength(255)];
+          }
         })
         .finally(() => {
           this.$emit("loading", false);
         });
     },
 
-    getTreeData(data) {
-      if (data.fileType === "share") {
-        data.fileType = "";
-      }
-      delete data.password;
+    // 获取默认树表信息
+    getDefaultTreeData(data) {
       Api.targetResDataRequest(data).then(res => {
         if (res.errCode === 510000) {
           // 默认共享
-          const defaultTreeData = [];
-          // 默认共享
-          res.defaultDir.forEach((item, index) => {
-            const nameArr = item.split("/");
-            const obj = {
-              id: index + 1,
-              pId: 0,
-              name: nameArr.slice(1, nameArr.length).join("/"),
-              isParent: true,
-              parentName: item
-            };
-            defaultTreeData.push(obj);
-            this.defaultTreeData = defaultTreeData;
-            // if (
-            //   this.form.value.databaseType == "Access" ||
-            //   this.form.value.databaseType == "Sqlite" ||
-            //   (this.taskType == "FILE_SYSTEM" &&
-            //     this.form.value.fileType == "VMDK")
-            // ) {
-            //   obj["nocheck"] = true;
-            // }
-          });
-          console.log("defaultData", defaultTreeData);
+          let defaultTreeData = [];
+          defaultTreeData = this.formatTreeData(res.defaultDir);
+          this.defaultTreeData = defaultTreeData;
+          this.defaultTreeDataIsLoad = true;
+          // 自定义共享
+          let defineTreeData = [];
+          defineTreeData = this.formatTreeData(res.definedDir);
+          this.defineTreeData = defineTreeData;
+          this.defineTreeDataIsLoad = true;
+          // if (
+          //   this.form.value.databaseType == "Access" ||
+          //   this.form.value.databaseType == "Sqlite" ||
+          //   (this.taskType == "FILE_SYSTEM" &&
+          //     this.form.value.fileType == "VMDK")
+          // ) {
+          //   obj["nocheck"] = true;
+          // }
         }
-        console.log("res---targetResDataRequest", res);
       });
     },
 
-    loadDefaultTreeNode(node, resolve) {
-      console.log(node);
-      if (node.level === 0) {
-        return resolve([{ label: "region1" }, { label: "region2" }]);
-      }
-      if (node.level > 3) return resolve([]);
-
-      var hasChild;
-      if (node.data.label === "region1") {
-        hasChild = true;
-      } else if (node.data.label === "region2") {
-        hasChild = false;
-      } else {
-        hasChild = Math.random() > 0.5;
-      }
-
-      setTimeout(() => {
-        var data;
-        if (hasChild) {
-          data = [
-            {
-              label: "zone" + this.count++
-            },
-            {
-              label: "zone" + this.count++
-            }
-          ];
-        } else {
-          data = [];
-        }
-
-        resolve(data);
-      }, 500);
+    // 格式化树表信息
+    formatTreeData(data, leaf = false) {
+      const formatTreeData = [];
+      data.forEach((item, index) => {
+        const nameArr = item.split("/");
+        const obj = {
+          name: nameArr[nameArr.length - 1],
+          path: "/" + nameArr.slice(1, nameArr.length).join("/"),
+          isParent: true,
+          parentName: item,
+          leaf
+        };
+        formatTreeData.push(obj);
+      });
+      return formatTreeData;
     },
 
-    handleDefaultTreeCheckChange() {}
+    // 获取子节点树表信息
+    getTreeData(path, treeName = "Default") {
+      const data = this.formatGetTreeData(this.info);
+      data.path = path;
+      data.dirType = treeName;
+      return Api.targetResDataRequest(data).then(res => {
+        if (res.errCode === 510000) {
+          let fileList = [];
+          let dirList = [];
+          if (res.fileList && res.fileList.length > 0) {
+            fileList = this.formatTreeData(res.fileList, true);
+          }
+          dirList = this.formatTreeData(res.defaultDir);
+          return [...dirList, ...fileList];
+        }
+      });
+    },
+
+    // 基础分享
+    loadDefaultTreeNode(node, resolve) {
+      this.loadTreeNode(node, resolve, "default");
+    },
+
+    // 自定义分享
+    loadDefineTreeNode(node, resolve) {
+      this.loadTreeNode(node, resolve, "define");
+    },
+
+    // 获取树表子元素
+    async loadTreeNode(node, resolve, type) {
+      if (node.level === 0) {
+        return resolve([{ path: "/", name: "/" }]);
+      }
+      if (node.level === 1) {
+        let data = [];
+        if (type === "default") {
+          data = this.defaultTreeData;
+        }
+        if (type === "define") {
+          data = this.defineTreeData;
+        }
+        return resolve(data);
+      }
+      if (node.data) {
+        const path = `${node.data.path}`;
+        const data = await this.getTreeData(path);
+        resolve(data);
+      }
+    },
+
+    handleDefaultTreeCheckChange(data, checkedArr) {
+      this.getCheckedNodes();
+    },
+
+    // 获取选择树节点
+    getCheckedNodes() {
+      const defaultCheckedArr = this.$refs.defaultTree.getCheckedNodes();
+      const defineCheckedArr = this.$refs.defineTree.getCheckedNodes();
+      const checkedArr = [...defaultCheckedArr, ...defineCheckedArr];
+      const formatCheckData = [];
+      checkedArr.forEach(item => {
+        if (item.name !== "/") {
+          formatCheckData.push({
+            name: `${item.path}`,
+            path: item.parentName
+          });
+        }
+      });
+      console.log(formatCheckData);
+      return formatCheckData;
+    }
   }
 };
 </script>
@@ -290,5 +314,30 @@ export default {
     padding: 0 20px;
     background-color: #ededed;
   }
+  .box-card {
+    height: 400px;
+  }
+}
+</style>
+<style lang="scss">
+.tree-form-item {
+  .el-scrollbar__wrap {
+    overflow-x: hidden;
+  }
+  .el-scrollbar .el-scrollbar__wrap .el-scrollbar__view {
+    white-space: nowrap;
+  }
+  .el-tree {
+    * {
+      white-space: nowrap;
+    }
+  }
+}
+.span-ellipsis {
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
 }
 </style>

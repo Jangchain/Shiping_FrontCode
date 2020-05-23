@@ -7,9 +7,10 @@ const state = {
     { key: 'permission', val: '数据鉴权' },
     { key: 'treating', val: '数据脱敏' },
     { key: 'analyze', val: '行为分析' },
+    { key: 'admin', val: '系统设置', location: 'right' },
     { key: 'data', val: '信息源', location: 'right' },
     { key: 'rule', val: '数据规则', location: 'right' },
-    { key: 'admin', val: '管理员', location: 'right' },
+    { key: 'adminu', val: '管理员', location: 'right' },
     { key: 'help', val: '帮助', location: 'right' }
   ],
   current: 0

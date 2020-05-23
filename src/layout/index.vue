@@ -15,7 +15,7 @@
         <ul>
           <template v-for="(v, i) in navs.data">
             <template v-if="v.location === 'right'">
-              <li v-if="v.key === 'admin'" :key="v.key" :class="{ active: i === navs.current }" @click="changeNav(i)">
+              <li v-if="v.key === 'adminu'" :key="v.key" :class="{ active: i === navs.current }">
                 <el-dropdown>
                   <span class="el-dropdown-nav">
                     <svg-icon icon-class="user" /> {{ roleName }}
@@ -51,7 +51,7 @@
 
 <script>
 // import RightPanel from '@/components/RightPanel'
-import { AppMain, Navbar, Sidebar, TagsView } from './components'
+import { AppMain, Navbar, Sidebar } from './components'
 import ResizeMixin from './mixin/ResizeHandler'
 import { mapState, mapGetters } from 'vuex'
 

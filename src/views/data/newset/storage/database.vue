@@ -37,8 +37,8 @@ export default {
         indexSearchHostname: "",
         tuVersion: "Neo4jv3",
         dmVersion: "DM6",
-        databaseName: '',
-        kingBaseVersion: 'Kingbase'
+        databaseName: "",
+        kingBaseVersion: "Kingbase"
       },
       rules: {
         username: [
@@ -64,14 +64,16 @@ export default {
 
   methods: {
     handleChange(value) {
-      console.log("handleChange", value);
-      this.handleChangeRules(value);
+      console.log("handleChange", value.databaseType);
+      if (value.databaseType !== "MySql") {
+        this.handleChangeRules(value.databaseType);
+      }
     },
 
-    handleChangeRules(value) {
+    handleChangeRules(databaseType) {
       if (
         ["Hbase", "Redis", "MongoDB", "ElasticSearch", "janusgraph03"].includes(
-          value.databaseType
+          databaseType
         )
       ) {
         this.rules.username = [

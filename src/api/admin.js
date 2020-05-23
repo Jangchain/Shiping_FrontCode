@@ -227,3 +227,29 @@ export function updateDept(data) {
     data
   })
 }
+
+//搜索告警统计
+export function alarmGetStat(data) {
+  return request.get('common/sys/alarm/stat/get/stat', {
+    params: data
+  })
+}
+
+//获取告警统计
+export function alarmGetDay() {
+  return request.get('common/sys/alarm/stat/get/day')
+}
+
+//获取告警列表
+export function alarmPage(data) {
+  return request.get('common/sys/alarm/page', {
+    params: data
+  })
+}
+
+//获取历史告警列表
+export function alarmHistory(data) {
+  return request.get('common/sys/alarm/history/page', {
+    params: data
+  })
+}

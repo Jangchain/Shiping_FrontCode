@@ -10,44 +10,31 @@
           <div class="form-data">
             <div class="title-name">{{tableTitle}}</div>
             <div class="title-form">
-              <el-form :inline="true"
-                       :model="searchCondition">
+              <el-form :inline="true" :model="searchCondition">
                 <el-form-item label="账号">
-                  <el-input v-model="searchCondition.name"
-                            clearable
-                            placeholder="请输入内容">
+                  <el-input v-model="searchCondition.name" clearable placeholder="请输入内容">
                   </el-input>
                 </el-form-item>
                 <el-form-item label="IP">
-                  <el-input v-model="searchCondition.ip"
-                            clearable
-                            placeholder="请输入内容">
+                  <el-input v-model="searchCondition.ip" clearable placeholder="请输入内容">
                   </el-input>
                 </el-form-item>
                 <el-form-item label="电子邮箱">
-                  <el-input v-model="searchCondition.mail"
-                            clearable
-                            placeholder="请输入内容">
+                  <el-input v-model="searchCondition.mail" clearable placeholder="请输入内容">
                   </el-input>
                 </el-form-item>
                 <el-form-item label="MAC地址">
-                  <el-input v-model="searchCondition.mac"
-                            clearable
-                            placeholder="请输入内容">
+                  <el-input v-model="searchCondition.mac" clearable placeholder="请输入内容">
                   </el-input>
                 </el-form-item>
                 <el-form-item>
-                  <el-button type="primary"
-                             @click="search">查询</el-button>
+                  <el-button type="primary" @click="search">查询</el-button>
                 </el-form-item>
                 <el-form-item>
-                  <el-button type="danger"
-                             :disabled="!selection.length"
-                             @click="batchDel">批量删除</el-button>
+                  <el-button type="danger" :disabled="!selection.length" @click="batchDel">批量删除</el-button>
                 </el-form-item>
                 <el-form-item>
-                  <el-button type="success"
-                             @click="newSet">新建</el-button>
+                  <el-button type="success" @click="newSet">新建</el-button>
                 </el-form-item>
               </el-form>
             </div>
@@ -58,19 +45,11 @@
         <!-- 竖表 -->
         <el-col :span="4">
           <div class="tree-filter-input">
-            <el-input placeholder="输入关键字进行筛选"
-                      v-model="filterTreeText">
+            <el-input placeholder="输入关键字进行筛选" v-model="filterTreeText">
             </el-input>
           </div>
-          <el-tree ref="tree"
-                   :data="treeData"
-                   node-key="id"
-                   highlight-current
-                   default-expand-all
-                   :filter-node-method="filterNode"
-                   @node-click="ClickTreeNode">
-            <span class="custom-tree-node"
-                  slot-scope="{ data }">
+          <el-tree ref="tree" :data="treeData" node-key="id" highlight-current default-expand-all :filter-node-method="filterNode" @node-click="ClickTreeNode">
+            <span class="custom-tree-node" slot-scope="{ data }">
               <span>
                 <span :class="data.icon"></span>
                 <span>{{ data.label }}</span>
@@ -79,37 +58,21 @@
           </el-tree>
         </el-col>
         <el-col :span="20">
-          <Datatable class="data-table"
-                     v-loading="tableloading"
-                     @handleSizeChange="handleSizeChange"
-                     @handleCurrentChange="handleCurrentChange"
-                     @modifyRowData="modifyRowData"
-                     @deleteRowData="deleteRowData"
-                     @selectionChange="selectionChange"
-                     :tableData="tableData"
-                     :tableHeaderData="tableHeaderData"
-                     :total="total"
-                     :pageSize="pageSize"
-                     :currentPage="currentPage"
-                     :isShowDraw="false">
+          <Datatable class="data-table" v-loading="tableloading" @handleSizeChange="handleSizeChange" @handleCurrentChange="handleCurrentChange" @modifyRowData="modifyRowData" @deleteRowData="deleteRowData" @selectionChange="selectionChange" :tableData="tableData" :tableHeaderData="tableHeaderData" :total="total" :pageSize="pageSize" :currentPage="currentPage" :isShowDraw="false">
           </Datatable>
         </el-col>
       </el-row>
     </div>
 
-    <el-dialog title="信息提示"
-               :visible.sync="dialogVisible"
-               width="30%">
+    <el-dialog title="信息提示" :visible.sync="dialogVisible" width="30%">
       <p class="dialog-tips">
         <i class="el-icon-warning dialog-icon"></i>
         <span class="dialog-content">是否确认删除信息源 ？</span>
       </p>
       <div>删除后将无法回复</div>
-      <span slot="footer"
-            class="dialog-footer">
+      <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary"
-                   @click="confirmDel">确定</el-button>
+        <el-button type="primary" @click="confirmDel">确定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -152,8 +115,6 @@ export default {
   created() {
     this.getAccountListData()
     this.getAccountGroupData()
-    //TODO:字段确认：工号和账号区别？用哪个字段。
-    //TODO:字段确认：所在位置是哪个字段，目前接口没有范返回。
     this.tableHeaderData = [
       {
         name: 'name',
@@ -175,10 +136,10 @@ export default {
         name: 'phone',
         label: '电话号码'
       },
-      {
-        name: '',
-        label: '所在位置'
-      },
+      // {
+      //   name: '',
+      //   label: '所在位置'
+      // },
       {
         name: 'mail',
         label: '电子邮箱'
@@ -270,15 +231,14 @@ export default {
       this.pageSize = 10
       this.getAccountListData()
     },
-    //TODO:跳转路径待确认
     newSet() {
-      this.$router.push(`/data/newset/network/port`)
+      this.$router.push(`/data/newset/public/account`)
     },
     modifyRowData(val) {
-      // this.$router.push({
-      //   path: `/data/newset/storage/cloudDatabase`,
-      //   query: { id: val.id }
-      // })
+      this.$router.push({
+        path: `/data/newset/public/account`,
+        query: { id: val.id }
+      })
     },
     deleteRowData(val) {
       this.dialogVisible = true

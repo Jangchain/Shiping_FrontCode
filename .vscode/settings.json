@@ -9,6 +9,8 @@
       "autoFix": true
     }
   ],
+  "prettier.singleQuote": true,
+  "prettier.semi": true,
   "eslint.run": "onSave",
   "eslint.autoFixOnSave": true,
   "editor.codeActionsOnSave": {
@@ -16,7 +18,7 @@
   },
   "vetur.format.defaultFormatterOptions": {
     "prettier": {
-      "semi": false,
+      "semi": true,
       "singleQuote": true
     }
   }

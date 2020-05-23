@@ -1,22 +1,5 @@
 import request from '@/utils/request'
 
-//单个删除
-export function scanComplianceDelete(data) {
-    return request({
-        url: `/srd/compliance/delete/${id}`,
-        method: 'post',
-        data
-    })
-}
-
-//批量删除
-export function scanComplianceDeleteBatch(data) {
-    return request({
-        url: `/srd/compliance/delete/batch`,
-        method: 'post',
-        data
-    })
-}
 
 //分页查询
 export function scanComplianceQueryPage(data) {
@@ -24,25 +7,6 @@ export function scanComplianceQueryPage(data) {
         params: data
       });
 }
-
-//存储任务保存
-export function discoveryTaskSave(data) {
-    return request({
-        url: '/srd/tactic/discoveryTask/SP/saveTask',
-        method: 'post',
-        data
-    })
-}
-
-//修改存储任务保存
-export function discoveryTaskUpdate(data) {
-    return request({
-        url: '/srd/tactic/discoveryTask/SP/updateTask',
-        method: 'post',
-        data
-    })
-}
-
 
 //编辑
 export function scanComplianceModify(data) {
@@ -69,9 +33,71 @@ export function taskCenterGetTaskCenterByPage(data) {
       });
 }
 
+//存储任务保存
+export function discoveryTaskSave(data) {
+    return request({
+        url: '/srd/tactic/discoveryTask/SP/saveTask',
+        method: 'post',
+        data
+    })
+}
+
+//修改存储任务保存
+export function discoveryTaskUpdate(data) {
+    return request({
+        url: '/srd/tactic/discoveryTask/SP/updateTask',
+        method: 'post',
+        data
+    })
+}
+
+//根据id删除存储任务
+export function discoveryTaskSPDelete(id) {
+    return request({
+        url: `/srd/tactic/discoveryTask/SP/deleteTask/${id}`,
+        method: 'post',
+        id
+    })
+}
+
+//添加终端存储任务
+export function endpointTaskInsert(data) {
+    return request({
+        url: '/endpoint/task/insert',
+        method: 'post',
+        data
+    })
+}
+
+//根据id删除终端扫描任务
+export function endpointTaskDelete(id) {
+    return request({
+        url: `/endpoint/task/delete/${id}`,
+        method: 'post',
+        id
+    })
+}
+
+
 //信息源配置分页查询
 export function sourceGetPage(data) {
     return request.get('/storage/source/get/page', {
+        params: data
+      });
+}
+
+
+//终端信息源配置列表
+export function depHostByPage(data) {
+    return request.get('/endpoint/source/depHost/get/page', {
+        params: data
+      });
+}
+
+
+//网络监控的列表
+export function getTargetPage(data) {
+    return request.get('/network/target/getTargetPage', {
         params: data
       });
 }
@@ -84,27 +110,59 @@ export function scanGetRulesByPage(data) {
       });
 }
 
-//规则配置中的识别模型列表
-export function scanGetContentClassifierByPage(data) {
-    return request.get('/srd/resource/contentClassifier/getContentClassifierByPage', {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* //组织资源列表
+export function accountDeptPage(data) {
+    return request.get('/endpoint/source/accountDept/get/page', {
         params: data
       });
 }
 
-//修改时step1
-export function validationDuplicate(data) {
-    return request({
-        url: '/common/validation/duplicate',
-        method: 'post',
-        data
-    })
-}
-
-//高级配置中的类型过滤自定义列表
-/* current: 1
-size: 10 */
-export function getSpPlcFileTypesExtensionByPage(data) {
-    return request.get('/resource/contentClassifier/getSpPlcFileTypesExtensionByPage', {
+//用户分组资源列表
+export function accountGroupPage(data) {
+    return request.get('/endpoint/source/accountGroup/get/page', {
         params: data
       });
 }
+
+//用户资源列表
+export function accountPage(data) {
+    return request.get('/endpoint/source/account/get/page', {
+        params: data
+      });
+}
+
+//网络资源列表
+export function networksPage(data) {
+    return request.get('network/source/networks/get/page', {
+        params: data
+      });
+}
+
+//邮件资源列表
+export function emailPage(data) {
+    return request.get('/network/source/email/get/page', {
+        params: data
+      });
+}
+
+//url资源列表
+export function urlPage(data) {
+    return request.get('/network/source/url/get/page', {
+        params: data
+      });
+} */

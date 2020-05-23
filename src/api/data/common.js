@@ -6,12 +6,8 @@ function getOrgByPage(data) {
     params: data
   })
 }
-function getOrgById(data) {
-  return request({
-    url: "endpoint/source/accountDept/get",
-    method: "post",
-    params: data
-  });
+function getOrgById(id) {
+  return request.get(`endpoint/source/accountDept/get/${id}`)
 }
 function getOrgTree(data) {
   return request.get('endpoint/source/get/accountDept/tree', {

@@ -2,83 +2,17 @@ import request from "@/utils/request";
 import { encrypt } from "@/utils";
 
 // 存储资源连接
-export function targetResDataRequest({
-  ip,
-  port,
-  username,
-  password,
-  iType,
-  type,
-  domain,
-  databaseType,
-  databaseName,
-  path,
-  sid,
-  schemaName,
-  serverAddress,
-  exchangeEdition,
-  lotusServerType,
-  keyType,
-  publicKey,
-  publicKeyName,
-  tableName,
-  share_username,
-  share_password,
-  storageBackend,
-  storageHostname,
-  storageTable,
-  indexSearchBackend,
-  indexSearchHostname,
-  fileType,
-  anonymousLogin,
-  readOnly,
-  site,
-  isScanAttachment,
-  targetId
-}) {
-  if (password) {
-    password = encrypt(password);
+export function targetResDataRequest(data) {
+  if (data.password) {
+    data.password = encrypt(data.password);
   }
-  if (share_password) {
-    share_password = encrypt(share_password);
+  if (data.share_password) {
+    data.share_password = encrypt(data.share_password);
   }
   return request({
     url: "/storage/source/targetResDataRequest",
     method: "post",
-    data: {
-      ip,
-      port,
-      username,
-      password,
-      iType,
-      type,
-      domain,
-      databaseType,
-      databaseName,
-      path,
-      sid,
-      schemaName,
-      serverAddress,
-      exchangeEdition,
-      lotusServerType,
-      keyType,
-      publicKey,
-      publicKeyName,
-      tableName,
-      share_username,
-      share_password,
-      storageBackend,
-      storageHostname,
-      storageTable,
-      indexSearchBackend,
-      indexSearchHostname,
-      fileType,
-      anonymousLogin,
-      readOnly,
-      site,
-      isScanAttachment,
-      targetId
-    }
+    data
   }).then(res => {
     return res.data
   });
@@ -147,3 +81,48 @@ export function getTargetResById(id) {
   });
 }
 
+// 保存（修改）存储资源
+export function saveTargetRes(data) {
+  return request({
+    url: `storage/source/saveTargetRes`,
+    method: "post",
+    data
+  }).then(res => {
+    return res.data
+  });
+}
+
+// 增加网络区间
+export function publicNetWorkInsert(data) {
+  return request.post('network/source/networks/insert', data)
+}
+// 更新网络区间
+export function publicNetWorkUpdate(data) {
+  return request.post('network/source/networks/update', data)
+}
+// 获取单个网络区间
+export function publicNetWorkGetSingle(id) {
+  return request.get(`network/source/networks/get/${id}`)
+}
+// 增加用户账号
+export function publicAccountInsert(data) {
+  return request.post('endpoint/source/account/insert', data)
+}
+// 更新用户账号
+export function publicAccountUpdate(data) {
+  return request.post('endpoint/source/account/update', data)
+}
+// 获取单个用户账号
+export function publicAccountGetSingle(id) {
+  return request.get(`endpoint/source/account/get/${id}`)
+}
+//获取部门树
+export function getOrgTree(data) {
+  return request.get(`endpoint/source/get/accountDept/tree`, {
+    params: data
+  })
+}
+//重名校验
+export function publicDuplicate(data) {
+  return request.post('common/validation/duplicate', data)
+}

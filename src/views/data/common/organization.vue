@@ -5,33 +5,19 @@
         <el-col :span="8">
           <div class="left">
             <div class="tree-title">组织架构列表</div>
-            <el-button class="new-set  el-icon-circle-plus-outline"
-                       type="primary"
-                       @click.stop="() => modifyTree()"> 新建组织</el-button>
-            <el-tree ref="tree"
-                     :data="treeData"
-                     node-key="id"
-                     highlight-current
-                     default-expand-all
-                     @node-click="ClickTreeNode">
-              <span class="custom-tree-node"
-                    slot-scope="{ node, data }">
+            <el-button class="new-set  el-icon-circle-plus-outline" type="primary" @click.stop="() => modifyTree()"> 新建组织</el-button>
+            <el-tree ref="tree" :data="treeData" node-key="id" highlight-current default-expand-all @node-click="ClickTreeNode">
+              <span class="custom-tree-node" slot-scope="{ node, data }">
                 <span>
                   <span :class="data.icon"></span>
                   <span>{{ data.label }}</span>
                 </span>
                 <span>
-                  <el-button type="text"
-                             icon="el-icon-circle-plus-outline"
-                             @click.stop="() => modifyTree(data)">添加
+                  <el-button type="text" icon="el-icon-circle-plus-outline" @click.stop="() => modifyTree(data)">添加
                   </el-button>
-                  <el-button type="text"
-                             icon="el-icon-edit"
-                             @click.stop="() => modifyTree(data)">
+                  <el-button type="text" icon="el-icon-edit" @click.stop="() => modifyTree(data)">
                   </el-button>
-                  <el-button type="text"
-                             icon="el-icon-delete"
-                             @click.stop="() => removeTree( data)">
+                  <el-button type="text" icon="el-icon-delete" @click.stop="() => removeTree( data)">
                   </el-button>
                 </span>
               </span>
@@ -58,15 +44,10 @@
                 <el-divider></el-divider>
               </div>
               <div class="table">
-                <el-table :data="tableData"
-                          stripe
-                          fit
-                          highlight-current-row>
-                  <el-table-column prop="name"
-                                   label="下级组织名称">
+                <el-table :data="tableData" stripe fit highlight-current-row>
+                  <el-table-column prop="name" label="下级组织名称">
                   </el-table-column>
-                  <el-table-column prop="resIp"
-                                   label="IP网段">
+                  <el-table-column prop="resIp" label="IP网段">
                   </el-table-column>
                 </el-table>
               </div>
@@ -76,72 +57,21 @@
       </el-row>
     </div>
 
-    <el-dialog title="信息提示"
-               :visible.sync="dialogVisible"
-               width="30%">
+    <el-dialog title="信息提示" :visible.sync="dialogVisible" width="30%">
       <p class="dialog-tips">
         <i class="el-icon-warning dialog-icon"></i>
         <span class="dialog-content">是否确认删除信息源 ？</span>
       </p>
       <div>删除后将无法回复</div>
-      <span slot="footer"
-            class="dialog-footer">
+      <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary"
-                   @click="confirmDel">确定</el-button>
+        <el-button type="primary" @click="confirmDel">确定</el-button>
       </span>
     </el-dialog>
   </div>
 </template>
 <script>
-const treedata = [
-  {
-    id: 1,
-    name: '一级 1',
-    children: [{
-      id: 4,
-      name: '二级 1-1',
-      children: [{
-        id: 9,
-        name: '三级 1-1-1'
-      }, {
-        id: 10,
-        name: '三级 1-1-2'
-      }]
-    }]
-  }, {
-    id: 2,
-    name: '一级 2',
-    children: [{
-      id: 5,
-      name: '二级 2-1'
-    }, {
-      id: 6,
-      name: '二级 2-2'
-    }]
-  }, {
-    id: 3,
-    name: '一级 3',
-    children: [{
-      id: 7,
-      name: '二级 3-1'
-    }, {
-      id: 8,
-      name: '二级 3-2'
-    }, {
-      id: 11,
-      name: '二级 3-2'
-    }, {
-      id: 111,
-      name: '二级 3-2'
-    }, {
-      id: 12,
-      name: '二级 3-2'
-    }, {
-      id: 122,
-      name: '二级 3-2'
-    }]
-  }];
+
 import request from "@/api/data/common";
 export default {
   name: 'organization',
@@ -176,7 +106,6 @@ export default {
     treeDataFormat(data) {
       data.forEach(val => {
         val.label = val.name
-        //TODO:确认组织列表最底层为人员还是组织机构，人员则显示人员图标
         val.icon = 'el-icon-folder'
         if (val.children && val.children.length > 0) {
           // val.icon = 'el-icon-folder'
@@ -203,10 +132,7 @@ export default {
       })
     },
     getOrgDetail(ID) {
-      let params = {
-        id: ID,
-      }
-      request.getOrgById(params).then(res => {
+      request.getOrgById(ID).then(res => {
       })
     },
     search() {

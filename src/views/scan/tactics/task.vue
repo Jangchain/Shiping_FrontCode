@@ -8,17 +8,17 @@
           <img src="../images/2.png" alt />
           <i>存储检查任务</i>
         </li>
-        <li style="background:#37c19d;border:solid 8px #d7f3eb">
+        <li @click="scan()" style="background:#37c19d;border:solid 8px #d7f3eb">
           <img src="../images/3.png" alt />
-          <i @click="scan()">终端扫描任务</i>
+          <i>终端扫描任务</i>
         </li>
-        <li style="background:#505382;border:solid 8px #dcdde6">
+        <li @click="capacity()" style="background:#505382;border:solid 8px #dcdde6">
           <img src="../images/4.png" alt />
-          <i @click="capacity()">智能分类任务</i>
+          <i>智能分类任务</i>
         </li>
-        <li style="background:#3b7bc1;border:solid 8px #d8e5f3">
+        <li @click="modules()" style="background:#3b7bc1;border:solid 8px #d8e5f3">
           <img src="../images/6.png" alt />
-          <i @click="modules()">模块分类任务</i>
+          <i>模块分类任务</i>
         </li>
       </ul>
     </div>
@@ -26,9 +26,9 @@
       <h3>监控任务类</h3>
       <em></em>
       <ul>
-        <li style="background:#bfa342;border:solid 8px #bfa34233">
+        <li @click="control()" style="background:#bfa342;border:solid 8px #bfa34233">
           <img src="../images/5.png" alt />
-          <i @click="control()">网络监控任务</i>
+          <i>网络监控任务</i>
         </li>
       </ul>
     </div>
@@ -46,7 +46,9 @@ export default {
     save() {
       this.$router.push('./newtask')
     },
-    scan() {},
+    scan() {
+      this.$router.push('./newpolicy')
+    },
     capacity() {},
     modules() {},
     control() {}

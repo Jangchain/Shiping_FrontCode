@@ -2,6 +2,7 @@ import { seMap } from "./default-data";
 
 // 格式化链接
 export const formatTargetResData = formData => {
+  formData = Object.assign({}, formData);
   let data;
   // 数据库和云数据库
   if (
@@ -249,5 +250,83 @@ export const formatTargetResData = formData => {
     }
   }
 
+  // 编辑处理
+  if (!formData.isDraft && formData.targetId) {
+    data["targetId"] = formData.targetId;
+  } else if (formData.isDraft) {
+    data["isDraft"] = "1";
+    data["draftId"] = formData.targetId;
+  }
+  console.log("formData.targetId", formData.targetId);
+  if (formData.targetId && !formData.password) {
+    delete data["password"];
+    // if (formData.databaseType === 'DM' ? formData.dmVersion != this.info.targetRes.databaseType : formData.taskType === 'CLOUD_OBJECT_SAVE' ? data.type != this.info.targetRes.databaseType : data.databaseType != this.info.targetRes.databaseType) {
+    //   delete data['draftId'];
+    //   delete data['targetId'];
+    //   delete data['isDraft'];
+    // }
+  } else if (formData.targetId && formData.password) {
+    delete data["targetId"];
+    delete data["isDraft"];
+    delete data["draftId"];
+  }
+
   return data;
+};
+
+// 格式化存储数据
+export const formatSaveTargetResData = formData => {
+  formData = Object.assign({}, formData);
+  console.log("formData---", formData);
+  const data = {
+    targetResInfos: [
+      {
+        isInclude: "1",
+        resType: seMap[formData.taskType],
+        targetResInfoDetails: []
+      }
+    ]
+  };
+
+  if (formData.taskType === "FILE_SYSTEM") {
+    data["targetResInfos"][0].targetResInfoDetails = formData.fileArray;
+    data["targetRes"] = {
+      resType: formData.taskType,
+      id: formData.targetId,
+      name: formData.name,
+      description: formData.description,
+      ip: formData.ip,
+      username: formData.username.trim(),
+      password: formData.password,
+      domain: formData.domain
+    };
+  }
+
+  if (
+    formData.taskType !== "DEP" &&
+    (formData.taskType !== "CLOUD_OBJECT_SAVE"
+      ? !formData.password
+      : !formData.accessKeySecret)
+  ) {
+    delete data["targetRes"]["password"];
+  }
+
+  return data;
+};
+
+// 格式化树表信息
+export const formatTreeData = (data, leaf = false) => {
+  const formatTreeData = [];
+  data.forEach((item, index) => {
+    const nameArr = item.split("/");
+    const obj = {
+      name: nameArr[nameArr.length - 1],
+      path: "/" + nameArr.slice(1, nameArr.length).join("/"),
+      isParent: true,
+      parentName: item,
+      leaf
+    };
+    formatTreeData.push(obj);
+  });
+  return formatTreeData;
 };

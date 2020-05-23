@@ -49,7 +49,7 @@ const scanRouter = {
         {
           path: 'newpolicy',
           component: () => import('@/views/scan/tactics/newpolicy'),
-          meta: { title: '新建策略', icon: 'skill' },
+          meta: { title: '新建终端扫描任务', icon: 'skill' },
           hidden: true,
         },
         {
@@ -61,15 +61,21 @@ const scanRouter = {
         {
           path: 'newtask',
           component: () => import('@/views/scan/tactics/newtask'),
-          meta: { title: '新建任务', icon: 'skill' },
+          meta: { title: '新建存储任务', icon: 'skill' },
           // hidden: true,
         },
-        /* {
+        {
           path: 'taskModify',
           component: () => import('@/views/scan/tactics/taskModify'),
-          meta: { title: '修改任务', icon: 'skill' },
-          hidden: true,
-        } */
+          meta: { title: '修改存储任务', icon: 'skill' },
+          // hidden: true,
+        },
+        {
+          path: 'newNetwork',
+          component: () => import('@/views/scan/tactics/newNetwork'),
+          meta: { title: '新建网络监控任务', icon: 'skill' },
+          // hidden: true,
+        },
       ]
     },
 

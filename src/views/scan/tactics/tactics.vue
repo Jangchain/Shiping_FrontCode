@@ -97,7 +97,6 @@
     </div>
     <div id="right">
       <Datatable
-        v-if="!activeName"
         @handleSizeChange="handleSizeChange"
         @handleCurrentChange="handleCurrentChange"
         @modifyRowData="modifyRowData"
@@ -114,14 +113,20 @@
           <div class="title-name">任务列表</div>
           <div class="title-form">
             <el-form :inline="true">
-              <el-form-item label>
-                 <el-date-picker
-                    v-model="scanTime"
-                    type="datetimerange"
-                    range-separator="至"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期">
-                  </el-date-picker>
+              <el-form-item label="类型">
+                 <el-select v-model="form.type" placeholder="请选择活动区域">
+                    <el-option label="全部" value="all"></el-option>
+                    <el-option label="存储检查任务" value="store"></el-option>
+                    <el-option label="终端扫描任务" value="scan"></el-option>
+                    <el-option label="网络监控任务" value="network"></el-option>
+                  </el-select>
+              </el-form-item>
+              <el-form-item>
+               <el-input
+                  placeholder="请输入内容"
+                  suffix-icon="el-icon-search"
+                  v-model="input2">
+                </el-input>
               </el-form-item>
               <el-form-item>
                 <el-button type="primary" @click="search()">搜索</el-button>
@@ -155,6 +160,7 @@ import Datatable from "../components/data-table";
 import { tabs } from "./common";
 import {
   taskCenterGetTaskCenterByPage,
+  discoveryTaskSPDelete
 } from "@/api/scan";
 export default {
   components: {
@@ -222,7 +228,7 @@ export default {
       currentPage:1,
       total: 10,
       widthes: 180,
-      typesStep2: 0,
+      typesStep2: 180,
       radio: "policy",
       scanTime:[],
       databaseTypeSelect: [
@@ -279,7 +285,8 @@ export default {
       dialogFormVisible: false,
       form: {},
       formInline: {},
-      formLabelWidth: "120px"
+      formLabelWidth: "120px",
+      input2:''
     };
   },
   created() {
@@ -375,6 +382,7 @@ export default {
     },
     deletes(){
       console.log(this.searchValue)
+      
     },
     stops(){
       console.log(this.searchValue)
@@ -382,6 +390,7 @@ export default {
     start(){
       console.log(this.searchValue)
     },
+    
     gettableData(page) {
       this.tableData = [];
       console.log(this.date(this.scanTime[0]),this.date(this.scanTime[1]))
@@ -400,7 +409,6 @@ export default {
         if (res.code == 0) {
           this.tableData = res.data.records;
           this.total =Number(res.data.total) 
-          console.log(this.tableData);
           this.tableData.forEach((item,i)=>{
             console.log(item)
             if(item.discoveryTaskType == this.databaseTypeSelect[i].value){
@@ -411,11 +419,40 @@ export default {
       });
     },
     modifyRowData(val) {
-      console.log(val);
-    
+      this.$router.push({
+        path: './taskModify',
+        query: {
+          list: val
+        }
+      })
     },
     deleteRowData(val) {
-      console.log(val);
+      console.log(val.id);
+      let id = val.id
+      this.$confirm('是否确认删除任务', '再次确认删除', {
+          distinguishCancelAndClose: true,
+          confirmButtonText: '取消',
+          cancelButtonText: '确认删除'
+        })
+          .then(() => {
+            this.$message({
+              type: 'info',
+              message: '取消'
+            });
+          })
+          .catch(action => {
+            this.$message({
+              type: 'info',
+              message: action === 'cancel'
+                ? '确认删除'
+                : '确认删除'
+            })
+            discoveryTaskSPDelete(id).then(res=>{
+              console.log(res)
+            }).catch((err)=>{
+              console.log(err)
+            })
+          });
     },
     handleCurrentChange(val) {
       console.log(val);
@@ -427,7 +464,7 @@ export default {
        this.pageSize = val
       this.gettableData()
     },
-    append(data) {
+    /* append(data) {
       const newChild = { id: id++, label: "testtest", children: [] };
       if (!data.children) {
         this.$set(data, "children", []);
@@ -440,9 +477,9 @@ export default {
       const children = parent.data.children || parent.data;
       const index = children.findIndex(d => d.id === data.id);
       children.splice(index, 1);
-    },
+    }, */
 
-    renderContent(h, { node, data, store }) {
+    /* renderContent(h, { node, data, store }) {
       return (
         <span class="custom-tree-node">
           <span>{node.label}</span>
@@ -464,7 +501,7 @@ export default {
           </span>
         </span>
       );
-    }
+    } */
   }
 };
 </script>
@@ -478,6 +515,7 @@ export default {
   }
 }
 #right {
+  padding-top: 20px;
   .data-area[data-v-487df30c] {
     padding-left: 0;
   }

@@ -320,7 +320,7 @@ export default {
           name: "level"
         },
         {
-          label: "风险特征",
+          label: "敏感特征",
           name: "trait"
         }
       ],

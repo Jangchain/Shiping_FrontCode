@@ -73,7 +73,7 @@ const adminRouter = {
     },
     {
       path: 'alarm',
-      component: () => import('@/views/admin/index'),
+      component: () => import('@/views/admin/alarm'),
       meta: { title: '告警管理', icon: 'eye-open', roles: ['1000000000000000000'] }
     },
     {
