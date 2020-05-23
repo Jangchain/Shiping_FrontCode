@@ -167,15 +167,14 @@ export default {
       this.pageSize = 10
       this.getNetWorksSourceData(this.searchCondition)
     },
-    //TODO:跳转待定
     newSet() {
-      this.$router.push(`/data/newset/storage/cloudDatabase`)
+      this.$router.push(`/data/newset/public/network`)
     },
     modifyRowData(val) {
-      // this.$router.push({
-      //   path: `/data/newset/storage/cloudDatabase`,
-      //   query: { id: val.id }
-      // })
+      this.$router.push({
+        path: `/data/newset/public/network`,
+        query: { id: val.id }
+      })
     },
     deleteRowData(val) {
       this.dialogVisible = true

@@ -12,7 +12,6 @@
           border
           fit
           highlight-current-row
-          height="40vh"
         >
           <el-table-column type="selection" width="45" />
           <el-table-column
@@ -27,20 +26,56 @@
               <el-progress :text-inside="true" :percentage="percentage" :color="customColorMethod"></el-progress>
             </template>
           </el-table-column>
-          <el-table-column v-if="widthes" fixed="right" label="操作" align="center">
+          <el-table-column v-if="widthes" fixed="right" label="操作" min-width="140">
             <template slot-scope="scope">
               <el-button
-                @click.native.stop="modifyRowData(scope.row)"
+                @click.native.stop="startRowData(scope.row)"
+                v-if="start"
                 size="mini"
                 type="text"
                 icon="el-icon-edit"
-              >修改</el-button>
+              >开始</el-button>
+              <el-button
+                @click.native.stop="suspendRowData(scope.row)"
+                v-if="suspend"
+                size="mini"
+                type="text"
+                icon="el-icon-delete"
+              >暂停</el-button>
+              <el-button
+                @click.native.stop="modifyRowData(scope.row)"
+                v-if="modify"
+                size="mini"
+                type="text"
+                icon="el-icon-edit"
+              >编辑</el-button>
+              <el-button
+                @click.native.stop="stopRowData(scope.row)"
+                 v-if="stop"
+                size="mini"
+                type="text"
+                icon="el-icon-edit"
+              >停止</el-button>
               <el-button
                 @click.native.stop="deleteRowData(scope.row)"
+                v-if="deletes"
                 size="mini"
                 type="text"
                 icon="el-icon-delete"
               >删除</el-button>
+              <el-button
+                @click.native.stop="startUseRowData(scope.row)"
+                v-if="startUse"
+                size="mini"
+                type="text"
+                icon="el-icon-delete"
+              >启用</el-button><el-button
+                @click.native.stop="stopUseRowData(scope.row)"
+                v-if="stopUse"
+                size="mini"
+                type="text"
+                icon="el-icon-delete"
+              >停用</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -90,14 +125,22 @@ export default {
       currentPage: 1,
       isShowDrawer: false,
       drawerData: {},
-      percentage:20
+      percentage:20,
+      customColorMethod:'#409eff',
+      start:true,
+      suspend:false,
+      modify:true,
+      stop:false,
+      deletes:true,
+      startUse:true,
+      stopUse:false,
     };
   },
   created() {
     // console.log(typeof this.widthes)
   },
   methods: {
-     customColorMethod(percentage) {
+     /* customColorMethod(percentage) {
         if (percentage < 30) {
           return '#909399';
         } else if (percentage < 70) {
@@ -105,7 +148,7 @@ export default {
         } else {
           return '#67c23a';
         }
-      },
+      }, */
     handleSizeChange(val) {
       //每页条数变化
       this.$emit("handleSizeChange", val);
@@ -124,9 +167,8 @@ export default {
           this.$emit("select", row);
         });
       }else{
-this.$emit("select",rows)
+        this.$emit("select",rows)
       }
-      // console.log(aaa);
     },
     rowClick(row) {
       this.isShowDrawer = true;
@@ -143,14 +185,18 @@ this.$emit("select",rows)
 </script>
 <style lang="scss" scoped>
 .data-area {
-  padding: 30px 15px 0;
+  // padding: 30px 15px 0;
   background-color: #eee;
   .data-area-in {
     background-color: #fff;
-    padding: 0 20px 20px;
+    // padding: 0 20px 20px;
   }
   .pager {
-    padding: 40px 0;
+    padding: 10px 0;
+    background-color: #eee;
+    .el-pagination__total{
+margin-left: 50px;
+    }
   }
 }
 .drawer-content {

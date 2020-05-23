@@ -9,15 +9,11 @@
     >
       <form-group-title title="基本信息" />
 
-      <el-form-item v-if="showFormItem('name')" label="信息源名称" prop="name">
+      <el-form-item label="信息源名称" prop="name">
         <el-input v-model="ruleForm.name" placeholder="输入名称" />
       </el-form-item>
 
-      <el-form-item
-        v-if="showFormItem('description')"
-        label="备注"
-        prop="description"
-      >
+      <el-form-item label="备注" prop="description">
         <el-input
           v-model="ruleForm.description"
           resize="none"
@@ -29,7 +25,10 @@
       <form-group-title title="认证信息" />
 
       <el-form-item
-        v-if="showFormItem('databaseType')"
+        v-if="
+          ruleForm.taskType == 'DATABASE' ||
+            ruleForm.taskType == 'CLOUD_DATABASE'
+        "
         label="数据库类型"
         prop="databaseType"
       >
@@ -47,7 +46,7 @@
       </el-form-item>
 
       <el-form-item
-        v-if="showFormItem('fileType')"
+        v-if="ruleForm.taskType == 'FILE_SYSTEM'"
         label="类型"
         prop="fileType"
       >
@@ -62,7 +61,7 @@
       </el-form-item>
 
       <el-form-item
-        v-if="showFormItem('anonymousLogin')"
+        v-if="ruleForm.taskType == 'FTP'"
         label="匿名登录"
         prop="anonymousLogin"
       >
@@ -75,12 +74,21 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item v-if="showFormItem('ip')" label="IP地址" prop="ip">
+      <el-form-item
+        v-if="
+          ruleForm.taskType == 'DATABASE' ||
+            ruleForm.taskType == 'CLOUD_DATABASE'
+            ? ruleForm.databaseType != 'janusgraph03'
+            : ruleForm.taskType != 'CLOUD_OBJECT_SAVE'
+        "
+        label="IP地址"
+        prop="ip"
+      >
         <el-input v-model="ruleForm.ip" placeholder="输入IP地址" />
       </el-form-item>
 
       <el-form-item
-        v-if="showFormItem('lotusServerType')"
+        v-if="ruleForm.taskType == 'LOTUS'"
         label="类型"
         prop="lotusServerType"
       >
@@ -90,12 +98,16 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item v-if="showFormItem('site')" label="站点" prop="site">
+      <el-form-item
+        v-if="ruleForm.taskType == 'SHARE_POINT'"
+        label="站点"
+        prop="site"
+      >
         <el-input v-model="ruleForm.site" placeholder="请输入站点" />
       </el-form-item>
 
       <el-form-item
-        v-if="showFormItem('serverAddress')"
+        v-if="ruleForm.taskType == 'EXCHANGE' || ruleForm.taskType == 'WEBDAV'"
         label="服务器地址"
         prop="serverAddress"
       >
@@ -103,7 +115,7 @@
       </el-form-item>
 
       <el-form-item
-        v-if="showFormItem('exchangeEdition')"
+        v-if="ruleForm.taskType == 'EXCHANGE'"
         label="版本"
         prop="exchangeEdition"
       >
@@ -153,16 +165,7 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item
-        v-if="
-          showFormItem('port') &&
-            ruleForm.databaseType != 'Sqlite' &&
-            ruleForm.databaseType != 'Access' &&
-            ruleForm.databaseType != 'janusgraph03'
-        "
-        label="端口"
-        prop="port"
-      >
+      <el-form-item v-if="isPort" label="端口" prop="port">
         <el-input v-model="ruleForm.port" placeholder="请输入端口" />
       </el-form-item>
 
@@ -247,7 +250,7 @@
       </el-form-item>
 
       <el-form-item
-        v-if="showFormItem('passwordType')"
+        v-if="ruleForm.taskType == 'SFTP'"
         label="密码类型"
         prop="passwordType"
       >
@@ -266,7 +269,9 @@
       </el-form-item>
 
       <el-form-item
-        v-if="showFormItem('publicKeyName')"
+        v-if="
+          ruleForm.taskType == 'SFTP' && ruleForm.passwordType == 'PUBLIC_KEY'
+        "
         v-show="!isPassword"
         label="秘钥"
         prop="publicKeyName"
@@ -339,7 +344,15 @@
         />
       </el-form-item>
 
-      <el-form-item v-if="showFormItem('domain')" label="域名" prop="domain">
+      <el-form-item
+        v-if="
+          ruleForm.taskType != 'DATABASE' &&
+            ruleForm.taskType != 'CLOUD_DATABASE' &&
+            ruleForm.taskType != 'CLOUD_OBJECT_SAVE'
+        "
+        label="域名"
+        prop="domain"
+      >
         <el-input v-model="ruleForm.domain" placeholder="请输入域名" />
       </el-form-item>
 
@@ -357,6 +370,7 @@
       <el-form-item>
         <el-button
           type="primary"
+          :loading="saveLoading"
           :disabled="!saveable"
           @click="submitForm('ruleForm')"
         >保存</el-button>
@@ -374,11 +388,16 @@ import {
   portMap,
   defalutRules
 } from "./default-data";
-import { targetResDataRequest } from "@/api/data/newset";
-import { formatTargetResData } from "./common-form-format";
+import { targetResDataRequest, saveTargetRes } from "@/api/data/newset";
+import {
+  formatTargetResData,
+  formatSaveTargetResData,
+  formatTreeData
+} from "./common-form-format";
 
 const Api = {
-  targetResDataRequest
+  targetResDataRequest,
+  saveTargetRes
 };
 export default {
   components: {
@@ -406,7 +425,8 @@ export default {
       // newRules: {},
       ruleForm: {},
       testConnectLoading: false,
-      saveable: false
+      saveLoading: false,
+      saveable: true
     };
   },
   computed: {
@@ -415,6 +435,20 @@ export default {
     },
     databaseTypeList() {
       return this.data.type === "DB" ? databaseTypeList : cloudDatabaseTypeList;
+    },
+
+    // 是否显示端口
+    isPort() {
+      return this.ruleForm.taskType === "DATABASE" ||
+        this.ruleForm.taskType === "CLOUD_DATABASE"
+        ? this.ruleForm.databaseType !== "Sqlite" &&
+            this.ruleForm.databaseType !== "Access" &&
+            this.ruleForm.databaseType !== "janusgraph03"
+        : this.ruleForm.taskType !== "EXCHANGE" &&
+            this.ruleForm.taskType !== "SHARE_POINT" &&
+            this.ruleForm.taskType !== "FILE_SYSTEM" &&
+            this.ruleForm.taskType !== "WEBDAV" &&
+            this.ruleForm.taskType !== "CLOUD_OBJECT_SAVE";
     },
 
     isPassword() {
@@ -476,6 +510,12 @@ export default {
     data: {
       handler(val) {
         this.ruleForm = this.data;
+        if (
+          this.ruleForm.taskType === "FILE_SYSTEM" &&
+          !this.ruleForm.fileType
+        ) {
+          this.ruleForm.fileType = "share";
+        }
       },
       immediate: true
     }
@@ -487,6 +527,14 @@ export default {
   mounted() {},
 
   methods: {
+    // 初始化表单
+    showFormItem(prop) {
+      if (Object.keys(this.data).length) {
+        return Object.keys(this.data).includes(prop);
+      }
+      return true;
+    },
+
     // 测试连接
     testConnect() {
       console.log("测试连接");
@@ -499,25 +547,52 @@ export default {
         if (errorMsg) validateStatus = false;
       });
       if (validateStatus) {
-        const formData = Object.assign({}, this.ruleForm);
-
-        console.log("formData.fileType", formatTargetResData(formData));
-
-        this.targetResDataRequest(formatTargetResData(formData));
+        console.log("formData.fileType", formatTargetResData(this.ruleForm));
+        this.testConnectLoading = true;
+        this.targetResDataRequest(formatTargetResData(this.ruleForm));
       }
     },
 
     // 测试连接请求
-    targetResDataRequest(data) {
-      this.testConnectLoading = true;
+    targetResDataRequest(data, type = "connect") {
       Api.targetResDataRequest(data)
         .then(res => {
-          console.log(res);
+          if (res.errCode === 510000) {
+            console.log(res);
+
+            // 处理树表初始值
+            this.handleInitTreeData(res);
+
+            if (type === "save") {
+              if (this.$parent.getCheckedNodes) {
+                this.ruleForm.fileArray = this.$parent.getCheckedNodes();
+              }
+              this.saveTargetRes(formatSaveTargetResData(this.ruleForm));
+            }
+          } else {
+            this.connectError();
+          }
         })
         .finally(() => {
           this.testConnectLoading = false;
-          this.connectError();
+          if (this.saveLoading) {
+            this.saveLoading = false;
+          }
         });
+    },
+
+    // 处理树表初始值
+    handleInitTreeData(res) {
+      // 默认共享
+      let defaultTreeData = [];
+      defaultTreeData = formatTreeData(res.defaultDir);
+      this.$parent.defaultTreeData = defaultTreeData;
+      this.$parent.defaultTreeDataIsLoad = true;
+      // 自定义共享
+      let defineTreeData = [];
+      defineTreeData = formatTreeData(res.definedDir);
+      this.$parent.defineTreeData = defineTreeData;
+      this.$parent.defineTreeDataIsLoad = true;
     },
 
     // 表单提交
@@ -527,6 +602,8 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.$emit("validated-data", this.ruleForm);
+          this.saveLoading = true;
+          this.targetResDataRequest(formatTargetResData(this.ruleForm), "save");
         } else {
           console.log("error submit!!");
           return false;
@@ -534,12 +611,18 @@ export default {
       });
     },
 
-    // 初始化表单
-    showFormItem(prop) {
-      if (Object.keys(this.data).length) {
-        return Object.keys(this.data).includes(prop);
-      }
-      return true;
+    // 保存（修改）存储资源
+    saveTargetRes(data) {
+      Api.saveTargetRes(data)
+        .then(res => {
+          console.log("saveTargetRes", res);
+          this.$router.push({
+            path: `/data/storage/share`
+          });
+        })
+        .finally(() => {
+          this.saveLoading = false;
+        });
     },
 
     // 连接主机资源失败回调

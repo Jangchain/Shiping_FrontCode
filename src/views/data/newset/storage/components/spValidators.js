@@ -1,3 +1,5 @@
+
+import { publicDuplicate } from "@/api/data/newset";
 export class SpValidators {
   // 必填
   static required(msg, trigger = "blur") {
@@ -31,12 +33,12 @@ export class SpValidators {
   }
 
   // 校验ip格式
-  static ip(trigger = "blur") {
+  static ip(msg = "请输入正确ip", trigger = "blur") {
     const reg = /^\b((?!\d\d\d)\d+|1\d\d|2[0-4]\d|25[0-5])\.((?!\d\d\d)\d+|1\d\d|2[0-4]\d|25[0-5])\.((?!\d\d\d)\d+|1\d\d|2[0-4]\d|25[0-5])\.((?!\d\d\d)\d+|1\d\d|2[0-4]\d|25[0-5])\b$/;
     return {
       validator: (rule, value, callback) => {
         if (value && !reg.test(value)) {
-          callback(new Error("请输入正确ip"));
+          callback(new Error(msg));
         }
         callback();
       },
@@ -51,6 +53,34 @@ export class SpValidators {
       validator: (rule, value, callback) => {
         if (value && !reg.test(value)) {
           callback(new Error("请输入正确的域名"));
+        }
+        callback();
+      },
+      trigger
+    };
+  }
+
+  // 校验掩码格式
+  static mask(trigger = "blur") {
+    const reg = /^(254|252|248|240|224|192|128|0)\.0\.0\.0|255\.(254|252|248|240|224|192|128|0)\.0\.0|255\.255\.(254|252|248|240|224|192|128|0)\.0|255\.255\.255\.(254|252|248|240|224|192|128|0)$/;
+    return {
+      validator: (rule, value, callback) => {
+        if (value && !reg.test(value)) {
+          callback(new Error("请输入正确掩码"));
+        }
+        callback();
+      },
+      trigger
+    };
+  }
+
+  // 校验mac格式
+  static mac(trigger = "blur") {
+    const reg = /^(([A-Fa-f0-9]{2}-){5}[A-Fa-f0-9]{2})|(([A-Fa-f0-9]{2}:){5}[A-Fa-f0-9]{2})$/;
+    return {
+      validator: (rule, value, callback) => {
+        if (value && !reg.test(value)) {
+          callback(new Error("请输入正确mac地址"));
         }
         callback();
       },
@@ -122,4 +152,49 @@ export class SpValidators {
       trigger
     };
   }
+  //  手机号
+  static phone(trigger = "blur") {
+    const reg = /^[1][3,4,5,7,8][0-9]{9}$/;
+    return {
+      validator: (rule, value, callback) => {
+        if (value && !reg.test(value)) {
+          callback(new Error(`请输入正确手机号`));
+        }
+        callback();
+      },
+      trigger
+    };
+  }
+  //  邮箱
+  static mail(trigger = "blur") {
+    const reg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+    return {
+      validator: (rule, value, callback) => {
+        if (value && !reg.test(value)) {
+          callback(new Error(`请输入正确邮箱地址`));
+        }
+        callback();
+      },
+      trigger
+    };
+  }
+  //  重名校验
+  static duplicate(params, trigger = "blur") {
+    return {
+      validator: async (rule, value, callback) => {
+        params = Object.assign(params, { checkValue: value })
+        await publicDuplicate(params).then(res => {
+          if (res.code === 0) {
+            callback(new Error(`输入内容已存在，请修改`))
+          }
+          callback()
+        }).catch(err => {
+          callback(new Error(`检验失败，请稍后再试！`))
+        })
+      },
+      trigger
+    };
+  }
 }
+
+

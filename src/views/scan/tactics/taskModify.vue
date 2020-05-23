@@ -41,7 +41,7 @@
 import Step1 from "../components/step1";
 import Step2 from "../components/step2";
 import Step3 from "../components/step3";
-import { discoveryTaskSave,endpointTaskInsert } from "@/api/scan";
+import { discoveryTaskUpdate } from "@/api/scan";
 export default {
   components: {
     Step1,
@@ -75,11 +75,13 @@ export default {
         const list = JSON.parse(sessionStorage.getItem('storeMessageList')) 
         console.log(list)
       }
+      
+        
+      
     },
     finish() {
       console.log(this.$refs.selects,"@@@@")
-      if(this.form.types == '0'){
-if(this.$refs.selects.checked){
+      if(this.$refs.selects.checked){
         this.$refs.selects.checked = 0
       }else{
         this.$refs.selects.checked = 1
@@ -161,59 +163,14 @@ if(this.$refs.selects.checked){
         spPolicyOcr: {}
       };
       //添加储存任务
-      discoveryTaskSave(data).then(res => {
+      discoveryTaskUpdate(data).then(res => {
         console.log(res);
       }).catch(err=>err);
-      }else if(this.form.types == "1"){
- /* const list = {
-          resources:{
-            name: this.form.name,
-            examinationUnit:this.form.unit,
-            supervisor:this.form.inspector,
-            description:this.form.description,
-            resourceType:'1',
-            scanMode:'0',
-            taskScanMode:'',
-            resGroupIds:[],
-            ruleIds:[],
-            schedulingData:'',
-            ocrMode:'0',
-            policyOcr:'',
-          },
-          spSchedulingData:{
-              frequencyType:"ONCE",
-          },
-          SpPolicyOcr:{
-            mode:'Normal',
-            ocrRecogGif:'0',
-            ocrRecogCode:'0',
-            ocrRegodSignet:'0',
-            ocrDetectRedHead:'0',
-            ocrRecogGovernmentFile:'0',
-            ocrReRecog:'0',
-          },
-          TaskScanMode:{
-            scanStatus:'0',
-           storeDir:'',
-           scanType:'once',
-          },
-          scanModeTimeLists:{
-            idx:'',
-            modeId:'',
-            startTime:'',
-            endTime:'',
-          },
-      }
-      endpointTaskInsert(list).then(res=>{
-        console.log(res)
-      }) */
-      }else if(this.form.types == "2"){
-
-      }
       
-     
-
     }
+  },
+  mounted(){
+  console.log(this.$route.query.list)  
   }
 };
 </script>

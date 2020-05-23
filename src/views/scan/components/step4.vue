@@ -165,6 +165,7 @@
 </template>
 
 <script>
+import { getSpPlcFileTypesExtensionByPage } from "@/api/scan";
 const cityOptions = ["类型过滤", "日期过滤", "文件大小过滤", "带宽过滤"];
 
 export default {

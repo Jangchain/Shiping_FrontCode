@@ -133,6 +133,7 @@ const dataRouter = {
         {
           path: "public",
           component: () => import("@/views/data/newset/public"),
+          name: "dataNewsetPublic",
           meta: {
             title: "公共信息源",
             icon: "component",
